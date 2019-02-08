@@ -106,7 +106,7 @@ ALTER TABLE `melis_cms_category2_trans`
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 
-CREATE TABLE melis_cms_category2_sites`(
+CREATE TABLE `melis_cms_category2_sites`(
 `cats2_id` INT NOT NULL AUTO_INCREMENT ,
 `cats2_site_id` INT NOT NULL ,
 `cats2_cat2_id` INT NOT NULL ,
