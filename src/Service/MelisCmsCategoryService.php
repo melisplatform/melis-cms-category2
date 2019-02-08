@@ -318,7 +318,7 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
         $arrayParameters = $this->sendEvent('meliscommerce_service_category_byid_start', $arrayParameters);
 
         // Service implementation start
-        $melisCategory = new \MelisCommerce\Entity\MelisCategory();
+        $melisCategory = new \MelisCmsCategory2\Entity\MelisCategory();
 
         $melisEcomCategoryTable = $this->getServiceLocator()->get('MelisCmsCategory2Table');
 
@@ -1171,7 +1171,7 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
             $catData[$key]['children'] = $this->getCategoryTreeview($fatherId, $langId, $onlyValid);
 
         }
-
+        
         $results = $catData;
         // Service implementation end
         
