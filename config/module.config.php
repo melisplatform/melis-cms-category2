@@ -65,6 +65,7 @@ return array(
             'MelisCmsCategory2\Controller\MelisCmsCategoryList' => 'MelisCmsCategory2\Controller\MelisCmsCategoryListController',
             'MelisCmsCategory2\Controller\MelisCmsCategory'     => 'MelisCmsCategory2\Controller\MelisCmsCategoryController',
             'MelisCmsCategory2\Controller\MelisCmsCategoryDocument'     => 'MelisCmsCategory2\Controller\MelisCmsCategoryDocumentController',
+            'MelisCmsCategory2\Controller\MelisCmsCategoryMedia'     => 'MelisCmsCategory2\Controller\MelisCmsCategoryMediaController',
         ),
     ),
     'controller_plugins' => array(

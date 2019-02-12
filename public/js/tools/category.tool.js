@@ -22,6 +22,7 @@ if( melisCore.screenSize >= 768){
 
 var categoryOpeningItemFlag = true;
 $(function(){
+	var categoryBody = $("body");
 	$("body").on("click", ".addCategory", function(e){ 
 		$("#categoryTreeViewPanel").collapse("hide");
 		var zoneId = 'id_meliscategory_categories_category';
@@ -449,6 +450,18 @@ $(function(){
   			xhr.abort();
   		}
   	  });
+    var categoryv2ModalUrl = 'melis/MelisCmsCategory2/MelisCmsCategoryDocument/render-document-generic-modal-container';
+     // add image
+    categoryBody.on('click', ".category-add-image" , function(){
+    	var catv2ImageZoneId   = "id_meliscommerce_documents_modal_form";
+    	var catv2ImageMelisKey = "meliscommerce_documents_modal_form";
+    	var data = $(this).data();
+    	console.log(data);
+        melisCoreTool.pending($(this));
+        melisHelper.createModal(catv2ImageZoneId, catv2ImageMelisKey, false, {},  categoryv2ModalUrl, function() {
+            melisCoreTool.done($(this));
+        });
+	});
 });
 
 window.enableDisableAddCategoryBtn = function(action){
