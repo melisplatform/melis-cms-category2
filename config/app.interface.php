@@ -45,6 +45,8 @@ return array(
                     '/MelisCmsCategory2/assets/jstree/dist/jstree.min.js',
                     '/MelisCmsCategory2/js/tools/category.tool.js',
                     '/MelisCmsCategory2/js/tools/documents.tool.js',
+                    '/MelisCmsCategory2/js/tools/documents.tool.js',
+                    '/MelisCmsCategory2/js/tools/media.library.js',
                 ],
                 'css' => [
                     '/MelisCmsCategory2/assets/jstree/dist/themes/proton/style.min.css',
@@ -481,29 +483,28 @@ return array(
                         ),
                         'meliscategory_documents_modal_container' => array(
                             'conf' => array(
-                                'id' => 'id_meliscms_documents_modal_container',
-                                'melisKey' => 'meliscms_documents_modal_container',
+                                'id' => 'id_meliscategory_documents_modal_container',
+                                'melisKey' => 'meliscategory_documents_modal_container',
                                 'name' => 'tr_meliscommerce_documents_modal_container'
                             ),
                             'forward' => array(
                                 'module' => 'MelisCmsCategory2',
-                                'controller' => 'MelisCmsCategoryDocument',
-                                'action' => 'render-document-generic-modal-container',
-
+                                'controller' => 'MelisCmsCategoryMedia',
+                                'action' => 'render-mini-media-modal-container',
                             ),
                             'interface' => array(
-                                'meliscommerce_documents_modal_form' => array(
+                                'meliscategory_mini_media_library' => [
                                     'conf' => array(
-                                        'id' => 'id_meliscommerce_documents_modal_form',
-                                        'melisKey' => 'meliscommerce_documents_modal_form',
-                                        'name' => 'tr_meliscommerce_documents_modal_form'
+                                        'id' => 'id_meliscategory_mini_media_library',
+                                        'melisKey' => 'meliscategory_mini_media_library',
+                                        'name' => 'Media'
                                     ),
                                     'forward' => array(
                                         'module' => 'MelisCmsCategory2',
-                                        'controller' => 'MelisCmsCategoryDocument',
-                                        'action' => 'render-document-generic-modal-form',
+                                        'controller' => 'MelisCmsCategoryMedia',
+                                        'action' => 'browse-media'
                                     ),
-                                )
+                                ],
                             )
                         ),
 //                        'meliscategory_documents_image_attachments_conf' => array(

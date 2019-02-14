@@ -450,17 +450,14 @@ $(function(){
   			xhr.abort();
   		}
   	  });
-    var categoryv2ModalUrl = 'melis/MelisCmsCategory2/MelisCmsCategoryDocument/render-document-generic-modal-container';
+
      // add image
     categoryBody.on('click', ".category-add-image" , function(){
-    	var catv2ImageZoneId   = "id_meliscommerce_documents_modal_form";
-    	var catv2ImageMelisKey = "meliscommerce_documents_modal_form";
-    	var data = $(this).data();
-    	console.log(data);
-        melisCoreTool.pending($(this));
-        melisHelper.createModal(catv2ImageZoneId, catv2ImageMelisKey, false, {},  categoryv2ModalUrl, function() {
-            melisCoreTool.done($(this));
-        });
+    	var catv2ImageZoneId   = "id_meliscategory_mini_media_library";
+    	var catv2ImageMelisKey = "meliscategory_mini_media_library";
+        var categoryv2ModalUrl = 'melis/MelisCmsCategory2/MelisCmsCategoryMedia/render-mini-media-modal-container';
+        var data = $(this).data();
+		mediaDirectory.browse(categoryv2ModalUrl,catv2ImageZoneId,catv2ImageMelisKey,{fileType:data.type},".category-image-list")
 	});
 });
 

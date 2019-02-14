@@ -1,0 +1,53 @@
+<?php
+    $name = '';
+    $id = '';
+    if (!empty($this->zoneconfig['conf']['name']))
+        $name = $this->zoneconfig['conf']['name'];
+    if (!empty($this->zoneconfig['conf']['id']))
+        $id = $this->zoneconfig['conf']['id'];
+    $data_melisKey = $this->melisKey;
+    $file = '';
+    $icon = $this->docId ? 'pencil' : 'plus';
+    $scheme = $this->scheme;
+    $domain = $this->host;
+    $images = $this->images;
+?>
+<div class="modal-content" id="<?= $id; ?>" data-melisKey="<?= $data_melisKey; ?>">
+    <div class="modal-body padding-none">
+        <div class="wizard">
+            <div class="widget widget-tabs widget-tabs-double widget-tabs-responsive margin-none border-none">
+                <div class="widget-head">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#<?php echo $this->zoneconfig['conf']['id'] ?>" class="glyphicons <?= $icon; ?>" data-toggle="tab" aria-expanded="true"><i></i> <?php echo $this->translate($this->title) ?></a></li>
+                    </ul>
+                </div>
+                <div class="widget-body innerAll inner-2x">
+                    <div class="tab-content">
+                        <div class="tab-pane active" <?php echo $id ?>>
+                            <div class="mini-media-library">
+                                <div class="mini-image-list">
+                                    <div class="row">
+                                        <?php foreach ($images as $idx => $image) {?>
+                                            <div class="col-md-3">
+                                                <div class="image-area">
+                                                    <img src="/media/<?= $image ?>" alt="<?= $image ?>" title="<?= $image?>" class="img-responsive">
+                                                    <span class="description"><?= $image ?></span>
+                                                    <div class="add-wrapper" title="Add image">
+                                                        <i class="fa fa-plus"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <?php }?>
+                                    </div>
+                                </div>
+                                <div class="min-upload-image">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -25,9 +25,6 @@
 .cat-div {
     width: 100%;
     overflow-y: auto !important;
-    min-height: 500px;
-    max-height: 500px;
-    height: 100%;
 }
 
 #id_meliscommerce_categories_list .panel-group{
@@ -43,10 +40,10 @@
     width: 165px;
     background: #eaeaea;
 }
+
 /**
 * JSTree Search Buttons
 */
-
 #categoryTreeViewPanel .btn span{
     font-size: 12px;
 }
@@ -246,4 +243,44 @@
 .content-cont .product-text-tab li.active:hover a{
     background: #932E2A;
     border-color: transparent;
+}
+.mini-media-library .image-area{
+    padding:5px;
+    border:2px solid #eee;
+    border-radius:5px;
+    overflow:hidden;
+    white-space: nowrap;
+    position:relative;
+    -webkit-transition: all 0.2s ease-in-out;
+    -moz-transition: all 0.2s ease-in-out ;
+    -ms-transition: all 0.2s ease-in-out ;
+    -o-transition: all 0.2s ease-in-out ;
+    transition: all 0.2s ease-in-out ;
+}
+.mini-media-library .image-area img{
+    max-height:100px;
+    width:100%;
+    min-height:100px;
+    border-radius:5px;
+}
+.mini-media-library .image-area .add-wrapper{
+    position:absolute;
+    background:#000;
+    height:100%;
+    width:100%;
+    top:0;
+    text-align:center;
+    opacity:0.6;
+    border-radius:5px;
+    display:none;
+    cursor:pointer;
+    color:#fff;
+    line-height:50px;
+}
+.mini-media-library .image-area:hover .add-wrapper{
+    display:block;
+}
+.mini-media-library .image-area .add-wrapper i{
+    font-size:30px;
+    margin-top:50px;
 }
