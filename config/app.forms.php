@@ -206,6 +206,24 @@ return array(
                                 ]
                             ]
                         ]
+                    ],
+                    //category media upload form
+                    'meliscategory_media_upload_form' => [
+                        'attributes' => array(
+                            'name' => 'meliscategory_media_upload_form',
+                            'id' => 'id_meliscategory_media_upload_form',
+                            'method' => '',
+                            'action' => '',
+                        ),
+                        'hydrator'  => 'Zend\Stdlib\Hydrator\ArraySerializable',
+                        'elements' => array(
+                            array(
+                                'spec' => array(
+                                    'name' => 'media_upload',
+                                    'type' => 'file',
+                                )
+                            ),
+                        )
                     ]
                 ),
             ),

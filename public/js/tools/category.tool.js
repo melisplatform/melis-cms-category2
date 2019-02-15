@@ -457,8 +457,29 @@ $(function(){
     	var catv2ImageMelisKey = "meliscategory_mini_media_library";
         var categoryv2ModalUrl = 'melis/MelisCmsCategory2/MelisCmsCategoryMedia/render-mini-media-modal-container';
         var data = $(this).data();
+        melisCoreTool.pending($(this));
 		mediaDirectory.browse(categoryv2ModalUrl,catv2ImageZoneId,catv2ImageMelisKey,{fileType:data.type},".category-image-list")
 	});
+
+    categoryBody.on('submit',"#id_meliscategory_media_upload_form",function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        melisCoreTool.pending($(this));
+
+        $.ajax({
+            type: 'POST',
+            url: 'melis/MelisCmsCategory2/MelisCmsCategoryMedia/uploadMedia',
+            data: formData,
+            dataType: 'json',
+            processData: false,
+            cache: false,
+            contentType: false,
+            encode: true
+        }).success(function(data) {
+        	console.log(data);
+		});
+
+    });
 });
 
 window.enableDisableAddCategoryBtn = function(action){

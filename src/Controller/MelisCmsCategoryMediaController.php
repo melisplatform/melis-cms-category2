@@ -95,6 +95,7 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         $uri     = $request->getUri();
         $host    = $uri->getHOst();
         $scheme  = $uri->getScheme();
+
         $mediaPath = $_SERVER['DOCUMENT_ROOT'] . "/media/";
         $queryParams = $request->getQuery();
         $fileType = $queryParams['fileType'] ?? 'file';
@@ -121,6 +122,36 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         $view->images = $image;
         $view->scheme = $scheme;
         $view->host   = $host;
+        $view->categoryMediaForm = $this->getForm();
+
         return $view;
+    }
+    /**
+     * This will get the form that was created in the
+     * MelisCmsUserACcount/config/app.tools.php
+     *
+     * @param int $forUpdate
+     * @return \Zend\Form\ElementInterface
+     */
+    private function getForm()
+    {
+        $config = $this->getServiceLocator()->get('MelisCoreConfig');
+        $formConfig = $config->getItem('meliscategory/forms/meliscategory_categories/meliscategory_media_upload_form');
+
+        $factory = new \Zend\Form\Factory();
+        $formElements = $this->serviceLocator->get('FormElementManager');
+        $factory->setFormElementManager($formElements);
+        $form = $factory->createForm($formConfig);
+
+        return $form;
+    }
+
+    public function uploadMediaAction()
+    {
+        $request = $this->getRequest();
+        print_r($request);
+        die;
+
+        return [];
     }
 }

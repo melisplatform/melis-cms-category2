@@ -9,12 +9,14 @@
 ?>
 <div <?= $id . $data_melisKey; ?>>
 	<div class="row">
-        <div class="category-image-list">
-            <?php if (! empty($media)) {?>
 
-            <?php } else {?>
-                No image added
-            <?php }?>
+        <?php if (! empty($media)) {?>
+
+        <?php } else {?>
+            <span class="no-image">No image</span>
+        <?php }?>
+        <div class="category-image-list row">
+
         </div>
 	</div>
 </div>

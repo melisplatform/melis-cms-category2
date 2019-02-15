@@ -11,6 +11,9 @@
     $scheme = $this->scheme;
     $domain = $this->host;
     $images = $this->images;
+    $title  = $this->title;
+    $title = "Select image";
+    $form  = $this->categoryMediaForm;
 ?>
 <div class="modal-content" id="<?= $id; ?>" data-melisKey="<?= $data_melisKey; ?>">
     <div class="modal-body padding-none">
@@ -25,6 +28,31 @@
                     <div class="tab-content">
                         <div class="tab-pane active" <?php echo $id ?>>
                             <div class="mini-media-library">
+                                <h3>Media library</h3>
+                                <p> Directory : <a href="/media" target="_blank">/media</a></p>
+                                <div class="min-upload-image">
+                                    <p>Upload your media files here </p>
+                                    <?php
+                                        $form->prepare();
+                                        echo $this->form()->openTag($form);
+                                        echo $this->melisFieldCollection($form);
+                                    ?>
+                                    <br>
+                                    <button type="submit" class="btn btn-primary pull-right" id="category-upload-media"><i class="fa fa-upload"></i> Upload</button>
+                                    <?php
+                                        echo $this->form()->closeTag($form);
+                                    ?>
+                                    <script>
+                                        $(":file").filestyle({
+                                            buttonBefore: true,
+                                            input: true,
+                                            badge: true,
+                                            size : "sm",
+                                            text: '<?php echo $this->translate('tr_meliscms_user_account_input_file')?>'
+                                        });
+                                    </script>
+                                </div>
+                                <br>
                                 <div class="mini-image-list">
                                     <div class="row">
                                         <?php foreach ($images as $idx => $image) {?>
@@ -32,7 +60,7 @@
                                                 <div class="image-area">
                                                     <img src="/media/<?= $image ?>" alt="<?= $image ?>" title="<?= $image?>" class="img-responsive">
                                                     <span class="description"><?= $image ?></span>
-                                                    <div class="add-wrapper" title="Add image">
+                                                    <div class="add-wrapper add-image" data-order="<?= $idx ?>" data-image-url="/media/<?= $image ?>" title="Add image">
                                                         <i class="fa fa-plus"></i>
                                                     </div>
                                                 </div>
@@ -40,11 +68,12 @@
                                         <?php }?>
                                     </div>
                                 </div>
-                                <div class="min-upload-image">
-
-                                </div>
                             </div>
                         </div>
+                        <br>
+                        <div class="buttons">
+                            <button data-dismiss="modal" class="btn btn-danger pull-right"><i class="fa fa-times"></i> <?= $this->translate('tr_meliscore_common_close')?></button>                        </div>
+                        <div class="clearfix"></div>
                     </div>
                 </div>
             </div>
