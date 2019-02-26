@@ -39,6 +39,21 @@
     margin-bottom: 30px;
     width: 165px;
     background: #eaeaea;
+    position:relative;
+}
+.cat-tree-view-languages a {
+    display: block;
+    padding:10px;
+    text-decoration: none;
+}
+.category-tree-view-lang li a {
+    cursor: pointer;
+    position: relative;
+}
+.category-tree-view-lang li a img {
+    position: absolute;
+    top:0;
+    right:5px;
 }
 
 /**
@@ -244,7 +259,8 @@
     background: #932E2A;
     border-color: transparent;
 }
-.mini-media-library .image-area{
+.mini-media-library .image-area,
+.mini-media-library .file-area{
     padding:5px;
     border:2px solid #eee;
     border-radius:5px;
@@ -256,6 +272,7 @@
     -ms-transition: all 0.2s ease-in-out ;
     -o-transition: all 0.2s ease-in-out ;
     transition: all 0.2s ease-in-out ;
+    margin-bottom:10px;
 }
 .mini-media-library .image-area img{
     max-height:100px;
@@ -263,7 +280,8 @@
     min-height:100px;
     border-radius:5px;
 }
-.mini-media-library .image-area .add-wrapper{
+.mini-media-library .image-area .add-wrapper,
+.mini-media-library .file-area .add-wrapper{
     position:absolute;
     background:#000;
     height:100%;
@@ -277,12 +295,17 @@
     color:#fff;
     line-height:50px;
 }
-.mini-media-library .image-area:hover .add-wrapper{
+.mini-media-library .image-area:hover .add-wrapper,
+.mini-media-library .file-area:hover .add-wrapper{
     display:block;
 }
 .mini-media-library .image-area .add-wrapper i{
     font-size:30px;
     margin-top:50px;
+}
+.mini-media-library .file-area .add-wrapper i {
+    font-size:30px;
+    margin-top:25px;
 }
 .margin-b-10 {
     margin-bottom:15px;
@@ -324,4 +347,14 @@
 }
 .mini-image-list {
     margin-top:30px;
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.file-area {
+    text-align: center;
+}
+.file-area .file-icon {
+    display:block;
+    font-size:50px;
 }

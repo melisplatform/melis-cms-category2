@@ -52,9 +52,19 @@ class MelisCmsCategoryMediaController extends AbstractActionController
     }
     public function renderCategoryTabMediaContentLeftImageListAction()
     {
+        $request = $this->getRequest();
+        $query   = $request->getQuery();
+        $categoryId = $query['catId'] ?? null;
+        $categoryMediaTable = $this->getServiceLocator()->get('MelisCmsCategory2MediaTable');
+        $categoryMedaiData = [];
+
+        if (! empty($categoryId)) {
+            $categoryMedaiData = $categoryMediaTable->getEntryByField('catm2_cat_id',$categoryId)->toArray();
+        }
         $view = new ViewModel();
 
         $view->melisKey = $this->getMelisKey();
+        $view->mediaData = $categoryMedaiData;
         return $view;
     }
     public function renderCategoryTabMediaContentRightAction()
@@ -84,6 +94,7 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         $melisKey = $queryParams['melisKey'];
 
 
+
         $view->melisKey = $melisKey;
         $view->id = $id;
         return $view;
@@ -95,34 +106,40 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         $uri     = $request->getUri();
         $host    = $uri->getHOst();
         $scheme  = $uri->getScheme();
+        $query   = $request->getQuery();
+        $fileType = $query['fileType'];
 
         $mediaPath = $_SERVER['DOCUMENT_ROOT'] . "/media/";
         $queryParams = $request->getQuery();
         $fileType = $queryParams['fileType'] ?? 'file';
         $images = [];
+
         if (file_exists($mediaPath)) {
-            $extensionPattern = "";
+            $files = [];
             if ($fileType == "image") {
-                $extensionPattern = "*.{png,jpeg,jpg}";
+                $extensionPattern = "*.{png,jpeg,jpg,svg}";
+                $files = glob($mediaPath . $extensionPattern ,GLOB_BRACE);
+            } else {
+                $files = array_diff(glob($mediaPath . "*.*"), glob($mediaPath . "*.{png,jpeg,jpg,svg}" ,GLOB_BRACE));
             }
 
-            $files = glob($mediaPath . $extensionPattern ,GLOB_BRACE);
             if (! empty($files)) {
                foreach ($files as $idx => $file) {
                    //remove path
-                   $image[$idx] = str_replace($mediaPath,null,$file);
+                   $images[$idx] = str_replace($mediaPath,null,$file);
                }
             }
         }
 
-
         $view = new ViewModel();
 
         $view->melisKey = $this->getMelisKey();
-        $view->images = $image;
+        $view->images = $images;
         $view->scheme = $scheme;
         $view->host   = $host;
         $view->categoryMediaForm = $this->getForm();
+        $view->fileType = $fileType;
+
 
         return $view;
     }
@@ -149,9 +166,21 @@ class MelisCmsCategoryMediaController extends AbstractActionController
     public function uploadMediaAction()
     {
         $request = $this->getRequest();
-        print_r($request);
-        die;
+        $success = false;
+        if (! empty($request->getFiles())) {
+            $file     = $request->getFiles('media_upload');
+            $fileName = $file['name'];
+            $path = $_SERVER['DOCUMENT_ROOT'] . "/media/";
+            $status = move_uploaded_file($file['tmp_name'],$path.$fileName);
+            if ($status) {
+                $success = true;
+            }
+        }
 
-        return [];
+        $response = [
+            'success' => $success
+        ];
+
+        return new JsonModel($response);
     }
 }

@@ -484,7 +484,7 @@ class MelisCmsCategoryController extends AbstractActionController
             $categoryId  = $categoryService->saveCategory($parentId, $status,$userId, $dateValidStart, $dateValidEnd, $passedCatId);
             # save Category translations
             foreach ($catTranslationData as $idx => $val) {
-                $catName = $val['catt2_name'] ?? null;
+                $catName        = $val['catt2_name'] ?? null;
                 $catDescription = $val['catt2_description'] ?? null;
                 $catLangId      = $val['catt2_lang_id'] ?? null;
                 if (! empty($catLangId)) {
@@ -518,6 +518,27 @@ class MelisCmsCategoryController extends AbstractActionController
 
                 }
             }
+            $mediaTable = $this->getServiceLocator()->get('MelisCmsCategory2MediaTable');
+            if (!empty ($passedCatId)) {
+                $mediaTable->deleteByField('catm2_cat_id',$passedCatId);
+            }
+          //  if (empty($passedCatId)) {
+                //delete for new record
+                $mediaDataImage = [
+                    'catm2_cat_id' => $categoryId,
+                    'catm2_type'   => 'image',
+                    'catm2_path'   => $postValues['cat2_media_image'] ?? null,
+                ];
+                //save media image
+                $mediaTable->save($mediaDataImage);
+                $mediaDataFile = [
+                    'catm2_cat_id' => $categoryId,
+                    'catm2_type'   => 'file',
+                    'catm2_path'   => $postValues['cat2_media_file'] ?? null,
+                ];
+                //save media file
+                $mediaTable->save($mediaDataFile);
+        //    }
 
             $success = 1;
             $message = $translator->translate('tr_meliscms_categories_err_category_save_success');

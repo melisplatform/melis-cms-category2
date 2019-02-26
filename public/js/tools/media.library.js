@@ -3,6 +3,7 @@ var mediaDirectory = {
         melisHelper.createModal(zoneId,melisKey,false,params,modalUrl, function(){
             $(".category-add-image").removeAttr('disabled ');
             if ($(targetDiv).length > 0) {
+                console.log(params);
                 $('body').on('click','.add-image',function(event) {
                     event.stopPropagation();
                     event.stopImmediatePropagation();

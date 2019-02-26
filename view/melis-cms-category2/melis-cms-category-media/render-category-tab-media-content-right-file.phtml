@@ -16,18 +16,19 @@
 		<h4>
 			<i class="fa fa-paperclip"></i> <?php echo $this->translate('tr_meliscategory_documents_file_attachments')?>
 		</h4>
-        <button class="btn btn-success pull-right" data-type="file">
-            <i class="fa fa-plus"></i>
-            <?php echo $this->translate('Add file')?>
+        <button class="btn btn-primary pull-right category-add-file" data-type="file">
+            <i class="fa fa-folder-open"></i>
+            <?php echo $this->translate('Browse media')?>
         </button>
+        <div class="category-file-list row">
         <?php
-        # file count
-        $fileCount = $this->fileCount;
-        if(!empty($fileCount)) {?>
+            # file count
+            $fileCount = $this->fileCount;
+            if(!empty($fileCount)) {?>
 
-        <?php } else {?>
-            No file added
-        <?php }?>
-
+            <?php } else {?>
+                No file added
+            <?php }?>
+        </div>
 	</div>
 </div>

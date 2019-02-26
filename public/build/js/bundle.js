@@ -7,17 +7,17 @@ id:"unique_02",reason:"Child with name "+h+" already exists. Preventing: "+b,dat
 /* Category Sticky Top Start */
 if( melisCore.screenSize >= 768){
 	$(window).on('scroll click resize', function(e) {
-		$("#id_meliscommerce_categories_category_header").css("width","100%");
-		var stickyCatNav = $("#"+ activeTabId + ' #id_meliscommerce_categories_category');
+		$("#id_meliscategory_categories_category_header").css("width","100%");
+		var stickyCatNav = $("#"+ activeTabId + ' #id_meliscategory_categories_category');
 		if(stickyCatNav.length){
 			var position = stickyCatNav.position();
 			if (position.top < ($(window).scrollTop() - 10)) {
-				$("#id_meliscommerce_categories_category").addClass("fix-cat");
+				$("#id_meliscategory_categories_category").addClass("fix-cat");
 				$("#categoryInfoPanel").css("padding-top","66px");
 				$("#saveCategory").css("margin-top","10px");
-				$("#id_meliscommerce_categories_category_header").width($("#id_meliscommerce_categories_list").width());
+				$("#id_meliscategory_categories_category_header").width($("#id_meliscategory_categories_list").width());
 			} else {
-				$("#id_meliscommerce_categories_category").removeClass("fix-cat");
+				$("#id_meliscategory_categories_category").removeClass("fix-cat");
 				$("#categoryInfoPanel").css("padding-top","0");
 				$("#saveCategory").css("margin-top","0");
 			}
@@ -28,15 +28,12 @@ if( melisCore.screenSize >= 768){
 
 var categoryOpeningItemFlag = true;
 $(function(){
-	
+	var categoryBody = $("body");
 	$("body").on("click", ".addCategory", function(e){ 
 		$("#categoryTreeViewPanel").collapse("hide");
-		
-		var zoneId = 'id_meliscommerce_categories_category';
-		var melisKey = 'meliscommerce_categories_category';
-		
+		var zoneId = 'id_meliscategory_categories_category';
+		var melisKey = 'meliscategory_categories_category';
 		var catTree = $('#categoryTreeView').jstree(true);
-		
 		var catSelected = catTree.get_selected();
 		var catFatherId = '';
 		if(catSelected.length >= 1){
@@ -46,52 +43,36 @@ $(function(){
 			 */
 			catFatherId = parseInt(catSelected[0]);
 		}
-		
 		$("#"+zoneId).removeClass("hidden");
-		
 		melisHelper.zoneReload(zoneId, melisKey, {catId : 0, catFatherId: catFatherId});
-		melisCommerce.setUniqueId(0);
 	});
 	
 	$("body").on("click", ".addCatalog", function(e){ 
 		$("#categoryTreeViewPanel").collapse("hide");
-		
-		var zoneId = 'id_meliscommerce_categories_category';
-		var melisKey = 'meliscommerce_categories_category';
-		
+		var zoneId = 'id_meliscategory_categories_category';
+		var melisKey = 'meliscategory_categories_category';
 		$("#"+zoneId).removeClass("hidden");
-		
 		melisHelper.zoneReload(zoneId, melisKey, {catId : 0, catFatherId: -1});
-		melisCommerce.setUniqueId(0);
 	});
 	
-	$("body").on("click", "#saveCategory", function(){ 
-		
+	$("body").on("click", "#saveCategory", function(){
 		
 		$(this).button("loading");
-		
 		var catId = $(this).data('catid');
 		var dataString = new Array;
-		
 		// Serialize Forms of Category Panel
-		dataString = $("#id_meliscommerce_categories_category form").not(".category_"+catId+"_seo_form, .cat_trans_form").serializeArray();
-		
-		
+		dataString = $("#id_meliscategory_categories_category form").not(".category_"+catId+"_seo_form, .cat_trans_form").serializeArray()
 		// Category Id
 		dataString.push({
 			name : "cat_id",
 			value: catId
 		});
-		
-		dataString = melisCommerceSeo.serializeSeo('category', catId, dataString);
-		
 		// Category Parent Id
 		var catFatherId = $(this).data('catfatherid');
 		dataString.push({
 			name : "cat_father_cat_id",
 			value: catFatherId
 		});
-		
 		// Category Status
 		var catStatus = 0;
 		if($('input[name="cat_status"]').is(':checked')){
@@ -102,7 +83,18 @@ $(function(){
 			name : "cat_status",
 			value: catStatus
 		});
-		
+		// save media
+		//image
+		dataString.push({
+			name: "cat2_media_image",
+			value : $("#id_meliscategory_category_tab_media_content_left").find('input').val()
+		});
+		//file
+        dataString.push({
+            name: "cat2_media_file",
+            value : $("#id_meliscategory_category_tab_media_content_right").find('input').val()
+        });
+
 		// Category Transalations
 		$("form.cat_trans_form").each(function(){
 			langLocale = $(this).data("locale");
@@ -123,8 +115,8 @@ $(function(){
 		dataString = $.param(dataString);
 		
 		$.ajax({
-	        type        : "POST", 
-	        url         : "/melis/MelisCommerce/MelisComCategory/saveCategory",
+	        type        : "POST",
+	        url         : "/melis/MelisCmsCategory2/MelisCmsCategory/saveCategory",
 	        data		: dataString,
 	        dataType    : "json",
 	        encode		: true,
@@ -204,16 +196,15 @@ $(function(){
 				// Rollback the real/default url
 				catTree.settings.core.data.url = realUrl;
 				
-	    		var zoneId = 'id_meliscommerce_categories_category';
-	    		var melisKey = 'meliscommerce_categories_category';
+	    		var zoneId = 'id_meliscategory_categories_category';
+	    		var melisKey = 'meliscategory_categories_category';
 	    		melisHelper.zoneReload(zoneId, melisKey, {catId : selectedNode});
-	    		melisCommerce.setUniqueId(selectedNode);
 	    		
 	    		// Highlighting the node
 	    		$("#categoryTreeView #"+selectedNode+" div").first().addClass("jstree-wholerow-clicked");
 			}else{
 				melisHelper.melisKoNotification(data.textTitle, data.textMessage, data.errors );
-				melisCoreTool.highlightErrors(data.success, data.errors, "id_meliscommerce_categories_category_form_transalations");
+				melisCoreTool.highlightErrors(data.success, data.errors, "id_meliscategory_categories_category_form_transalations");
 			}
 			
 			melisCore.flashMessenger();
@@ -292,7 +283,7 @@ $(function(){
 	});
 	
 	// Category Information Form Countries Custom Checkboxes
-	$("body").on("click", ".ecom-coutries-checkbox", function(evt){
+	$("body").on("click", ".cms-category-checkbox", function(evt){
 		
 		if($(this).find('.fa').hasClass('fa-check-square-o')){ // unchecking category Checkbox
 			$(this).find('.fa').removeClass('fa-check-square-o');
@@ -301,9 +292,9 @@ $(function(){
 			
 			// If the uncheck is check all checkbox
 			if($(this).find('.check-all').hasClass('fa-square-o')){
-				$(".ecom-coutries-checkbox .fa").not(".check-all").addClass('fa-square-o');
-				$(".ecom-coutries-checkbox .fa").not(".check-all").removeClass('fa-check-square-o');
-				$(".ecom-coutries-checkbox .fa").not(".check-all").next('input[type="checkbox"]').removeAttr('checked');
+				$(".cms-category-checkbox .fa").not(".check-all").addClass('fa-square-o');
+				$(".cms-category-checkbox .fa").not(".check-all").removeClass('fa-check-square-o');
+				$(".cms-category-checkbox .fa").not(".check-all").next('input[type="checkbox"]').removeAttr('checked');
 			}
 			
 		}else{ // Checking Category Checkboxes
@@ -313,26 +304,26 @@ $(function(){
 		}
 		
 		// check all countries
-		if($(".ecom-coutries-checkbox .fa").not(".check-all").length == $(".ecom-coutries-checkbox .fa.fa-check-square-o").not(".check-all").next('input[type="checkbox"]:checked').length || $(this).find('.check-all').hasClass('fa-check-square-o')){
+		if($(".cms-category-checkbox .fa").not(".check-all").length == $(".cms-category-checkbox .fa.fa-check-square-o").not(".check-all").next('input[type="checkbox"]:checked').length || $(this).find('.check-all').hasClass('fa-check-square-o')){
 			
 			// Keeping the check mark but removing the checkbox unchecked
-			$(".ecom-coutries-checkbox .fa").not(".check-all").removeClass('fa-square-o');
-			$(".ecom-coutries-checkbox .fa").not(".check-all").addClass('fa-check-square-o');
-			$(".ecom-coutries-checkbox .fa").not(".check-all").next('input[type="checkbox"]').removeAttr('checked');
+			$(".cms-category-checkbox .fa").not(".check-all").removeClass('fa-square-o');
+			$(".cms-category-checkbox .fa").not(".check-all").addClass('fa-check-square-o');
+			$(".cms-category-checkbox .fa").not(".check-all").next('input[type="checkbox"]').removeAttr('checked');
 			
 			// Check mark on checkbox all ang its input checkbox
-			$(".ecom-coutries-checkbox .fa.check-all").removeClass('fa-square-o');
-			$(".ecom-coutries-checkbox .fa.check-all").addClass('fa-check-square-o');
-			$(".ecom-coutries-checkbox .fa.check-all").next('input[type="checkbox"]').attr('checked','checked');
+			$(".cms-category-checkbox .fa.check-all").removeClass('fa-square-o');
+			$(".cms-category-checkbox .fa.check-all").addClass('fa-check-square-o');
+			$(".cms-category-checkbox .fa.check-all").next('input[type="checkbox"]').attr('checked','checked');
 		}else{
 			
 			// puting back checkbox with check mark to input checkbox checked
-			$(".ecom-coutries-checkbox .fa.fa-check-square-o").not(".check-all").next('input[type="checkbox"]').attr('checked','checked');
+			$(".cms-category-checkbox .fa.fa-check-square-o").not(".check-all").next('input[type="checkbox"]').attr('checked','checked');
 			
 			// Unchecking "check all" checkbox
-			$(".ecom-coutries-checkbox .fa.check-all").addClass('fa-square-o');
-			$(".ecom-coutries-checkbox .fa.check-all").removeClass('fa-check-square-o');
-			$(".ecom-coutries-checkbox .fa.check-all").next('input[type="checkbox"]').removeAttr('checked');
+			$(".cms-category-checkbox .fa.check-all").addClass('fa-square-o');
+			$(".cms-category-checkbox .fa.check-all").removeClass('fa-check-square-o');
+			$(".cms-category-checkbox .fa.check-all").next('input[type="checkbox"]').removeAttr('checked');
 		}
 		
 		evt.stopPropagation();
@@ -350,7 +341,7 @@ $(function(){
 	
 	$("body").on("click", ".categoryProductsRefresh", function(event, state) {
 		var catId = $("#categoryProductListTbl").data("catid");
-		melisHelper.zoneReload('id_meliscommerce_categories_category_tab_products','meliscommerce_categories_category_tab_products',{catId:catId,activateTab:true});
+		melisHelper.zoneReload('id_meliscategory_categories_category_tab_products','meliscategory_categories_category_tab_products',{catId:catId,activateTab:true});
 	});
 	
 	// Category Products Remove Button
@@ -361,17 +352,17 @@ $(function(){
 		
 		var parentId = $("#saveCategory").data("catfatherid");
 		
-		var deleteTitle = translations.tr_meliscommerce_categories_category_product_remove;
-    	var deleteMessage = translations.tr_meliscommerce_categories_category_product_remove_confirm_msg;
+		var deleteTitle = translations.tr_meliscategory_categories_category_product_remove;
+    	var deleteMessage = translations.tr_meliscategory_categories_category_product_remove_confirm_msg;
     	if(parentId == '-1'){
-    		deleteTitle = translations.tr_meliscommerce_categories_catalog_product_remove;
-        	deleteMessage = translations.tr_meliscommerce_categories_catalog_product_remove_confirm_msg;
+    		deleteTitle = translations.tr_meliscategory_categories_catalog_product_remove;
+        	deleteMessage = translations.tr_meliscategory_categories_catalog_product_remove_confirm_msg;
     	}
 		
 		// deletion confirmation
 		melisCoreTool.confirm(
-		translations.tr_meliscommerce_categories_common_label_yes,
-		translations.tr_meliscommerce_categories_common_label_no,
+		translations.tr_meliscategory_categories_common_label_yes,
+		translations.tr_meliscategory_categories_common_label_no,
 		deleteTitle, 
 		deleteMessage, 
 		function() {
@@ -403,7 +394,7 @@ $(function(){
  		        encode		: true
  			}).done(function(data) {
  				if(data.success) {
- 					melisHelper.zoneReload('id_meliscommerce_categories_category_tab_products','meliscommerce_categories_category_tab_products',{catId:catId,activateTab:true});
+ 					melisHelper.zoneReload('id_meliscategory_categories_category_tab_products','meliscategory_categories_category_tab_products',{catId:catId,activateTab:true});
  				}else{
  					alert( translations.tr_meliscore_error_message );
  				}
@@ -415,26 +406,6 @@ $(function(){
 		});
 	});
 	
-	// Category Products View Button
-	$("body").on("click", ".categoryProductsView", function(){
-		var productId   = $(this).closest("tr").data("productid");
-		//var productName = $(this).parents("tr").find(".toolTipHoverEvent").text();
-		var productName = $(this).closest("tr").data("productname");
-        var navTabsGroup = "id_meliscommerce_product_list_container";
-		// Open parent tab
-        melisHelper.tabOpen(translations.tr_meliscommerce_products_Products, 'fa icon-shippment fa-2x', 'id_meliscommerce_product_list_container', 'meliscommerce_product_list_container');
-        var alreadyOpen = $("body #melis-id-nav-bar-tabs li a.tab-element[data-id='"+navTabsGroup+"']");
-        // check if it exists
-        var checkProducts = setInterval(function() {
-            if(alreadyOpen.length){
-                melisCommerce.openProductPage(productId, productName, navTabsGroup);
-                melisCommerce.setUniqueId(productId);
-                clearInterval(checkProducts);
-            }
-        }, 500);
-        // melisCommerce.openProductPage(productId, productName, navTabsGroup);
-	});
-	
 	// Category Tree Double Click Item Action
 	$("body").on("dblclick", ".jstree-node", function(evt){
 		
@@ -442,8 +413,8 @@ $(function(){
 		
 		var catId = parseInt($(this).attr("id"), 10);
     	
-		var zoneId = 'id_meliscommerce_categories_category';
-		var melisKey = 'meliscommerce_categories_category';
+		var zoneId = 'id_meliscategory_categories_category';
+		var melisKey = 'meliscategory_categories_category';
 		
 		$("#"+zoneId).removeClass("hidden");
 		
@@ -451,7 +422,7 @@ $(function(){
 		
 		// Highlighting the node
 		$("#categoryTreeView #"+catId+" div").first().addClass("jstree-wholerow-clicked");
-		melisCommerce.setUniqueId(catId);
+
 		evt.stopPropagation();
 		evt.preventDefault();
 	});
@@ -478,7 +449,7 @@ $(function(){
   	     }).success(function(data){
       	 	 $("div.qtipLoader").remove();
   		     if(data.content.length === 0) {
-  		    	 $('<div class="qtipLoader"><hr/><span class="text-center col-lg-12">'+translations.tr_meliscommerce_product_tooltip_no_variants+'</span><br/></div>').insertAfter("table.qtipTable thead");
+  		    	 $('<div class="qtipLoader"><hr/><span class="text-center col-lg-12">'+translations.tr_meliscategory_product_tooltip_no_variants+'</span><br/></div>').insertAfter("table.qtipTable thead");
   		     }
   		     else {
   		    	 // make sure tbody is clear
@@ -496,6 +467,39 @@ $(function(){
   			xhr.abort();
   		}
   	  });
+
+     // add image
+    categoryBody.on('click', ".category-add-image" , function(){
+    	var catv2ImageZoneId   = "id_meliscategory_mini_media_library";
+    	var catv2ImageMelisKey = "meliscategory_mini_media_library";
+        var categoryv2ModalUrl = 'melis/MelisCmsCategory2/MelisCmsCategoryMedia/render-mini-media-modal-container';
+        var data = $(this).data();
+        melisCoreTool.pending($(this));
+		mediaDirectory.browse(categoryv2ModalUrl,catv2ImageZoneId,catv2ImageMelisKey,{fileType:data.type},".category-image-list")
+	});
+
+    categoryBody.on('submit',"#id_meliscategory_media_upload_form",function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        melisCoreTool.pending(this);
+        var dataElem = $(".category-add-image").data() ;
+
+        $.ajax({
+            type: 'POST',
+            url: 'melis/MelisCmsCategory2/MelisCmsCategoryMedia/uploadMedia',
+            data: formData,
+            dataType: 'json',
+            processData: false,
+            cache: false,
+            contentType: false,
+            encode: true
+        }).success(function(data) {
+        	if (data.success === true) {
+        		melisHelper.zoneReload("id_meliscategory_mini_media_library","meliscategory_mini_media_library",{fileType:dataElem.type});
+			}
+		});
+
+    });
 });
 
 window.enableDisableAddCategoryBtn = function(action){
@@ -505,11 +509,11 @@ window.enableDisableAddCategoryBtn = function(action){
 		addCategory.attr('title', null);
 	}else if (action == 'disable'){
 		addCategory.attr('disabled', true);
-		addCategory.attr('title', translations.tr_meliscommerce_categories_category_no_selected_catalog_category);
+		addCategory.attr('title', translations.tr_meliscategory_categories_category_no_selected_catalog_category);
 	}
 }
 
-window.initCategoryTreeView = function(){
+window.initCmsCategoryTreeView = function(){
 	
 	$("body").on("click", "#categoryTreeView", function(evt){
 		$("#categoryTreeView ul li div").removeClass("jstree-wholerow-clicked");
@@ -525,10 +529,10 @@ window.initCategoryTreeView = function(){
 			enableDisableAddCategoryBtn('disable');
 		})
 		.on('loading.jstree', function (e, data) {
-			melisCommerce.pendingZoneStart("meliscommerce_categories_list_search_input");
+			melisCoreTool.pending("meliscategory_categories_list_search_input");
 		})
 		.on('loaded.jstree', function (e, data) {
-			melisCommerce.pendingZoneDone("meliscommerce_categories_list_search_input");
+            melisCoreTool.pending("meliscategory_categories_list_search_input");
 			var temp = $('ul.jstree-container-ul > li > a');
 			temp.each(function(){
 				var father = $(this);
@@ -579,7 +583,7 @@ window.initCategoryTreeView = function(){
 				
 				var textlang = $('#'+v+'_anchor').data('textlang');
 				var products = $('#'+v+'_anchor').data('numprods');
-				var spanHtml = '<span title="' + translations.tr_meliscommerce_categories_list_tree_view_product_num + '">('+ products +')</span>';
+				var spanHtml = '<span title="' + translations.tr_meliscategory_categories_list_tree_view_product_num + '">('+ products +')</span>';
 				var seoId = $('#'+v+'_anchor').data('seopage');
 				if(seoId){
 					spanHtml = spanHtml + ' - <span class="fa fa-file-o"></span> ' +  seoId ;
@@ -661,7 +665,7 @@ window.initCategoryTreeView = function(){
 		    "items" : function (node) {
 		        return {
 		            "Add" : {
-		                "label" : translations.tr_meliscommerce_categories_common_btn_add,
+		                "label" : translations.tr_meliscategory_categories_common_btn_add,
 		                "icon"  : "fa fa-plus",
 		                "action" : function (obj) {
 		                	
@@ -670,22 +674,22 @@ window.initCategoryTreeView = function(){
 		                	
 		                	$("#categoryTreeViewPanel").collapse("hide");
 		                	
-		                	var zoneId = "id_meliscommerce_categories_category";
-		                	var melisKey = "meliscommerce_categories_category";
+		                	var zoneId = "id_meliscategory_categories_category";
+		                	var melisKey = "meliscategory_categories_category";
 		                	
 		            		melisHelper.zoneReload(zoneId, melisKey,{catId:0, catFatherId:parentId, catOrder:position});
 		                	
 		                }
 		            },
 		            "Update" : {
-		                "label" : translations.tr_meliscommerce_categories_common_btn_update,
+		                "label" : translations.tr_meliscategory_categories_common_btn_update,
 		                "icon"  : "fa fa-edit",
 		                "action" : function (obj) {
 		                	
 		            		var catId = parseInt(node.id , 10);
 		                	
-		            		var zoneId = 'id_meliscommerce_categories_category';
-		            		var melisKey = 'meliscommerce_categories_category';
+		            		var zoneId = 'id_meliscategory_categories_category';
+		            		var melisKey = 'meliscategory_categories_category';
 		            		
 		            		melisHelper.zoneReload(zoneId, melisKey, {catId : catId});
 		            		
@@ -694,7 +698,7 @@ window.initCategoryTreeView = function(){
 		                }
 		            },
 		            "Delete" : {
-		                "label" : translations.tr_meliscommerce_categories_common_btn_delete,
+		                "label" : translations.tr_meliscategory_categories_common_btn_delete,
 		                "icon"  : "fa fa-trash-o",
 		                "action" : function (obj) {
 		                		
@@ -718,17 +722,17 @@ window.initCategoryTreeView = function(){
 		                	
 		                	dataString = $.param(dataString);
 		                	
-		                	var deleteTitle = translations.tr_meliscommerce_categories_category_delete;
-		                	var deleteMessage = translations.tr_meliscommerce_categories_category_delete_confirm_msg;
+		                	var deleteTitle = translations.tr_meliscategory_categories_category_delete;
+		                	var deleteMessage = translations.tr_meliscategory_categories_category_delete_confirm_msg;
 		                	if(parentId == '-1'){
-		                		deleteTitle = translations.tr_meliscommerce_categories_catalog_delete;
-			                	deleteMessage = translations.tr_meliscommerce_categories_catalog_delete_confirm_msg;
+		                		deleteTitle = translations.tr_meliscategory_categories_catalog_delete;
+			                	deleteMessage = translations.tr_meliscategory_categories_catalog_delete_confirm_msg;
 		                	}
 		                	
 		                	// deletion confirmation
 		            		melisCoreTool.confirm(
-		            		translations.tr_meliscommerce_categories_common_label_yes,
-		            		translations.tr_meliscommerce_categories_common_label_no,
+		            		translations.tr_meliscategory_categories_common_label_yes,
+		            		translations.tr_meliscategory_categories_common_label_no,
 		            		deleteTitle, 
 		            		deleteMessage, 
 		            		function() {
@@ -744,8 +748,8 @@ window.initCategoryTreeView = function(){
 			        					catTree.delete_node(cattId+'_categoryId_anchor');
 			        	            	
 			        	            	if($("#saveCategory").data("catid")==cattId){
-			        	            		var zoneId = "id_meliscommerce_categories_category";
-			    		                	var melisKey = "meliscommerce_categories_category";
+			        	            		var zoneId = "id_meliscategory_categories_category";
+			    		                	var melisKey = "meliscategory_categories_category";
 			    		                	
 			    		            		melisHelper.zoneReload(zoneId, melisKey);
 			        	            	}
@@ -1295,3 +1299,456 @@ window.imagePreview = function(id, fileInput) {
 		reader.readAsDataURL(fileInput.files[0]);
 	}
 }
+
+$(function(){
+
+	// Modal Save Button
+	$("body").on("submit", "form.frmDocAddFile", function(e) {
+		var relationId = $("#" + activeTabId + " div.ecom-doc-container").data("doc-relation-id");
+		var relationType = $("#" + activeTabId + " div.ecom-doc-container").data("doc-relation-type");
+		var target = "form#"+relationId+"_"+relationType+"_frmDocUpload";
+		var docType = $(target).data("upload-type");
+		var formData = new FormData($(target)[0]);
+		var saveType = $(target).data("savetype");
+
+
+		formData.append("docRelationType", relationType);  // doc type if category, product, or variant
+		formData.append("relationId", relationId);
+		formData.append("docType", docType); // if image or file
+
+		melisCoreTool.pending(".btn");
+		$.ajax({
+			type : 'POST',
+			url  : '/melis/MelisCommerce/MelisComDocument/saveDocument',
+			data : formData,
+			processData : false,
+			cache       : false,
+			contentType : false,
+			dataType    : 'json',
+			xhr: function() {
+				var fileXhr = $.ajaxSettings.xhr();
+				if(fileXhr.upload){
+					fileXhr.upload.addEventListener('progress',progress, false);
+				}
+				return fileXhr;
+			}
+		}).done(function(data) {
+
+			if(data && data.success) {
+				var docRelationType = $("#" + activeTabId + " div.ecom-doc-container").data("doc-relation-type");
+				var docRelationId   = $("#" + activeTabId + " div.ecom-doc-container").data("doc-relation-id");
+				$("div.modal").modal("hide");
+				if(data.type == "file") {
+					melisHelper.zoneReload(activeTabId+" #id_meliscommerce_documents_file_attachments_lists", "meliscommerce_documents_file_attachments_lists", {
+						docRelationType : docRelationType, docRelationId : docRelationId
+					});
+				}
+				else if(data.type == "image") {
+					melisHelper.zoneReload(activeTabId+" #id_meliscommerce_documents_image_lists", "meliscommerce_documents_image_lists", {
+						docRelationType : docRelationType, docRelationId : docRelationId
+					});
+				}
+				melisCommerce.setUniqueId(melisCommerce.getUniqueId());
+				melisHelper.melisOkNotification(data.textTitle, data.textMessage);
+			}
+			else {
+				melisHelper.melisKoNotification(data.textTitle, data.textMessage, data.errors);
+				melisCoreTool.highlightErrors(data.success, data.errors, relationId+"_"+relationType+"_"+"frmDocUpload");
+				$("div.progressContent").addClass("hidden");
+			}
+			melisCoreTool.done(".btn");
+			melisCore.flashMessenger();
+		}).error(function() {
+			melisCoreTool.done(".btn");
+			melisHelper.melisKoNotification(translations.tr_meliscommerce_documents_Documents, translations.tr_meliscommerce_documents_save_fail, [], 'closeByButtonOnly');
+		}).error(function() {
+			$("div.modal").modal("hide");
+			melisCoreTool.done(".btn");
+			if(docType == "file") {
+				melisHelper.zoneReload(activeTabId+" #id_meliscommerce_documents_file_attachments_lists", "meliscommerce_documents_file_attachments_lists");
+			}
+			else if(docType == "image") {
+				melisHelper.zoneReload(activeTabId+" #id_meliscommerce_documents_image_lists", "meliscommerce_documents_image_lists");
+			}
+			melisCore.flashMessenger();
+		});
+
+		e.preventDefault();
+	});
+
+	function progress(e) {
+		resetProgressBar();
+		if(e.lengthComputable){
+			var max = e.total;
+			var current = e.loaded;
+			var percentage = (current * 100)/max;
+			$("div.progressContent > div.progress > div.progress-bar").attr("aria-valuenow", percentage);
+			$("div.progressContent > div.progress > div.progress-bar").css("width", percentage+"%");
+
+			if(percentage > 100)
+			{
+				$("div.progressContent").addClass("hidden");
+			}
+			else {
+				$("div.progressContent > div.progress > span.status").html(Math.round(percentage)+"%");
+			}
+		}
+	}
+
+	function resetProgressBar() {
+		$("div.progressContent").removeClass("hidden");
+		$("div.progressContent > div.progress > div.progress-bar").attr("aria-valuenow", 0);
+		$("div.progressContent > div.progress > div.progress-bar").css("width", '0%');
+		$("div.progressContent > div.progress > span.status").html("");
+	}
+
+	// Deleting File/Image Document Confirmation Dialog
+	$("body").on("click", ".deleteFileImageDocument", function(e){
+		// Data Attribute on the Selected Element/button
+		// Type can be "image" or "file"
+		var docId = $(this).data("doc-id");
+		var docType = $(this).data("type");
+
+		var docRelationId = $("#" + activeTabId + " div.ecom-doc-container").data("doc-relation-id");
+		var docRelationType = $("#" + activeTabId + " div.ecom-doc-container").data("doc-relation-type");
+
+		if(docType=='image'){
+			var title = translations.tr_meliscommerce_documents_delete_image_title;
+			var confirmMsg = translations.tr_meliscommerce_documents_delete_image_msg_confirm;
+		}else if(docType=='file'){
+			var title = translations.tr_meliscommerce_documents_delete_file_title;
+			var confirmMsg = translations.tr_meliscommerce_documents_delete_file_msg_confirm;
+		}
+
+		melisCoreTool.confirm(
+			translations.tr_meliscommerce_documents_common_label_yes,
+			translations.tr_meliscommerce_documents_common_label_no,
+			title,
+			confirmMsg,
+			function() {
+				$.ajax({
+					type        : 'POST',
+					url         : '/melis/MelisCommerce/MelisComDocument/delete',
+					data		: {id : docId, docType : docType, formType : docRelationType, uniqueId : docRelationId},
+					dataType    : 'json',
+					encode		: true,
+				}).success(function(data){
+					melisCoreTool.pending(".btn");
+					if(data && data.success) {
+						if(docType == "file") {
+							melisHelper.zoneReload(activeTabId+" #id_meliscommerce_documents_file_attachments_lists", "meliscommerce_documents_file_attachments_lists", {docRelationType : docRelationType, docRelationId : docRelationId});
+						}
+						else if(docType == "image") {
+							melisHelper.zoneReload(activeTabId+" #id_meliscommerce_documents_image_lists", "meliscommerce_documents_image_lists", {docRelationType : docRelationType, docRelationId : docRelationId});
+						}
+						melisCore.flashMessenger();
+						melisHelper.melisOkNotification(data.textTitle, data.textMessage);
+					}
+					else {
+						melisHelper.melisKoNotification(data.textTitle, data.textMessage, data.errors);
+					}
+					melisCoreTool.done(".btn");
+				}).error(function(){
+					$("div.modal").modal("hide");
+					melisCoreTool.done(".btn");
+					if(docType == "file") {
+						melisHelper.zoneReload(activeTabId+" #id_meliscommerce_documents_file_attachments_lists", "meliscommerce_documents_file_attachments_lists");
+					}
+					else if(docType == "image") {
+						melisHelper.zoneReload(activeTabId+" #id_meliscommerce_documents_image_lists", "meliscommerce_documents_image_lists");
+					}
+					melisCore.flashMessenger();
+				});
+			});
+	});
+
+	$("body").on("click", ".collapseAddImageType", function() {
+		var formDiv = $("div.addImageType");
+		var form = $("form.frmDocAddFile");
+		formDiv.slideToggle();
+
+		$(".collapseAddImageType").find("i[data-class='iconAddImageType']").toggleClass("fa-angle-down");
+	});
+
+	$("body").on("click", ".btnDocAddImageType", function() {
+		var dataString = $("form.frmDocAddImageType").serialize();
+		var relationId = $("#" + activeTabId + " div.ecom-doc-container").data("doc-relation-id");
+		var relationType = $("#" + activeTabId + " div.ecom-doc-container").data("doc-relation-type");
+		var saveType = $("form.frmDocAddImageType").data("upload-type");
+		var formData = $(this).parent().prev().parent().find("form.frmDocAddFile").serialize();
+		var image = $(this).parent().prev().parent().find("img.imgDocThumbnail").attr("src");
+		melisCommerce.postSave('melis/MelisCommerce/MelisComDocument/addImageType?typeUpload='+saveType, dataString, function(data) {
+			if(data.success) {
+				melisHelper.zoneReload("id_meliscommerce_documents_modal_form", "meliscommerce_documents_modal_form", {typeUpload : "image", saveType : saveType, docRelationId : relationId, docRelationType :relationType});
+				melisHelper.melisOkNotification(data.textTitle, data.textMessage);
+
+				// put back all the info
+				setTimeout(function() {
+					$(".btnDocAddImageType").parent().prev().parent().find("img.imgDocThumbnail").attr("src", image);
+					$.each(formData.split('&'), function (index, elem) {
+						var vals = elem.split('=');
+						$("[name='" + vals[0] + "']").val(vals[1]);
+					});
+				}, 2000);
+
+			}
+			else {
+				melisHelper.melisKoNotification(data.textTitle, data.textMessage, data.errors);
+				melisCoreTool.highlightErrors(data.success, data.errors, "frmDocAddImageType");
+			}
+			melisCore.flashMessenger();
+		})
+
+	});
+
+	$("body").on("click", ".btnDocAddFileType", function() {
+		var dataString = $("form.frmDocAddImageType").serialize();
+		var relationId = $("#" + activeTabId + " div.ecom-doc-container").data("doc-relation-id");
+		var relationType = $("#" + activeTabId + " div.ecom-doc-container").data("doc-relation-type");
+		var saveType = $("form.frmDocAddImageType").data("upload-type");
+		var formData = $(this).parent().prev().parent().find("form.frmDocAddFile").serialize();
+
+		melisCommerce.postSave('melis/MelisCommerce/MelisComDocument/addFileType?typeUpload='+saveType, dataString, function(data) {
+			if(data.success) {
+				melisHelper.zoneReload("id_meliscommerce_documents_modal_form", "meliscommerce_documents_modal_form", {typeUpload : "file", saveType : saveType, docRelationId : relationId, docRelationType :relationType});
+				melisHelper.melisOkNotification(data.textTitle, data.textMessage);
+
+				// put back all the info
+				setTimeout(function() {
+					$.each(formData.split('&'), function (index, elem) {
+						var vals = elem.split('=');
+						$("[name='" + vals[0] + "']").val(vals[1]);
+					});
+				}, 2000);
+
+			}
+			else {
+				melisHelper.melisKoNotification(data.textTitle, data.textMessage, data.errors);
+				melisCoreTool.highlightErrors(data.success, data.errors, "frmDocAddImageType");
+			}
+			melisCore.flashMessenger();
+		})
+
+	});
+
+	$("body").on("click", ".updateFileDocument", function(){
+		var docId = $(this).data("doc-id");
+		var docType = $(this).data("type");
+		var relationId = $("#" + activeTabId + " div.ecom-doc-container").data("doc-relation-id");
+		var relationType = $("#" + activeTabId + " div.ecom-doc-container").data("doc-relation-type");
+		var zoneId = 'id_meliscommerce_documents_modal_form';
+		var melisKey = 'meliscommerce_documents_modal_form';
+		var modalUrl = '/melis/MelisCommerce/MelisComDocument/renderDocumentGenericModalContainer';
+
+		melisHelper.createModal(zoneId, melisKey, false, {typeUpload : 'file', docId : docId, saveType : 'updatefile', docRelationId : relationId, docRelationType :relationType},  modalUrl);
+	});
+
+	$("body").on("click", ".editImageDocumentModal", function() {
+		var typeUpload = "image";
+		var zoneId = 'id_meliscommerce_documents_modal_form';
+		var melisKey = 'meliscommerce_documents_modal_form';
+		var modalUrl = '/melis/MelisCommerce/MelisComDocument/renderDocumentGenericModalContainer';
+		var docId = $(this).data("doc-id");
+		var relationId = $("#" + activeTabId + " div.ecom-doc-container").data("doc-relation-id");
+		var relationType = $("#" + activeTabId + " div.ecom-doc-container").data("doc-relation-type");
+		melisHelper.createModal(zoneId, melisKey, false, {typeUpload : 'image', docId : docId, saveType : 'editimage', docRelationId : relationId, docRelationType :relationType}, modalUrl);
+	});
+
+	// Add File/Image Button, Request Modal Content
+	$("body").on("click", ".addFileImageDocument", function(e){
+		melisCoreTool.pending(this);
+		var typeUpload = $(this).data('type');
+		var relationId = $("#" + activeTabId + " div.ecom-doc-container").data("doc-relation-id");
+		var relationType = $("#" + activeTabId + " div.ecom-doc-container").data("doc-relation-type");
+		var zoneId = 'id_meliscommerce_documents_modal_form';
+		var melisKey = 'meliscommerce_documents_modal_form';
+		var modalUrl = '/melis/MelisCommerce/MelisComDocument/renderDocumentGenericModalContainer';
+		// requesitng to create modal and display after
+		melisHelper.createModal(zoneId, melisKey, false, {typeUpload:typeUpload, docRelationId: relationId, docRelationType :relationType}, modalUrl, function() {
+			melisCoreTool.done(".addFileImageDocument");
+		});
+
+	});
+	
+	$("body").on("click", "#btnDocFileAdd", function(e){
+			var button = $(this);
+			var formId = '#'+button.attr("form");
+			$(formId).trigger("submit");
+			e.preventDefault();
+	});
+
+});
+
+window.initImageDocuments = function(e) {
+	// Fix for Mobile
+	var custom_event = $.support.touch ? "touchstart" : "click";
+
+	// Initialize Image Container ISOTOPE
+	var $container = $(e).find("div.imageDocumentContainer");
+	$container.imagesLoaded( function() {
+		$container.isotope({
+			itemSelector : '.image'
+		});
+	});
+	filters = {};
+
+	// ISOTOPE filter dropdown
+	/* Filter text change for Country */
+	$("body").on(custom_event, ".filter-div-country .filter-key-values li a", function() {
+		var value = $(this).data('text');
+		$('.filter-div-country .filter-dropdown').attr('data-value', value);
+		$('.filter-div-country span.filter-key').text(value);
+	});
+	/* Filter text change for File Type */
+	$("body").on(custom_event, ".filter-div-file-type .filter-key-values li a", function() {
+		var value = $(this).data('text');
+		$('.filter-div-file-type .filter-dropdown').attr('data-value', value);
+		$('.filter-div-file-type span.filter-key').text(value);
+	});
+
+	// Isotope sorting/filter
+	$('.documentImageFilter a').on(custom_event,function() {
+		$('.documentImageFilter .current').removeClass('current');
+		$(this).addClass('current');
+
+		var $optionSet = $(this).parents('.documentImageFilter');
+		// change selected class
+		$optionSet.find('.selected').removeClass('selected');
+		$(this).addClass('selected');
+		var group = $optionSet.attr('data-filter-group');
+		filters[ group ] = $(this).attr('data-filter-value');
+		// convert object into array
+		var isoFilters = [];
+		for ( var prop in filters ) {
+			isoFilters.push( filters[ prop ] )
+		}
+		var selector = isoFilters.join('');
+
+		$grid = $container.isotope({
+			filter: selector,
+			animationOptions: {
+				duration: 750,
+				easing: 'linear',
+				queue: false
+			}
+		});
+
+		// ISOTOPE Event after filter
+		$grid.on( 'arrangeComplete', function( event, filteredItems ) {
+			// Deselect Images, to remove from the group of available/selected image uaing filter
+			$('.viewImageDocument').attr('data-lightbox','deselected-images');
+			$.each(filteredItems, function(){
+				// updating data-lightbox attribute to make images available after filtering
+				// making images as group and sliding images limited only to the group
+				$selectedImgElem = $(this.element).find('.viewImageDocument');
+				$selectedImgElem.attr('data-lightbox','selected-images');
+			});
+		});
+
+		// Lightbox Plugin Initialization after ISOTOPE Filter action
+		lightbox.option({
+			'resizeDuration': 200,
+			'wrapAround': true
+		});
+	});
+
+	// Isotope sorting/filter Responsive
+	$('.documentImageFilter a').on(custom_event,function() {
+		$('.documentImageFilter .current').removeClass('current');
+		$(this).addClass('current');
+
+		var $optionSet = $(this).parents('.documentImageFilter');
+		// change selected class
+		$optionSet.find('.selected').removeClass('selected');
+		$(this).addClass('selected');
+		var group = $optionSet.attr('data-filter-group');
+		filters[ group ] = $(this).attr('data-filter-value');
+		// convert object into array
+		var isoFilters = [];
+		for ( var prop in filters ) {
+			isoFilters.push( filters[ prop ] )
+		}
+		var selector = isoFilters.join('');
+
+		$grid = $container.isotope({
+			filter: selector,
+			animationOptions: {
+				duration: 750,
+				easing: 'linear',
+				queue: false
+			}
+		});
+
+		// ISOTOPE Event after filter
+		$grid.on( 'arrangeComplete', function( event, filteredItems ) {
+			// Deselect Images, to remove from the group of available/selected image uaing filter
+			$('.viewImageDocument').attr('data-lightbox','deselected-images');
+			$.each(filteredItems, function(){
+				// updating data-lightbox attribute to make images available after filtering
+				// making images as group and sliding images limited only to the group
+				$selectedImgElem = $(this.element).find('.viewImageDocument');
+				$selectedImgElem.attr('data-lightbox','selected-images');
+			});
+		});
+
+		// Lightbox Plugin Initialization after ISOTOPE Filter action
+		lightbox.option({
+			'resizeDuration': 200,
+			'wrapAround': true
+		});
+	});
+
+	// Lightbox Plugin Initialization
+	lightbox.option({
+		'resizeDuration': 200,
+		'wrapAround': true
+	});
+}
+
+window.updateFormId = function() {
+	var form = $("form.frmDocAddFile");
+	if(melisCommerce.getUniqueId()) {
+		form.attr("id", melisCommerce.getUniqueId()+"_frmDocUpload");
+	}
+}
+
+window.imagePreview = function(id, fileInput) {
+	if(fileInput.files && fileInput.files[0]) {
+		var reader = new FileReader();
+		reader.onload = function(e) {
+			$(id).attr('src', e.target.result);
+		}
+		reader.readAsDataURL(fileInput.files[0]);
+	}
+}
+
+var mediaDirectory = {
+    browse: function(modalUrl,zoneId,melisKey,params, targetDiv){
+        melisHelper.createModal(zoneId,melisKey,false,params,modalUrl, function(){
+            $(".category-add-image").removeAttr('disabled ');
+            if ($(targetDiv).length > 0) {
+                $('body').on('click','.add-image',function(event) {
+                    event.stopPropagation();
+                    event.stopImmediatePropagation();
+                    var data = $(this).data();
+                    var order = data.order;
+                    var image = "<div class='col-md-12 margin-b-10 category-image'>" +
+                            "<img src='" + data.imageUrl + "' class='img-responsive' />" +
+                            "<input type='hidden' value='" + data.imageUrl + "' data-order='" + order + "'/>" +
+                            "<div class='category-image-option'>" +
+                                " <a class='viewImage' target='_blank' href='"+data.imageUrl+"'> <i class='fa fa-eye' title='View image'></i></a>" +
+                                " <a class='removeImage' data-url='"+data.imageUrl+"' > <i class='fa fa-times' title='Delete image'></i></a>" +
+                            "</div>" +
+                        "</div>";
+                    // remove no image
+                    $(".no-image").hide();
+                    $(targetDiv).html(image);
+                    //scroll down
+                    $("html, body").animate({ scrollTop: $(document).height()- $(window).height() });
+                });
+
+            }
+        });
+        melisCoreTool.pending($(this));
+    }
+};

@@ -38,7 +38,7 @@
                                         echo $this->melisFieldCollection($form);
                                     ?>
                                     <br>
-                                    <button type="submit" class="btn btn-primary pull-right" id="category-upload-media"><i class="fa fa-upload"></i> Upload</button>
+                                    <button type="submit" class="btn btn-primary pull-right" id="category-upload-media" data-type="<?= $this->fileType ?>"><i class="fa fa-upload"></i> Upload</button>
                                     <?php
                                         echo $this->form()->closeTag($form);
                                     ?>
@@ -57,13 +57,23 @@
                                     <div class="row">
                                         <?php foreach ($images as $idx => $image) {?>
                                             <div class="col-md-3">
-                                                <div class="image-area">
-                                                    <img src="/media/<?= $image ?>" alt="<?= $image ?>" title="<?= $image?>" class="img-responsive">
-                                                    <span class="description"><?= $image ?></span>
-                                                    <div class="add-wrapper add-image" data-order="<?= $idx ?>" data-image-url="/media/<?= $image ?>" title="Add image">
-                                                        <i class="fa fa-plus"></i>
+                                                <?php if ($this->fileType == 'image') {?>
+                                                    <div class="image-area">
+                                                        <img src="/media/<?= $image ?>" alt="<?= $image ?>" title="<?= $image?>" class="img-responsive">
+                                                        <span class="description"><?= $image ?></span>
+                                                        <div class="add-wrapper add-image" data-order="<?= $idx ?>" data-image-url="/media/<?= $image ?>" title="Add image <?= $image ?>">
+                                                            <i class="fa fa-plus"></i>
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                <?php } else {?>
+                                                    <div class="file-area">
+                                                        <span class="fa fa-file file-icon"></span>
+                                                        <span class="description"><?= $image ?></span>
+                                                        <div class="add-wrapper add-image" data-order="<?= $idx ?>" data-image-url="/media/<?= $image ?>" title="Add <?= $image?>">
+                                                            <i class="fa fa-plus"></i>
+                                                        </div>
+                                                    </div>
+                                                <?php }?>
                                             </div>
                                         <?php }?>
                                     </div>

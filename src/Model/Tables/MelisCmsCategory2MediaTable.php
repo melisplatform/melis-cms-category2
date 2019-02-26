@@ -484,5 +484,9 @@ class MelisCmsCategory2MediaTable extends MelisGenericTable
 
         return $resultSet;
     }
+    public function updateCustom($whereField, $value)
+    {
+
+    }
 
 }

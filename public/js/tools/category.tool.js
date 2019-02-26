@@ -77,7 +77,18 @@ $(function(){
 			name : "cat_status",
 			value: catStatus
 		});
-		
+		// save media
+		//image
+		dataString.push({
+			name: "cat2_media_image",
+			value : $("#id_meliscategory_category_tab_media_content_left").find('input').val()
+		});
+		//file
+        dataString.push({
+            name: "cat2_media_file",
+            value : $("#id_meliscategory_category_tab_media_content_right").find('input').val()
+        });
+
 		// Category Transalations
 		$("form.cat_trans_form").each(function(){
 			langLocale = $(this).data("locale");
@@ -461,10 +472,19 @@ $(function(){
 		mediaDirectory.browse(categoryv2ModalUrl,catv2ImageZoneId,catv2ImageMelisKey,{fileType:data.type},".category-image-list")
 	});
 
+    categoryBody.on('click', ".category-add-file" , function(){
+        var catv2ImageZoneId   = "id_meliscategory_mini_media_library";
+        var catv2ImageMelisKey = "meliscategory_mini_media_library";
+        var categoryv2ModalUrl = 'melis/MelisCmsCategory2/MelisCmsCategoryMedia/render-mini-media-modal-container';
+        var data = $(this).data();
+        melisCoreTool.pending($(this));
+        mediaDirectory.browse(categoryv2ModalUrl,catv2ImageZoneId,catv2ImageMelisKey,{fileType:data.type},".category-file-list")
+    });
     categoryBody.on('submit',"#id_meliscategory_media_upload_form",function(e) {
         e.preventDefault();
         var formData = new FormData(this);
-        melisCoreTool.pending($(this));
+        melisCoreTool.pending(this);
+        var dataElem = $(".category-add-image").data() ;
 
         $.ajax({
             type: 'POST',
@@ -476,7 +496,9 @@ $(function(){
             contentType: false,
             encode: true
         }).success(function(data) {
-        	console.log(data);
+        	if (data.success === true) {
+        		melisHelper.zoneReload("id_meliscategory_mini_media_library","meliscategory_mini_media_library",{fileType:dataElem.type});
+			}
 		});
 
     });
