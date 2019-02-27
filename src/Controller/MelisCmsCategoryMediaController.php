@@ -102,8 +102,6 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         $id = $queryParams['id'] ?? null;
         $melisKey = $queryParams['melisKey'];
 
-
-
         $view->melisKey = $melisKey;
         $view->id = $id;
         return $view;

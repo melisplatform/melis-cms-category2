@@ -6,6 +6,7 @@
     $idLen = $this->docRelationType.$this->docRelationId;
     $data_melisKey = 'data-melisKey="'.$this->melisKey.'"';
     $media = $this->mediaData;
+
 ?>
 <div <?= $id . $data_melisKey; ?>>
 	<div class="row">
@@ -19,7 +20,7 @@
                             <input type="hidden" value="<?= $path ?>">
                             <div class="category-image-option">
                                 <a class="viewImage" target="_blank" href="<?= $path ?>"> <i class='fa fa-eye' title='View image'></i></a>
-                                <a class="removeImage"  href="<?= $path ?>"><i class='fa fa-times' title='Delete image'></i></a>
+                                <a class="removeImage"  href="#"><i class='fa fa-times' title='Delete image'></i></a>
                             </div>
                         </div>
                     <?php }?>

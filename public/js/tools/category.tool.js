@@ -471,7 +471,7 @@ $(function(){
     categoryBody.on('click', ".category-add-image" , function(){
     	var catv2ImageZoneId   = "id_meliscategory_mini_media_library";
     	var catv2ImageMelisKey = "meliscategory_mini_media_library";
-        var categoryv2ModalUrl = 'melis/MelisCmsCategory2/MelisCmsCategoryMedia/render-mini-media-modal-container';
+        var categoryv2ModalUrl = '/melis/MelisCmsCategory2/MelisCmsCategoryMedia/render-mini-media-modal-container';
         var data = $(this).data();
         melisCoreTool.pending($(this));
 		mediaDirectory.browse(categoryv2ModalUrl,catv2ImageZoneId,catv2ImageMelisKey,{fileType:data.type, targetDiv: ".category-image-list"},".category-image-list")
@@ -480,7 +480,7 @@ $(function(){
     categoryBody.on('click', ".category-add-file" , function(){
         var catv2ImageZoneId   = "id_meliscategory_mini_media_library";
         var catv2ImageMelisKey = "meliscategory_mini_media_library";
-        var categoryv2ModalUrl = 'melis/MelisCmsCategory2/MelisCmsCategoryMedia/render-mini-media-modal-container';
+        var categoryv2ModalUrl = '/melis/MelisCmsCategory2/MelisCmsCategoryMedia/render-mini-media-modal-container';
         var data = $(this).data();
         melisCoreTool.pending($(this));
         mediaDirectory.browse(categoryv2ModalUrl,catv2ImageZoneId,catv2ImageMelisKey,{fileType:data.type, targetDiv: ".category-file-list .list-group" },".category-file-list")
@@ -505,8 +505,12 @@ $(function(){
         		melisHelper.zoneReload("id_meliscategory_mini_media_library","meliscategory_mini_media_library",{fileType:dataElem.type});
 			}
 		});
-
     });
+
+    categoryBody.on('click', ".category-image-list .removeImage", function(){
+    	var parentDiv = $(this).parent().parent();
+        parentDiv.remove();
+	});
 });
 
 window.enableDisableAddCategoryBtn = function(action){

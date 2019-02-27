@@ -21,6 +21,8 @@ var mediaDirectory = {
                             " <a class='removeImage' data-url='"+data.imageUrl+"' > <i class='fa fa-times' title='Delete image'></i></a>" +
                             "</div>" +
                             "</div>";
+                        //scroll down
+                        $("html, body").animate({ scrollTop: $(document).height()- $(window).height() });
                     } else {
                         html = "<div class='col-md-3'>" +
                                 "<div class=\"file-area\">" +
@@ -43,8 +45,6 @@ var mediaDirectory = {
                     // remove no image
                     $(".no-image").hide();
                     $(targetDiv).append(html);
-                    //scroll down
-                    $("html, body").animate({ scrollTop: $(document).height()- $(window).height() });
                 });
 
             }
