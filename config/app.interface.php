@@ -310,7 +310,21 @@ return array(
                                                                                 'controller' => 'MelisCmsCategory',
                                                                                 'action' => 'render-category-form-translations',
                                                                             )
-                                                                        ),
+                                                                        )
+                                                                    )
+                                                                ),
+                                                                'meliscategory_categories_category_tab_main_right' => array(
+                                                                    'conf' => array(
+                                                                        'id' => 'id_meliscategory_categories_category_tab_main_right',
+                                                                        'melisKey' => 'meliscategory_categories_category_tab_main_right',
+                                                                        'name' => 'tr_meliscategory_categories_category_tab_main_right'
+                                                                    ),
+                                                                    'forward' => array(
+                                                                        'module' => 'MelisCmsCategory2',
+                                                                        'controller' => 'MelisCmsCategory',
+                                                                        'action' => 'render-category-tab-main-right',
+                                                                    ),
+                                                                    'interface' => array(
                                                                         'meliscategory_categories_category_form_date_validity' => array(
                                                                             'conf' => array(
                                                                                 'id' => 'id_meliscategory_categories_category_form_date_validity',
@@ -334,34 +348,7 @@ return array(
                                                                                 'controller' => 'MelisCmsCategory',
                                                                                 'action' => 'render-category-form-sites',
                                                                             )
-                                                                        ),
-                                                                       
-                                                                    )
-                                                                ),
-                                                                'meliscategory_categories_category_tab_main_right' => array(
-                                                                    'conf' => array(
-                                                                        'id' => 'id_meliscategory_categories_category_tab_main_right',
-                                                                        'melisKey' => 'meliscategory_categories_category_tab_main_right',
-                                                                        'name' => 'tr_meliscategory_categories_category_tab_main_right'
-                                                                    ),
-                                                                    'forward' => array(
-                                                                        'module' => 'MelisCmsCategory2',
-                                                                        'controller' => 'MelisCmsCategory',
-                                                                        'action' => 'render-category-tab-main-right',
-                                                                    ),
-                                                                    'interface' => array(
-//                                                                        'meliscategory_categories_category_main_product_imgs' => array(
-//                                                                            'conf' => array(
-//                                                                                'type' => 'melis_cms_category_v2_config/interface/melis_cms_categories_v2/interface/meliscategory_documents_image_attachments_conf',
-//                                                                                'docRelationType' => 'category',
-//                                                                            )
-//                                                                        ),
-//                                                                        'meliscategory_categories_category_main_file_attachments' => array(
-//                                                                            'conf' => array(
-//                                                                                'type' => 'melis_cms_category_v2_config/interface/melis_cms_categories_v2/interface/meliscategory_documents_file_attachments_conf',
-//                                                                                'docRelationType' => 'category',
-//                                                                            )
-//                                                                        )
+                                                                        )
                                                                     )
                                                                 )
                                                             )

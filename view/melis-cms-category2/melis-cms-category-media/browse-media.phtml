@@ -61,7 +61,7 @@
                                                     <div class="image-area">
                                                         <img src="/media/<?= $image ?>" alt="<?= $image ?>" title="<?= $image?>" class="img-responsive">
                                                         <span class="description"><?= $image ?></span>
-                                                        <div class="add-wrapper add-image" data-order="<?= $idx ?>" data-image-url="/media/<?= $image ?>" title="Add image <?= $image ?>">
+                                                        <div class="add-wrapper add-image" data-order="<?= $idx ?>" data-target-div="<?= $this->targetDiv ?>" data-file-type="image" data-image-url="/media/<?= $image ?>" title="Add image <?= $image ?>">
                                                             <i class="fa fa-plus"></i>
                                                         </div>
                                                     </div>
@@ -69,7 +69,7 @@
                                                     <div class="file-area">
                                                         <span class="fa fa-file file-icon"></span>
                                                         <span class="description"><?= $image ?></span>
-                                                        <div class="add-wrapper add-image" data-order="<?= $idx ?>" data-image-url="/media/<?= $image ?>" title="Add <?= $image?>">
+                                                        <div class="add-wrapper add-image" data-order="<?= $idx ?>" data-target-div="<?= $this->targetDiv ?>" data-file-type="file" data-image-url="/media/<?= $image ?>" title="Add <?= $image?>">
                                                             <i class="fa fa-plus"></i>
                                                         </div>
                                                     </div>

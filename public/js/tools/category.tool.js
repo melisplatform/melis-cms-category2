@@ -79,15 +79,20 @@ $(function(){
 		});
 		// save media
 		//image
-		dataString.push({
-			name: "cat2_media_image",
-			value : $("#id_meliscategory_category_tab_media_content_left").find('input').val()
-		});
-		//file
-        dataString.push({
-            name: "cat2_media_file",
-            value : $("#id_meliscategory_category_tab_media_content_right").find('input').val()
+        $("#id_meliscategory_category_tab_media_content_left").find('input').each(function(index){
+            dataString.push({
+                name: "cat2_media_image["+ index + "]",
+                value : $(this).val()
+            });
         });
+
+        $("#id_meliscategory_category_tab_media_content_right").find('input').each(function(index){
+            dataString.push({
+                name: "cat2_media_file["+ index+"]",
+                value : $(this).val()
+            });
+        });
+
 
 		// Category Transalations
 		$("form.cat_trans_form").each(function(){
@@ -469,7 +474,7 @@ $(function(){
         var categoryv2ModalUrl = 'melis/MelisCmsCategory2/MelisCmsCategoryMedia/render-mini-media-modal-container';
         var data = $(this).data();
         melisCoreTool.pending($(this));
-		mediaDirectory.browse(categoryv2ModalUrl,catv2ImageZoneId,catv2ImageMelisKey,{fileType:data.type},".category-image-list")
+		mediaDirectory.browse(categoryv2ModalUrl,catv2ImageZoneId,catv2ImageMelisKey,{fileType:data.type, targetDiv: ".category-image-list"},".category-image-list")
 	});
 
     categoryBody.on('click', ".category-add-file" , function(){
@@ -478,7 +483,7 @@ $(function(){
         var categoryv2ModalUrl = 'melis/MelisCmsCategory2/MelisCmsCategoryMedia/render-mini-media-modal-container';
         var data = $(this).data();
         melisCoreTool.pending($(this));
-        mediaDirectory.browse(categoryv2ModalUrl,catv2ImageZoneId,catv2ImageMelisKey,{fileType:data.type},".category-file-list")
+        mediaDirectory.browse(categoryv2ModalUrl,catv2ImageZoneId,catv2ImageMelisKey,{fileType:data.type, targetDiv: ".category-file-list .list-group" },".category-file-list")
     });
     categoryBody.on('submit',"#id_meliscategory_media_upload_form",function(e) {
         e.preventDefault();

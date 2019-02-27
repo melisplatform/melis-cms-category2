@@ -456,6 +456,8 @@ class MelisCmsCategoryController extends AbstractActionController
             $catTranslationData  = $postValues['cat_trans'] ?? null;
             $catSitesData        = $postValues['cat_sites'] ?? null;
             $passedCatId         = $postValues['cat_id'] ?? null;
+            $dateActive          = $postValues['cat_date_valid_start'];
+            $dateInactive        = $postValues['cat_date_valid_end'];
             # melis-core config
             $melisMelisCoreConfig = $this->serviceLocator->get('MelisCoreConfig');
             # form config
@@ -480,6 +482,7 @@ class MelisCmsCategoryController extends AbstractActionController
                 ];
 
             }
+
             # save Category
             $categoryId  = $categoryService->saveCategory($parentId, $status,$userId, $dateValidStart, $dateValidEnd, $passedCatId);
             # save Category translations
@@ -518,27 +521,34 @@ class MelisCmsCategoryController extends AbstractActionController
 
                 }
             }
+            $images = $postValues['cat2_media_image'] ?? [];
+            $files  = $postValues['cat2_media_file'] ?? [];
             $mediaTable = $this->getServiceLocator()->get('MelisCmsCategory2MediaTable');
             if (!empty ($passedCatId)) {
                 $mediaTable->deleteByField('catm2_cat_id',$passedCatId);
             }
-          //  if (empty($passedCatId)) {
-                //delete for new record
-                $mediaDataImage = [
-                    'catm2_cat_id' => $categoryId,
-                    'catm2_type'   => 'image',
-                    'catm2_path'   => $postValues['cat2_media_image'] ?? null,
-                ];
-                //save media image
-                $mediaTable->save($mediaDataImage);
-                $mediaDataFile = [
-                    'catm2_cat_id' => $categoryId,
-                    'catm2_type'   => 'file',
-                    'catm2_path'   => $postValues['cat2_media_file'] ?? null,
-                ];
-                //save media file
-                $mediaTable->save($mediaDataFile);
-        //    }
+            if (!empty($images)) {
+                foreach($images as $idx => $val) {
+                    $mediaDataImage = [
+                        'catm2_cat_id' => $categoryId,
+                        'catm2_type'   => 'image',
+                        'catm2_path'   => $val
+                    ];
+                    //save media image
+                    $mediaTable->save($mediaDataImage);
+                }
+            }
+            if (! empty($files)) {
+                foreach ($files as $idx => $val) {
+                    $mediaDataFile = [
+                        'catm2_cat_id' => $categoryId,
+                        'catm2_type'   => 'file',
+                        'catm2_path'   => $val
+                    ];
+                    //save media file
+                    $mediaTable->save($mediaDataFile);
+                }
+            }
 
             $success = 1;
             $message = $translator->translate('tr_meliscms_categories_err_category_save_success');

@@ -358,3 +358,22 @@
     display:block;
     font-size:50px;
 }
+.category-file .list-group{
+    padding:20px;
+}
+.category-file .list-group span {
+    position: relative;
+    display: block;
+    margin-bottom: 10px;
+}
+.category-file span i {
+    position: absolute;
+    right: 10px;
+    top:25%;
+    font-size: 20px;
+    cursor: pointer;
+    display: none;
+}
+.category-file span:hover i {
+    display: block;
+}

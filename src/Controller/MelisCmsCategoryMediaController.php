@@ -76,9 +76,18 @@ class MelisCmsCategoryMediaController extends AbstractActionController
     }
     public function renderCategoryTabMediaContentRightFileAction()
     {
+        $request = $this->getRequest();
+        $query   = $request->getQuery();
+        $categoryId = $query['catId'] ?? null;
+        $categoryMediaTable = $this->getServiceLocator()->get('MelisCmsCategory2MediaTable');
+        $categoryMediaData = [];
+        if (! empty($categoryId)) {
+            $categoryMediaData = $categoryMediaTable->getEntryByField('catm2_cat_id',$categoryId)->toArray();
+        }
         $view = new ViewModel();
 
         $view->melisKey = $this->getMelisKey();
+        $view->mediaData = $categoryMediaData;
         return $view;
     }
     private function getMelisKey()
@@ -108,6 +117,7 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         $scheme  = $uri->getScheme();
         $query   = $request->getQuery();
         $fileType = $query['fileType'];
+        $targetDiv = $query['targetDiv'];
 
         $mediaPath = $_SERVER['DOCUMENT_ROOT'] . "/media/";
         $queryParams = $request->getQuery();
@@ -139,6 +149,7 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         $view->host   = $host;
         $view->categoryMediaForm = $this->getForm();
         $view->fileType = $fileType;
+        $view->targetDiv = $targetDiv;
 
 
         return $view;

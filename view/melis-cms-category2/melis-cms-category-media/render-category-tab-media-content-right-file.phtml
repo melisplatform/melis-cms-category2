@@ -9,6 +9,8 @@
         $relationType = $this->zoneconfig['conf']['docRelationType'];
     }
     $data_melisKey = 'data-melisKey="'.$this->melisKey.'"';
+
+$mediaData = $this->mediaData;
 ?>
 
 <div <?php echo $id. ' '.$data_melisKey?> class="ecom-doc-container" data-doc-relation-type="<?= $relationType; ?>" data-doc-relation-id="<?= $this->relationId; ?>" data-doc-type="file">
@@ -21,14 +23,23 @@
             <?php echo $this->translate('Browse media')?>
         </button>
         <div class="category-file-list row">
-        <?php
-            # file count
-            $fileCount = $this->fileCount;
-            if(!empty($fileCount)) {?>
-
+            <div class="col-md-12 margin-b-10 category-file">
+                <div class="list-group">
+            <?php if (! empty($mediaData)) {?>
+                <?php foreach ($mediaData as $key => $data) {
+                    $path = $data['catm2_path'] ?? null; ?>
+                    <?php if ($data['catm2_type'] == 'file' ){?>
+                        <span>
+                            <a href="#" class="list-group-item list-group-item-action"><?= $path ?></a>
+                            <i class="fa fa-times-circle"></i>
+                        </span>
+                        <input type="hidden" value="<?= $path ?>">
+                    <?php }?>
+                <?php }?>
             <?php } else {?>
-                No file added
+                <span class="no-image">No file(s)</span>
             <?php }?>
+            </div>
         </div>
 	</div>
 </div>
