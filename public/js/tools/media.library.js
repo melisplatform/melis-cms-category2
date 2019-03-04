@@ -37,9 +37,10 @@ var mediaDirectory = {
                                "</div>";
                         html = '<span>\n' +
                                 ' <a href="#" class="list-group-item list-group-item-action">' + data.imageUrl + '</a>\n' +
-                                ' <i class="fa fa-times-circle"></i>\n' +
-                                ' </span>\n' +
-                                ' <input type="hidden" value="' + data.imageUrl +'">'
+                                ' <i class="fa fa-times-circle remove-file"></i>\n' +
+                                ' <input type="hidden" value="' + data.imageUrl +'">'+
+                                ' </span>\n'
+
                     }
 
                     // remove no image

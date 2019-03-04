@@ -100,16 +100,23 @@ class MelisCmsCategoryListController extends AbstractActionController
         $view->melisKey = $melisKey;
         return $view;
     }
-    
+    public function renderCategoryFilterAreaAction()
+    {
+        $melisKey = $this->params()->fromRoute('melisKey', '');
+        $view = new ViewModel();
+        $view->melisKey = $melisKey;
+        return $view;
+    }
     /**
      * Render Category List Serch Input
      * 
      * @return \Zend\View\Model\ViewModel
      */
-    public function renderCategoryListSearchInputAction(){
+    public function renderCategoryListSearchInputAction()
+    {
         // Category Tree view Search Input
         $melisMelisCoreConfig = $this->serviceLocator->get('MelisCoreConfig');
-        $appConfigForm = $melisMelisCoreConfig->getFormMergedAndOrdered('meliscommerce/forms/meliscommerce_categories/meliscommerce_categories_search_input','meliscommerce_categories_search_input');
+        $appConfigForm = $melisMelisCoreConfig->getFormMergedAndOrdered('meliscategory/forms/meliscategory_categories/meliscategory_categories_search_input','meliscategory_categories_search_input');
         $factory = new \Zend\Form\Factory();
         $formElements = $this->serviceLocator->get('FormElementManager');
         $factory->setFormElementManager($formElements);
@@ -118,10 +125,28 @@ class MelisCmsCategoryListController extends AbstractActionController
         $melisKey = $this->params()->fromRoute('melisKey', '');
         $view = new ViewModel();
         $view->melisKey = $melisKey;
-        $view->setVariable('meliscommerce_categories_search_input', $propertyForm);
+        $view->setVariable('meliscategory_categories_search_input', $propertyForm);
         return $view;
     }
-    
+    public function renderCategoryListSiteFilterAction()
+    {
+        // Site filter
+        $melisMelisCoreConfig = $this->serviceLocator->get('MelisCoreConfig');
+        $appConfigForm = $melisMelisCoreConfig->getFormMergedAndOrdered('meliscategory/forms/meliscategory_categories/meliscategory_site_filer_form','meliscategory_site_filer_form');
+
+        $factory = new \Zend\Form\Factory();
+        $formElements = $this->serviceLocator->get('FormElementManager');
+        $factory->setFormElementManager($formElements);
+        $siteFilterForm = $factory->createForm($appConfigForm);
+
+        $melisKey = $this->params()->fromRoute('melisKey', '');
+
+        $view = new ViewModel();
+        $view->melisKey = $melisKey;
+        $view->setVariable('meliscategory_site_filer_form', $siteFilterForm);
+
+        return $view;
+    }
     /**
      * Render Category List Tree View
      * This method also return the list for Commerce Languages
@@ -179,10 +204,11 @@ class MelisCmsCategoryListController extends AbstractActionController
         $cmsLang = $this->getServiceLocator()->get('MelisEngineTableCmsLang');
         $currentLang = $cmsLang->getEntryByField('lang_cms_locale',$langLocale)->current();
         $currentLocale = $currentLang->lang_cms_locale ?? null;
+        $langId = $currentLang->lang_cms_id;
         // Getting Category Tree View form the Category Service
         $melisComCategoryService = $this->getServiceLocator()->get('MelisCmsCategory2Service');
-        $categoryListData = $melisComCategoryService->getCategoryTreeview(null, $currentLocale);
-
+        $categoryListData = $melisComCategoryService->getCategoryTreeview(null, $langId);
+        
         // Category Tree View Preparation
         $categoryList = $this->prepareCategoryDataForTreeView($categoryListData, $selected, $openStateParent, $idAndNameOnly, $categoriesChecked, $currentLang->lang_cms_id);
 

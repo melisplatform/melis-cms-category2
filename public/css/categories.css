@@ -317,7 +317,7 @@
 .category-image-option {
     position:absolute;
     height:100%;
-    width:100%;
+    width:98%;
     top:0;
     opacity:0.7;
     background:#000;
@@ -376,4 +376,14 @@
 }
 .category-file span:hover i {
     display: block;
+}
+#id_meliscategory_categories_category_form_sites{
+    margin:50px 0 0 2px;
+}
+#meliscategory_site_filer_form .select2-selection__clear {
+    background:#eee;
+    display:block;
+    width:30px;
+    text-align:center;
+    cursor:pointer;
 }

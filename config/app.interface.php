@@ -143,19 +143,47 @@ return array(
                                         'action' => 'render-category-list-content',
                                     ),
                                     'interface' => array(
-                                        // content
-                                        'meliscms_categories_list_search_input' => array(
+                                        //filter area
+                                        'meliscms_categories_filter_area' => [
                                             'conf' => array(
-                                                'id' => 'meliscms_categories_list_search_input',
-                                                'melisKey' => 'meliscms_categories_list_search_input',
-                                                'name' => 'tr_meliscms_categories_list_search_input'
+                                                'id' => 'meliscms_categories_filter_area',
+                                                'melisKey' => 'meliscms_categories_filter_area',
+                                                'name' => 'tr_meliscms_categories_filter_area'
                                             ),
                                             'forward' => array(
                                                 'module' => 'MelisCmsCategory2',
                                                 'controller' => 'MelisCmsCategoryList',
-                                                'action' => 'render-category-list-search-input',
-                                            )
-                                        ),
+                                                'action' => 'render-category-filter-area',
+                                            ),
+                                            'interface' => [
+                                                // content
+                                                'meliscms_categories_list_search_input' => array(
+                                                    'conf' => array(
+                                                        'id' => 'meliscms_categories_list_search_input',
+                                                        'melisKey' => 'meliscms_categories_list_search_input',
+                                                        'name' => 'tr_meliscms_categories_list_search_input'
+                                                    ),
+                                                    'forward' => array(
+                                                        'module' => 'MelisCmsCategory2',
+                                                        'controller' => 'MelisCmsCategoryList',
+                                                        'action' => 'render-category-list-search-input',
+                                                    )
+                                                ),
+                                                //site filter
+                                                'meliscms_categories_site_filter' => [
+                                                    'conf' => array(
+                                                        'id' => 'meliscms_categories_site_filter',
+                                                        'melisKey' => 'meliscms_categories_site_filter',
+                                                        'name' => 'tr_meliscms_categories_site_filter'
+                                                    ),
+                                                    'forward' => array(
+                                                        'module' => 'MelisCmsCategory2',
+                                                        'controller' => 'MelisCmsCategoryList',
+                                                        'action' => 'render-category-list-site-filter',
+                                                    )
+                                                ],
+                                            ],
+                                        ],
                                         'meliscms_categories_list_categories_tree' => array(
                                             'conf' => array(
                                                 'id' => 'id_meliscms_catergories_list_categories_tree',

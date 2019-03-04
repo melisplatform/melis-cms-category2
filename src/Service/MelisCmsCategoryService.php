@@ -1117,7 +1117,7 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
      * @param int $langId
      * @return int Array
      */
-    public function getCategoryTreeview($fatherId = null, $langId = null, $onlyValid = false)
+    public function getCategoryTreeview($fatherId = null, $langId = null, $onlyValid = false,$siteId = null)
     {
         // Event parameters prepare
         $arrayParameters = $this->makeArrayFromParameters(__METHOD__, func_get_args());
@@ -1171,7 +1171,7 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
             $catData[$key]['children'] = $this->getCategoryTreeview($fatherId, $langId, $onlyValid);
 
         }
-        
+
         $results = $catData;
         // Service implementation end
         

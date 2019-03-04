@@ -5,7 +5,7 @@
     }
     $data_melisKey = 'data-melisKey="'.$this->melisKey.'"';
 ?>
-<div <?php echo $id. ' '.$data_melisKey?> class="border-bottom">
+<div <?php echo $id. ' '.$data_melisKey?> >
 	<div class="row">
     	<div class="col-xs-12">	
         	<div class="pdc-heading clearfix">
@@ -42,7 +42,7 @@
 			<div class="tab-content">
 				<?php  foreach ($this->ecomLang As $key => $val):?>
 					<div id="<?php echo $val['lang_cms_name'].'_categoryInfo' ?>" class="tab-pane product-text-tab-content">
-    					<div class="me-heading bg-white border-bottom">
+    					<div class="me-heading bg-white ">
                 			<h3 class=""><i class="fa fa-language" aria-hidden="true"></i> <?php echo $val['lang_cms_name']?></h3>
                 		</div>
                 		<div class="product-text-tab-form-content" style="padding-bottom: 0px; padding-right: 0px;">

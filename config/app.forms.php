@@ -195,7 +195,7 @@ return array(
                             [
                                 'spec' => [
                                     'name' => 'categorySiteFilter',
-                                    'type' => 'MelisEngineSiteSelect',
+                                    'type' => 'MelisCmsPluginSiteSelect',
                                     'options' => [
                                         'label' => 'Filter Tree',
                                         'tooltip' => 'Filtering the tree'

@@ -1,8 +1,1 @@
-<?php
-    if ($this->catFatherId == '-1'){
-        $type = 'catalog';
-    }else{
-        $type = 'category';
-    }
-?>
 <button class="btn btn-success pull-right" id="saveCategory" data-catid="<?php echo $this->catId ?>" data-catfatherid="<?php echo $this->catFatherId ?>" data-loading-text="<?php echo $this->translate('tr_meliscategory_categories_common_label_saving')?>" autocomplete="off"><i class="fa fa-save"></i> <?php echo $this->translate('tr_meliscms_common_save')?></button>

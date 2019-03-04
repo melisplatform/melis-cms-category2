@@ -85,15 +85,20 @@ $(function(){
 		});
 		// save media
 		//image
-		dataString.push({
-			name: "cat2_media_image",
-			value : $("#id_meliscategory_category_tab_media_content_left").find('input').val()
-		});
-		//file
-        dataString.push({
-            name: "cat2_media_file",
-            value : $("#id_meliscategory_category_tab_media_content_right").find('input').val()
+        $("#id_meliscategory_category_tab_media_content_left").find('input').each(function(index){
+            dataString.push({
+                name: "cat2_media_image["+ index + "]",
+                value : $(this).val()
+            });
         });
+
+        $("#id_meliscategory_category_tab_media_content_right").find('input').each(function(index){
+            dataString.push({
+                name: "cat2_media_file["+ index+"]",
+                value : $(this).val()
+            });
+        });
+
 
 		// Category Transalations
 		$("form.cat_trans_form").each(function(){
@@ -472,12 +477,20 @@ $(function(){
     categoryBody.on('click', ".category-add-image" , function(){
     	var catv2ImageZoneId   = "id_meliscategory_mini_media_library";
     	var catv2ImageMelisKey = "meliscategory_mini_media_library";
-        var categoryv2ModalUrl = 'melis/MelisCmsCategory2/MelisCmsCategoryMedia/render-mini-media-modal-container';
+        var categoryv2ModalUrl = '/melis/MelisCmsCategory2/MelisCmsCategoryMedia/render-mini-media-modal-container';
         var data = $(this).data();
         melisCoreTool.pending($(this));
-		mediaDirectory.browse(categoryv2ModalUrl,catv2ImageZoneId,catv2ImageMelisKey,{fileType:data.type},".category-image-list")
+		mediaDirectory.browse(categoryv2ModalUrl,catv2ImageZoneId,catv2ImageMelisKey,{fileType:data.type, targetDiv: ".category-image-list"},".category-image-list")
 	});
 
+    categoryBody.on('click', ".category-add-file" , function(){
+        var catv2ImageZoneId   = "id_meliscategory_mini_media_library";
+        var catv2ImageMelisKey = "meliscategory_mini_media_library";
+        var categoryv2ModalUrl = '/melis/MelisCmsCategory2/MelisCmsCategoryMedia/render-mini-media-modal-container';
+        var data = $(this).data();
+        melisCoreTool.pending($(this));
+        mediaDirectory.browse(categoryv2ModalUrl,catv2ImageZoneId,catv2ImageMelisKey,{fileType:data.type, targetDiv: ".category-file-list .list-group" },".category-file-list")
+    });
     categoryBody.on('submit',"#id_meliscategory_media_upload_form",function(e) {
         e.preventDefault();
         var formData = new FormData(this);
@@ -498,7 +511,15 @@ $(function(){
         		melisHelper.zoneReload("id_meliscategory_mini_media_library","meliscategory_mini_media_library",{fileType:dataElem.type});
 			}
 		});
+    });
 
+    categoryBody.on('click', ".category-image-list .removeImage", function(){
+    	var parentDiv = $(this).parent().parent();
+        parentDiv.remove();
+	});
+    categoryBody.on('click', ".category-file .remove-file", function(){
+        var parentDiv = $(this).parent().parent();
+        parentDiv.remove();
     });
 });
 
@@ -1726,25 +1747,49 @@ var mediaDirectory = {
     browse: function(modalUrl,zoneId,melisKey,params, targetDiv){
         melisHelper.createModal(zoneId,melisKey,false,params,modalUrl, function(){
             $(".category-add-image").removeAttr('disabled ');
+            $(".category-add-file").removeAttr('disabled ');
+
             if ($(targetDiv).length > 0) {
                 $('body').on('click','.add-image',function(event) {
                     event.stopPropagation();
                     event.stopImmediatePropagation();
                     var data = $(this).data();
                     var order = data.order;
-                    var image = "<div class='col-md-12 margin-b-10 category-image'>" +
+                    var html  = null;
+                    targetDiv = data.targetDiv;
+                    if (data.fileType === 'image') {
+                        html  = "<div class='col-md-12 margin-b-10 category-image'>" +
                             "<img src='" + data.imageUrl + "' class='img-responsive' />" +
                             "<input type='hidden' value='" + data.imageUrl + "' data-order='" + order + "'/>" +
                             "<div class='category-image-option'>" +
-                                " <a class='viewImage' target='_blank' href='"+data.imageUrl+"'> <i class='fa fa-eye' title='View image'></i></a>" +
-                                " <a class='removeImage' data-url='"+data.imageUrl+"' > <i class='fa fa-times' title='Delete image'></i></a>" +
+                            " <a class='viewImage' target='_blank' href='"+data.imageUrl+"'> <i class='fa fa-eye' title='View image'></i></a>" +
+                            " <a class='removeImage' data-url='"+data.imageUrl+"' > <i class='fa fa-times' title='Delete image'></i></a>" +
                             "</div>" +
-                        "</div>";
+                            "</div>";
+                        //scroll down
+                        $("html, body").animate({ scrollTop: $(document).height()- $(window).height() });
+                    } else {
+                        html = "<div class='col-md-3'>" +
+                                "<div class=\"file-area\">" +
+                                " <span class=\"fa fa-file file-icon\"></span>" +
+                                " <span class=\"description\">colipano1.docx</span>" +
+                                " </div>" +
+                                "<input type='hidden' value='" + data.imageUrl + "' data-order='" + order + "'/>" +
+                                "<div class='category-image-option'>" +
+                                "<a class='viewImage' target='_blank' href='"+data.imageUrl+"'> <i class='fa fa-eye' title='View file'></i></a>" +
+                                "<a class='removeImage' data-url='"+data.imageUrl+"' > <i class='fa fa-times' title='Delete file'></i></a>" +
+                                "</div>" +
+                               "</div>";
+                        html = '<span>\n' +
+                                ' <a href="#" class="list-group-item list-group-item-action">' + data.imageUrl + '</a>\n' +
+                                ' <i class="fa fa-times-circle"></i>\n' +
+                                ' </span>\n' +
+                                ' <input type="hidden" value="' + data.imageUrl +'">'
+                    }
+
                     // remove no image
                     $(".no-image").hide();
-                    $(targetDiv).html(image);
-                    //scroll down
-                    $("html, body").animate({ scrollTop: $(document).height()- $(window).height() });
+                    $(targetDiv).append(html);
                 });
 
             }

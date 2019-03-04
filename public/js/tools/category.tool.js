@@ -511,6 +511,10 @@ $(function(){
     	var parentDiv = $(this).parent().parent();
         parentDiv.remove();
 	});
+    categoryBody.on('click', ".category-file .remove-file", function(){
+        var parentDiv = $(this).parent();
+        parentDiv.remove();
+    });
 });
 
 window.enableDisableAddCategoryBtn = function(action){

@@ -69,5 +69,12 @@ return [
     # messages
     'tr_meliscms_categories_err_category_save_unable' => 'Unable to save Category, Please try again',
     'tr_meliscms_categories_err_category_save_success' => 'Category successfully Saved',
+    'tr_meliscategory_categories_common_label_saving' => 'Saving ...',
+    'tr_meliscmscategory_search_not_found' => 'not found',
+    'tr_meliscategory_categories_list_tree_view_search_input' => 'Search a category',
+    // site filter
+    'tr_meliscms_categories_site_filter' => 'Site filter on tree view',
+    'tr_meliscms_categories_filter_area' => 'Search and filter of tree categories',
+    'tr_meliscms_categories_filter_area_empty_site' => 'No site created',
 
 ];

@@ -30,7 +30,6 @@ return [
     'tr_meliscommerce_categories_list_tree_view_expand_all' => 'Tout déployer',
     'tr_meliscommerce_categories_list_tree_view_clear' => 'Effacer',
     'tr_meliscommerce_categories_list_tree_view_refresh' => 'Rafraîchir',
-    'tr_meliscommerce_categories_list_tree_view_search_not_found' => 'non trouvé',
 
     // Date Validity
     'tr_meliscategory_categories_category_date_validity' => 'Dates de validité',
@@ -64,5 +63,14 @@ return [
     # error
     'tr_meliscms_categories_err_category_save_unable' => 'Impossible de sauvegarder la catégorie, veuillez réessayer',
     'tr_meliscms_categories_err_category_save_success' => 'Catégorie sauvegardée avec succès', // FORM
+    'tr_meliscategory_categories_common_label_saving' => 'Saving ...',
+    'tr_meliscmscategory_search_not_found' => 'non trouvé',
+    'tr_meliscategory_categories_list_tree_view_search_input' => 'Chercher une catégorie',
+    // site filter on tree view
+    'tr_meliscms_categories_site_filter' => 'Site filter on tree view',
+    'tr_meliscms_categories_filter_area' => 'Search and filter of tree categories',
+    'tr_meliscms_categories_filter_area_empty_site' => 'No site created',
+
+
 
 ];
