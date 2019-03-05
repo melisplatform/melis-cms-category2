@@ -70,6 +70,10 @@ return [
     'tr_meliscms_categories_site_filter' => 'Site filter on tree view',
     'tr_meliscms_categories_filter_area' => 'Search and filter of tree categories',
     'tr_meliscms_categories_filter_area_empty_site' => 'No site created',
+    //js tree
+    'tr_meliscategory_categories_common_btn_add' => 'Ajouter',
+    'tr_meliscategory_categories_common_btn_update' => 'Editer',
+    'tr_meliscategory_categories_common_btn_delete' => 'Supprimer'
 
 
 

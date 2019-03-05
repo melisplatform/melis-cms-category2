@@ -4,6 +4,8 @@
         $id = 'id="'.$this->zoneconfig['conf']['id'] .'"';
     }
     $data_melisKey = 'data-melisKey="'.$this->melisKey.'"';
+    $categorySites = $this->cartegorySites;
+    $siteData      = $this->siteData;
 ?>
 <div <?php echo $id. ' '.$data_melisKey?> >
 	<div class="form-group">
@@ -18,10 +20,8 @@
     		<form>
         		<?php 
         		    $checked = '';
-        		    if (!empty($this->categoryCountries)){
-        		        if (in_array('-1', $this->categoryCountries)){
-        		            $checked = 'check';
-        		        }
+        		    if (count($siteData) == count($categorySites)){
+        		        $checked = 'check';
         		    }
         		?>
         		<div class="col-xs-4">
@@ -30,11 +30,11 @@
                 		<input type="checkbox" name="cat_sites[]" value="-1" <?php echo ($checked) ? $checked.'ed' : '' ?>>
                 	</label>
         		</div>
-        		<?php foreach ($this->siteData As $val):?>
+        		<?php foreach ($siteData As $val):?>
         			<?php
         			    $checked = '';
-        			    if (!empty($this->categoryCountries)){
-        			        if(in_array($val['site_id'], $this->categoryCountries) || in_array('-1', $this->categoryCountries)){
+        			    if (!empty($categorySites)){
+        			        if(in_array($val['site_id'], $categorySites) || in_array('-1', $categorySites)){
         			            $checked = 'check';
         			        }
         			    }
@@ -42,7 +42,7 @@
         			<div class="col-xs-4">
                     	<label class="cms-category-checkbox">
                     		<i class="fa fa-<?php echo ($checked) ? $checked.'-' : '' ?>square-o fa-lg"></i> <?php echo !empty($val['site_label']) ? $val['site_label'] : $val['site_name']?>
-                    		<input type="checkbox" name="cat_sites[]" value="<?php echo $val['site_id']?>" <?php echo ($checked && !in_array('-1', $this->categoryCountries)) ? $checked.'ed' : '' ?>>
+                    		<input type="checkbox" name="cat_sites[]" value="<?php echo $val['site_id']?>" <?php echo ($checked && !in_array('-1', $categorySites)) ? $checked.'ed' : '' ?>>
                     	</label>
             		</div>
         		<?php endforeach;?>

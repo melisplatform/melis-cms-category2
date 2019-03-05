@@ -45,12 +45,15 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
             'cat2_date_creation' => date('Y-m-d'),
             'cat2_user_id_creation' => $currentUserId
         ];
+        $data['cat2_date_valid_start'] = null;
+        $data['cat2_date_valid_end'] = null;
         if (! empty($validDateStart)) {
             $data['cat2_date_valid_start'] = date('Y-m-d h:m:s',strtotime($validDateStart));
         }
         if (! empty($validDateEnd)) {
             $data['cat2_date_valid_end'] = date('Y-m-d h:m:s',strtotime($validDateEnd));
         }
+
         # save data in category2 table
         $newCatId = null;
         if (! empty($categoryId)) {
@@ -1130,8 +1133,8 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
         $langId = $arrayParameters['langId'];
         $onlyValid= $arrayParameters['onlyValid'];
 
-        $melisEcomCategoryTable = $this->getServiceLocator()->get('MelisCmsCategory2Table');
-        $categoryData = $melisEcomCategoryTable->getCategoryByFatherId($fatherId, $onlyValid);
+        $melisCmsCategory2Tbl = $this->getServiceLocator()->get('MelisCmsCategory2Table');
+        $categoryData = $melisCmsCategory2Tbl->getCategoryByFatherId($fatherId, $onlyValid);
         $catData = $categoryData->toArray();
 
         /**
@@ -1164,7 +1167,7 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
             }
 
             $catData[$key]['text'] = $escaper->escapeHtml($catName); //$tool->escapeHtml($catName);
-            $catData[$key]['textLang'] = (!empty($catNameLangName)) ? '('.$catNameLangName.')' : '';
+            $catData[$key]['textLang'] = (!empty($catNameLangName)) ?? null;
 
             $fatherId = $catData[$key]['cat2_id'];
 

@@ -206,9 +206,9 @@ class MelisCmsCategoryListController extends AbstractActionController
         $currentLocale = $currentLang->lang_cms_locale ?? null;
         $langId = $currentLang->lang_cms_id;
         // Getting Category Tree View form the Category Service
-        $melisComCategoryService = $this->getServiceLocator()->get('MelisCmsCategory2Service');
-        $categoryListData = $melisComCategoryService->getCategoryTreeview(null, $langId);
-        
+        $melisCmsCategorySvc = $this->getServiceLocator()->get('MelisCmsCategory2Service');
+        $categoryListData = $melisCmsCategorySvc->getCategoryTreeview(null, $langId,$siteId = null);
+
         // Category Tree View Preparation
         $categoryList = $this->prepareCategoryDataForTreeView($categoryListData, $selected, $openStateParent, $idAndNameOnly, $categoriesChecked, $currentLang->lang_cms_id);
 
@@ -263,20 +263,26 @@ class MelisCmsCategoryListController extends AbstractActionController
 
             $itemIcon = '';
             $categoryList[$key]['type'] = 'category';
+            $text = null;
+            if ($categoryList[$key]['text'] == ''){
+                $text = '<i>( no title )</i>';
+            } else {
+                $text = $categoryList[$key]['text'];
+            }
             if ($val['cat2_father_cat_id'] == -1)
             {
                 $itemIcon = '<i class="fa fa-book"></i>';
-                $categoryList[$key]['type'] = 'catalog';
-                $categoryList[$key]['text'] = $val['cat2_id'].' - '.$categoryList[$key]['text'];
+                $categoryList[$key]['type'] = 'category';
+
+                $categoryList[$key]['text'] = $val['cat2_id'].' - '. $text;
             }
             else
             {
-                $categoryList[$key]['text'] = $val['cat2_id'].' - '.$categoryList[$key]['text'];
+                $categoryList[$key]['text'] = $val['cat2_id'].' - '. $text;
             }
-            
+
             $categoryList[$key]['a_attr'] = array(
-                'data-numprods' => $numProds,
-                'data-textlang' => $categoryList[$key]['textLang'],
+                'data-textlang' => $categoryList[$key]['textLang'] ?? 'no translation',
                 'data-fathericon' => $itemIcon,
                 'data-fathercateid' => $val['cat2_father_cat_id'],
             );
@@ -343,7 +349,8 @@ class MelisCmsCategoryListController extends AbstractActionController
      * 
      * @return \Zend\View\Model\JsonModel
      */
-    public function saveCategoryTreeViewAction(){
+    public function saveCategoryTreeViewAction()
+    {
         $translator = $this->getServiceLocator()->get('translator');
         
         // Initialize Response Variable into Default Values

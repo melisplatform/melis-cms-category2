@@ -332,7 +332,7 @@ class MelisCmsCategoryController extends AbstractActionController
         $siteData   = $sitesTable->fetchAll()->toArray();
 
         $view = new ViewModel();
-        $view->categoryCountries = $sites;
+        $view->cartegorySites = $sites;
         $view->siteData = $siteData;
         $view->melisKey = $melisKey;
         return $view;
@@ -467,20 +467,30 @@ class MelisCmsCategoryController extends AbstractActionController
             $parentId       = $postValues['cat_father_cat_id'] ?? null;
             $status         = $postValues['cat_status'] ?? null;
             # validate Dates
-            $dateValidation = $categoryService->validateDates($postValues['cat_date_valid_start'],$postValues['cat_date_valid_end']);
+            $dateValidation = null;
             $dateValidStart = null;
             $dateValidEnd   = null;
-            if ($dateValidation) {
-                $dateValidStart = $postValues['cat_date_valid_start'] ?? null;
-                $dateValidEnd   = $postValues['cat_date_valid_end'] ?? null;
-            } else {
-                $trDateStart = $translator->translate('tr_meliscategory_categories_category_valid_from');
-                $trDateEnd   = $translator->translate('tr_meliscategory_categories_category_valid_to');
-                $errors  = [
-                    $trDateStart => "<strong>Valid date from</strong> must be less than to<strong> Valid date to</strong>",
-                    $trDateEnd   => "<strong>Valid date to </strong> must be greater than to <strong>Valid date from </strong>"
-                ];
+            if (! empty($dateActive) && ! empty($dateInactive)) {
+                $dateValidation = $categoryService->validateDates($dateActive,$dateInactive);
+                if ($dateValidation == true) {
+                    $dateValidStart = $postValues['cat_date_valid_start'] ?? null;
+                    $dateValidEnd   = $postValues['cat_date_valid_end'] ?? null;
+                } else {
+                    $trDateStart = $translator->translate('tr_meliscategory_categories_category_valid_from');
+                    $trDateEnd   = $translator->translate('tr_meliscategory_categories_category_valid_to');
+                    $errors  = [
+                        $trDateStart => "<strong>Valid date from</strong> must be less than to<strong> Valid date to</strong>",
+                        $trDateEnd   => "<strong>Valid date to </strong> must be greater than to <strong>Valid date from </strong>"
+                    ];
 
+                }
+            }
+
+            if (! empty($dateActive)) {
+                $dateValidStart = $dateActive;
+            }
+            if (! empty($dateInactive)) {
+                $dateValidEnd = $dateInactive;
             }
 
             # save Category
@@ -498,14 +508,15 @@ class MelisCmsCategoryController extends AbstractActionController
             $categorySiteId = null;
             if (! empty($catSitesData)) {
                 $catSiteTbl = $this->getCatSiteTable();
-                $tmpData = null;
-                if (! empty($passedCatId)) {
-                    $tmpData = $catSiteTbl->getEntryByField('cats2_cat2_id',$passedCatId)->toArray();
-                    foreach($tmpData as $idx => $val) {
-                        $tmpData[$idx] = $val['cats2_site_id'];
-                     }
-
-                }
+//                $tmpData = null;
+//                if (! empty($passedCatId)) {
+//                    $tmpData = $catSiteTbl->getEntryByField('cats2_cat2_id',$passedCatId)->toArray();
+//                    foreach($tmpData as $idx => $val) {
+//                        $tmpData[$idx] = $val['cats2_site_id'];
+//                     }
+//
+//                }
+                $catSiteTbl->deleteByField('cats2_cat2_id',$passedCatId);
                 # save data
                 foreach( $catSitesData as $siteId) {
                     # all selected sites
