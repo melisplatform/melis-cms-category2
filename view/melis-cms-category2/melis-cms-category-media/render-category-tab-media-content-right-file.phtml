@@ -10,35 +10,45 @@
     }
     $data_melisKey = 'data-melisKey="'.$this->melisKey.'"';
     $mediaData = $this->mediaData;
+    $currentPosition = 0;
 ?>
 
 <div <?php echo $id. ' '.$data_melisKey?> class="ecom-doc-container" data-doc-relation-type="<?= $relationType; ?>" data-doc-relation-id="<?= $this->relationId; ?>" data-doc-type="file">
-	<div class="clearfix">
-		<h4>
-			<i class="fa fa-paperclip"></i> <?php echo $this->translate('tr_meliscategory_documents_file_attachments')?>
-		</h4>
-        <button class="btn btn-primary pull-right category-add-file" data-type="file">
-            <i class="fa fa-folder-open"></i>
-            <?php echo $this->translate('Browse media')?>
-        </button>
+    <h4>
+        <i class="fa fa-paperclip"></i> <?php echo $this->translate('tr_meliscategory_documents_file_attachments')?>
+    </h4>
+    <button class="btn btn-primary pull-right category-add-file" data-type="file">
+        <i class="fa fa-folder-open"></i>
+        <?php echo $this->translate('Browse media')?>
+    </button>
+    <div class="clearfix"></div>
+    <div class="parent-file-list">
         <div class="category-file-list row">
             <div class="col-md-12 margin-b-10 category-file">
                 <div class="list-group">
-            <?php if (! empty($mediaData)) {?>
-                <?php foreach ($mediaData as $key => $data) {
-                    $path = $data['catm2_path'] ?? null; ?>
-                    <?php if ($data['catm2_type'] == 'file' ){?>
-                        <span>
-                            <a href="#" class="list-group-item list-group-item-action"><?= $path ?></a>
-                            <i class="fa fa-times-circle remove-file" ></i>
-                             <input type="hidden" value="<?= $path ?>">
-                        </span>
+                    <?php if (! empty($mediaData)) {?>
+                        <?php foreach ($mediaData as $key => $data) {
+                            $path = $data['catm2_path'] ?? null; ?>
+                            <?php if ($data['catm2_type'] == 'file' ){?>
+                                <span>
+                                    <a href="#" class="list-group-item list-group-item-action"><?= $path ?></a>
+                                    <i class="fa fa-times-circle remove-file" ></i>
+                                     <input type="hidden" value="<?= $path ?>">
+                                </span>
+                                <?php $currentPosition = $currentPosition + 1;?>
+                            <?php }?>
+                        <?php }?>
+                    <?php } else {?>
+                        <span class="no-image">No file(s)</span>
                     <?php }?>
-                <?php }?>
-            <?php } else {?>
-                <span class="no-image">No file(s)</span>
-            <?php }?>
+                </div>
             </div>
+            <!-- add to button attribute browse mediacurrent position -->
+            <script>
+                $(".category-add-image").attr('data-currentposition',<?= $currentPosition ?>);
+            </script>
         </div>
-	</div>
+        <div class="back-drop"></div>
+    </div>
+
 </div>

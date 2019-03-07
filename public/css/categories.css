@@ -361,6 +361,9 @@
 .category-file .list-group{
     padding:20px;
 }
+.category-file-list{
+    position: relative;
+}
 .category-file .list-group span {
     position: relative;
     display: block;
@@ -426,4 +429,17 @@
 }
 .root-checkbox input:checked + label {
     color: #5D5D5D;
+}
+.parent-image-list,
+.parent-file-list{
+    position:relative;
+}
+.back-drop {
+    position: absolute;
+    height:100%;
+    width:100%;
+    top:0;
+    background: #000;
+    opacity:0.8;
+    display: none;
 }

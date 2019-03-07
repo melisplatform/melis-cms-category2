@@ -42,6 +42,8 @@ $(function(){
 			 * number value in a string value
 			 */
 			catFatherId = parseInt(catSelected[0]);
+		} else {
+            catFatherId = -1;
 		}
 		$("#"+zoneId).removeClass("hidden");
 		melisHelper.zoneReload(zoneId, melisKey, {catId : 0, catFatherId: catFatherId});
@@ -227,12 +229,43 @@ $(function(){
 		categoryOpeningItemFlag = false;
 		var langText = $(this).text();
 		var langLocale = $(this).data('locale');
-		$('.cat-tree-view-languages span.filter-key').text(langText);		
+		$('.cat-tree-view-languages span.filter-key').text(langText);
+        // disable buttons
+        $("#categoryTreeViewSearchInput").attr("disabled","disabeld");
+        $(".category-list-lang-dropdown").attr("disabled","disabeld");
+        $(".category-list-lang-dropdown").css("cursor","not-allowed");
+        $("#clearSearchInputBtn").attr("disabled","disabeld");
+        $("#collapseCategoryTreeViewBtn").attr("disabled","disabeld");
+        $("#expandCategoryTreeViewBtn").attr("disabled","disabeld");
+        $("#refreshCategoryTreeView").attr("disabled","disabeld");
+        var categorySiteFilter = $("#categorySiteFilter");
+        categorySiteFilter.attr("disabled","disabeld");
+
 		$("#categoryTreeView").data('langlocale',langLocale);
-		$("#categoryTreeView").jstree(true).settings.core.data.data = [{name : "langlocale", value: langLocale}];
+		$("#categoryTreeView").jstree(true).settings.core.data.data = [{name : "langlocale", value: langLocale}, {name:"siteId", value : categorySiteFilter.val()}];
 		$("#categoryTreeView").jstree(true).refresh();
 	});
-		
+
+	$("body").on('change',"#categorySiteFilter", function(){
+		var value = this.value;
+		var cmsCategoryTree = $("#categoryTreeView");
+		var langLocale = cmsCategoryTree.data('langlocale');
+		if (typeof(cmsCategoryTree.jstree(true).settings) !== "undefined" ) {
+            $(this).attr("disabled","disabeld");
+            // disable buttons
+            $("#categoryTreeViewSearchInput").attr("disabled","disabeld");
+            $(".category-list-lang-dropdown").attr("disabled","disabeld");
+            $(".category-list-lang-dropdown").css("cursor","not-allowed");
+            $("#clearSearchInputBtn").attr("disabled","disabeld");
+            $("#collapseCategoryTreeViewBtn").attr("disabled","disabeld");
+            $("#expandCategoryTreeViewBtn").attr("disabled","disabeld");
+            $("#refreshCategoryTreeView").attr("disabled","disabeld");
+
+            cmsCategoryTree.jstree(true).settings.core.data.data = [{name : "langlocale", value: langLocale},{name:"siteId", value : value}];
+            cmsCategoryTree.jstree(true).refresh();
+		}
+	});
+
 	// Search Input
 	$("body").on("keyup", "#categoryTreeViewSearchInput", function(e){ 
 		categoryOpeningItemFlag = false;
@@ -343,73 +376,7 @@ $(function(){
 			$(this).find('input[type="checkbox"]').removeAttr('checked');
 		}
 	});
-	
-	$("body").on("click", ".categoryProductsRefresh", function(event, state) {
-		var catId = $("#categoryProductListTbl").data("catid");
-		melisHelper.zoneReload('id_meliscategory_categories_category_tab_products','meliscategory_categories_category_tab_products',{catId:catId,activateTab:true});
-	});
-	
-	// Category Products Remove Button
-	$("body").on("click", ".categoryProductsRemove", function(){
-		
-		var pcatId = $(this).parents("tr").attr("id");
-		var catId = $("#categoryProductListTbl").data("catid");
-		
-		var parentId = $("#saveCategory").data("catfatherid");
-		
-		var deleteTitle = translations.tr_meliscategory_categories_category_product_remove;
-    	var deleteMessage = translations.tr_meliscategory_categories_category_product_remove_confirm_msg;
-    	if(parentId == '-1'){
-    		deleteTitle = translations.tr_meliscategory_categories_catalog_product_remove;
-        	deleteMessage = translations.tr_meliscategory_categories_catalog_product_remove_confirm_msg;
-    	}
-		
-		// deletion confirmation
-		melisCoreTool.confirm(
-		translations.tr_meliscategory_categories_common_label_yes,
-		translations.tr_meliscategory_categories_common_label_no,
-		deleteTitle, 
-		deleteMessage, 
-		function() {
-			
-			var dataString = new Array;
-			
-			dataString.push({
-				name : "pcat_id",
-				value: pcatId
-			});
-			
-			dataString.push({
-				name : "parent_id",
-				value: parentId
-			});
-			
-			dataString.push({
-				name : "cat_id",
-				value: catId
-			});
-			
-	        dataString = $.param(dataString);
-	        
-			$.ajax({
- 		        type        : "POST", 
- 		        url         : "/melis/MelisCommerce/MelisComCategory/removeCategoryProduct",
- 		        data		: dataString,
- 		        dataType    : "json",
- 		        encode		: true
- 			}).done(function(data) {
- 				if(data.success) {
- 					melisHelper.zoneReload('id_meliscategory_categories_category_tab_products','meliscategory_categories_category_tab_products',{catId:catId,activateTab:true});
- 				}else{
- 					alert( translations.tr_meliscore_error_message );
- 				}
- 				melisCore.flashMessenger();
-				melisHelper.melisOkNotification(data.textTitle, data.textMessage);
- 			}).fail(function(){
- 				alert( translations.tr_meliscore_error_message );
- 			});
-		});
-	});
+
 	
 	// Category Tree Double Click Item Action
 	$("body").on("dblclick", ".jstree-node", function(evt){
@@ -480,7 +447,12 @@ $(function(){
         var categoryv2ModalUrl = '/melis/MelisCmsCategory2/MelisCmsCategoryMedia/render-mini-media-modal-container';
         var data = $(this).data();
         melisCoreTool.pending($(this));
-		mediaDirectory.browse(categoryv2ModalUrl,catv2ImageZoneId,catv2ImageMelisKey,{fileType:data.type, targetDiv: ".category-image-list"},".category-image-list")
+		mediaDirectory.browse(categoryv2ModalUrl,catv2ImageZoneId,catv2ImageMelisKey,{
+				fileType  : data.type,
+				targetDiv : ".category-image-list",
+				currentPosition : data.currentposition
+			}, ".category-image-list")
+        $(".parent-file-list .back-drop").fadeIn("fast")
 	});
 
     categoryBody.on('click', ".category-add-file" , function(){
@@ -489,7 +461,12 @@ $(function(){
         var categoryv2ModalUrl = '/melis/MelisCmsCategory2/MelisCmsCategoryMedia/render-mini-media-modal-container';
         var data = $(this).data();
         melisCoreTool.pending($(this));
-        mediaDirectory.browse(categoryv2ModalUrl,catv2ImageZoneId,catv2ImageMelisKey,{fileType:data.type, targetDiv: ".category-file-list .list-group" },".category-file-list")
+        mediaDirectory.browse(categoryv2ModalUrl,catv2ImageZoneId,catv2ImageMelisKey,{
+        	fileType  : data.type,
+			targetDiv : ".category-file-list .list-group",
+            currentPosition : data.currentposition
+		},".category-file-list")
+		$(".parent-image-list .back-drop").fadeIn("fast");
     });
     categoryBody.on('submit',"#id_meliscategory_media_upload_form",function(e) {
         e.preventDefault();
@@ -518,9 +495,15 @@ $(function(){
         parentDiv.remove();
 	});
     categoryBody.on('click', ".category-file .remove-file", function(){
-        var parentDiv = $(this).parent().parent();
+        var parentDiv = $(this).parent();
         parentDiv.remove();
     });
+	categoryBody.on('click','#closeMedialibrary', function(){
+		console.log($(this).data());
+
+		var parentDiv = $(this).data('targetRemoveBackdrop');
+		$(parentDiv + " .back-drop").fadeOut('fast');
+	});
 });
 
 window.enableDisableAddCategoryBtn = function(action){
@@ -544,13 +527,14 @@ window.initCmsCategoryTreeView = function(){
 	
 	$('#categoryTreeView')
 		.on('changed.jstree', function (e, data) {
-			enableDisableAddCategoryBtn('enable');
+			//enableDisableAddCategoryBtn('enable');
 		})
 		.on('refresh.jstree', function (e, data) {
-			enableDisableAddCategoryBtn('disable');
+			//enableDisableAddCategoryBtn('disable');
 		})
 		.on('loading.jstree', function (e, data) {
-			melisCoreTool.pending("meliscategory_categories_list_search_input");
+			melisCoreTool.pending("categoryTreeViewSearchInput");
+			melisCoreTool.pending("categorySiteFilter");
 		})
 		.on('loaded.jstree', function (e, data) {
             melisCoreTool.pending("meliscategory_categories_list_search_input");
@@ -570,7 +554,15 @@ window.initCmsCategoryTreeView = function(){
 				var fatherIcon = father.data('fathericon');
 				var temp = father.find('i');
 				father.html(temp.get(0).outerHTML + '<b>' + fatherIcon +' ' + father.text() + '</b>');
-			})
+			});
+            $("#categorySiteFilter").removeAttr('disabled');
+            $("#categoryTreeViewSearchInput").removeAttr('disabled');
+            $(".category-list-lang-dropdown").removeAttr('disabled');
+            $(".category-list-lang-dropdown").css("cursor","default	");
+            $("#clearSearchInputBtn").removeAttr('disabled');
+            $("#collapseCategoryTreeViewBtn").removeAttr('disabled');
+            $("#expandCategoryTreeViewBtn").removeAttr('disabled');
+            $("#refreshCategoryTreeView").removeAttr('disabled');
 
 		})
 		.on('ready.jstree', function (e, data) {
@@ -604,20 +596,20 @@ window.initCmsCategoryTreeView = function(){
 				
 				var textlang = $('#'+v+'_anchor').data('textlang');
 				var products = $('#'+v+'_anchor').data('numprods');
-				var spanHtml = '<span title="' + translations.tr_meliscategory_categories_list_tree_view_product_num + '">('+ products +')</span>';
-				var seoId = $('#'+v+'_anchor').data('seopage');
-				if(seoId){
-					spanHtml = spanHtml + ' - <span class="fa fa-file-o"></span> ' +  seoId ;
-				}
+			//	var spanHtml = '<span title="' + translations.tr_meliscategory_categories_list_tree_view_product_num + '">('+ products +')</span>';
+			// 	var seoId = $('#'+v+'_anchor').data('seopage');
+			// 	if(seoId){
+			// 		spanHtml = spanHtml + ' - <span class="fa fa-file-o"></span> ' +  seoId ;
+			// 	}
+				//
+				// if(textlang){
+				// 	spanHtml = ' ' + textlang + spanHtml;
+				// }
 				
-				if(textlang){
-					spanHtml = ' ' + textlang + spanHtml;
-				}
-				
-				if(!$('#'+v+'_anchor').hasClass('updatedText')){
-					$('#'+v+'_anchor').append(spanHtml);
-					$('#'+v+'_anchor').addClass('updatedText');
-				}
+				// if(!$('#'+v+'_anchor').hasClass('updatedText')){
+				// 	$('#'+v+'_anchor').append(spanHtml);
+				// 	$('#'+v+'_anchor').addClass('updatedText');
+				// }
 				
 			});
 		 })
@@ -1750,6 +1742,11 @@ var mediaDirectory = {
             $(".category-add-file").removeAttr('disabled ');
 
             if ($(targetDiv).length > 0) {
+                var categoryAddImage = $(".category-add-image");
+                var currentPosition = categoryAddImage.data('currentposition');
+                var categoryAddFile = $(".category-add-file");
+                var currentPositionFile = categoryAddFile.data('currentposition');
+
                 $('body').on('click','.add-image',function(event) {
                     event.stopPropagation();
                     event.stopImmediatePropagation();
@@ -1757,8 +1754,10 @@ var mediaDirectory = {
                     var order = data.order;
                     var html  = null;
                     targetDiv = data.targetDiv;
+
                     if (data.fileType === 'image') {
-                        html  = "<div class='col-md-12 margin-b-10 category-image'>" +
+                        currentPosition = currentPosition + 1 + "image";
+                        html  = "<div id='"+ currentPosition  +"' class='col-md-12 margin-b-10 category-image'>" +
                             "<img src='" + data.imageUrl + "' class='img-responsive' />" +
                             "<input type='hidden' value='" + data.imageUrl + "' data-order='" + order + "'/>" +
                             "<div class='category-image-option'>" +
@@ -1766,8 +1765,11 @@ var mediaDirectory = {
                             " <a class='removeImage' data-url='"+data.imageUrl+"' > <i class='fa fa-times' title='Delete image'></i></a>" +
                             "</div>" +
                             "</div>";
-                        //scroll down
-                        $("html, body").animate({ scrollTop: $(document).height()- $(window).height() });
+
+                        //update button attribute current position
+                        $(".category-add-image").attr('currentposition', currentPosition);
+                        $(targetDiv).append(html);
+                        $("html, body").animate({ scrollTop: $("#" + currentPosition).offset().top }, 1000);
                     } else {
                         html = "<div class='col-md-3'>" +
                                 "<div class=\"file-area\">" +
@@ -1780,20 +1782,28 @@ var mediaDirectory = {
                                 "<a class='removeImage' data-url='"+data.imageUrl+"' > <i class='fa fa-times' title='Delete file'></i></a>" +
                                 "</div>" +
                                "</div>";
-                        html = '<span>\n' +
+
+                        currentPositionFile = currentPositionFile + 1 + "file";
+                        html = '<span id='+ currentPositionFile +'>\n' +
                                 ' <a href="#" class="list-group-item list-group-item-action">' + data.imageUrl + '</a>\n' +
-                                ' <i class="fa fa-times-circle"></i>\n' +
-                                ' </span>\n' +
-                                ' <input type="hidden" value="' + data.imageUrl +'">'
+                                ' <i class="fa fa-times-circle remove-file"></i>\n' +
+                                ' <input type="hidden" value="' + data.imageUrl +'">'+
+                                ' </span>\n'
+
+                        $(".category-add-file").attr('currentposition', currentPositionFile);
+                        $(targetDiv).append(html);
+                        $("html, body").animate({ scrollTop: $("#" + currentPositionFile).position().top }, 1000);
                     }
+
 
                     // remove no image
                     $(".no-image").hide();
-                    $(targetDiv).append(html);
-                });
 
+                    //scroll to added element
+
+                });
             }
-        });
+        }, 'static');
         melisCoreTool.pending($(this));
     }
 };

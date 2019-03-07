@@ -318,7 +318,7 @@
 .category-image-option {
     position:absolute;
     height:100%;
-    width:100%;
+    width:98%;
     top:0;
     opacity:0.7;
     background:#000;
@@ -362,6 +362,9 @@
 .category-file .list-group{
     padding:20px;
 }
+.category-file-list{
+    position: relative;
+}
 .category-file .list-group span {
     position: relative;
     display: block;
@@ -377,4 +380,67 @@
 }
 .category-file span:hover i {
     display: block;
+}
+#id_meliscategory_categories_category_form_sites{
+    margin:50px 0 0 2px;
+}
+#meliscategory_site_filer_form .select2-selection__clear {
+    background:#eee;
+    display:block;
+    width:30px;
+    text-align:center;
+    cursor:pointer;
+}
+.root-checkbox {
+    float:right;
+}
+.root-checkbox input {
+    display: none;
+}
+
+.root-checkbox label {
+    font-size: 18px;
+    color: #5D5D5D;
+    display: inline-block;
+    padding: 0 0 0 1em;
+    cursor: pointer;
+}
+.root-checkbox label:before {
+    content: '';
+    display: inline-block;
+    background: #72af46;
+    position: absolute;
+    left: 0;
+    top: 5px;
+    height: 20px;
+    width: 20px;
+    margin-right: 10px;
+    border-radius: 80%;
+    box-shadow: 0px 1px 0 0 rgba(0, 0, 0, .2);
+    box-sizing: border-box;
+    border: 10px solid #fff;
+    transition: border .3s ease;
+}
+
+.root-checkbox input:checked + label:before {
+    content: "\f046";
+}
+.root-checkbox input + label {
+    transition: color .7s ease;
+}
+.root-checkbox input:checked + label {
+    color: #5D5D5D;
+}
+.parent-image-list,
+.parent-file-list{
+    position:relative;
+}
+.back-drop {
+    position: absolute;
+    height:100%;
+    width:100%;
+    top:0;
+    background: #000;
+    opacity:0.8;
+    display: none;
 }

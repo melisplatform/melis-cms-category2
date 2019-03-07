@@ -446,6 +446,7 @@ $(function(){
 				targetDiv : ".category-image-list",
 				currentPosition : data.currentposition
 			}, ".category-image-list")
+        $(".parent-file-list .back-drop").fadeIn("fast")
 	});
 
     categoryBody.on('click', ".category-add-file" , function(){
@@ -454,7 +455,12 @@ $(function(){
         var categoryv2ModalUrl = '/melis/MelisCmsCategory2/MelisCmsCategoryMedia/render-mini-media-modal-container';
         var data = $(this).data();
         melisCoreTool.pending($(this));
-        mediaDirectory.browse(categoryv2ModalUrl,catv2ImageZoneId,catv2ImageMelisKey,{fileType:data.type, targetDiv: ".category-file-list .list-group" },".category-file-list")
+        mediaDirectory.browse(categoryv2ModalUrl,catv2ImageZoneId,catv2ImageMelisKey,{
+        	fileType  : data.type,
+			targetDiv : ".category-file-list .list-group",
+            currentPosition : data.currentposition
+		},".category-file-list")
+		$(".parent-image-list .back-drop").fadeIn("fast");
     });
     categoryBody.on('submit',"#id_meliscategory_media_upload_form",function(e) {
         e.preventDefault();
@@ -486,6 +492,12 @@ $(function(){
         var parentDiv = $(this).parent();
         parentDiv.remove();
     });
+	categoryBody.on('click','#closeMedialibrary', function(){
+		console.log($(this).data());
+
+		var parentDiv = $(this).data('targetRemoveBackdrop');
+		$(parentDiv + " .back-drop").fadeOut('fast');
+	});
 });
 
 window.enableDisableAddCategoryBtn = function(action){

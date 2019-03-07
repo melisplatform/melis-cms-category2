@@ -15,7 +15,7 @@
     $title = "Select image";
     $form  = $this->categoryMediaForm;
 ?>
-<div class="modal-content" id="<?= $id; ?>" data-melisKey="<?= $data_melisKey; ?>">
+<div class="modal-content" id="<?= $id; ?>"  data-melisKey="<?= $data_melisKey; ?>">
     <div class="modal-body padding-none">
         <div class="wizard">
             <div class="widget widget-tabs widget-tabs-double widget-tabs-responsive margin-none border-none">
@@ -81,8 +81,17 @@
                             </div>
                         </div>
                         <br>
+                        <?php
+                            $targetDiv = null;
+                            if ($this->fileType == 'image') {
+                                $targetDiv = ".parent-file-list";
+                            } else {
+                                $targetDiv = ".parent-image-list";
+                            }
+                        ?>
                         <div class="buttons">
-                            <button data-dismiss="modal" class="btn btn-danger pull-right"><i class="fa fa-times"></i> <?= $this->translate('tr_meliscore_common_close')?></button>                        </div>
+                            <button data-dismiss="modal" id="closeMedialibrary" data-target-remove-backdrop ="<?= $targetDiv ?>"  class="btn btn-danger pull-right"><i class="fa fa-times"></i> <?= $this->translate('tr_meliscore_common_close')?></button>
+                        </div>
                         <div class="clearfix"></div>
                     </div>
                 </div>

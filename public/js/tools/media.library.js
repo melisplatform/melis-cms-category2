@@ -7,6 +7,9 @@ var mediaDirectory = {
             if ($(targetDiv).length > 0) {
                 var categoryAddImage = $(".category-add-image");
                 var currentPosition = categoryAddImage.data('currentposition');
+                var categoryAddFile = $(".category-add-file");
+                var currentPositionFile = categoryAddFile.data('currentposition');
+
                 $('body').on('click','.add-image',function(event) {
                     event.stopPropagation();
                     event.stopImmediatePropagation();
@@ -14,9 +17,9 @@ var mediaDirectory = {
                     var order = data.order;
                     var html  = null;
                     targetDiv = data.targetDiv;
-                    currentPosition = currentPosition + 1 + "image";
 
                     if (data.fileType === 'image') {
+                        currentPosition = currentPosition + 1 + "image";
                         html  = "<div id='"+ currentPosition  +"' class='col-md-12 margin-b-10 category-image'>" +
                             "<img src='" + data.imageUrl + "' class='img-responsive' />" +
                             "<input type='hidden' value='" + data.imageUrl + "' data-order='" + order + "'/>" +
@@ -26,6 +29,10 @@ var mediaDirectory = {
                             "</div>" +
                             "</div>";
 
+                        //update button attribute current position
+                        $(".category-add-image").attr('currentposition', currentPosition);
+                        $(targetDiv).append(html);
+                        $("html, body").animate({ scrollTop: $("#" + currentPosition).offset().top }, 1000);
                     } else {
                         html = "<div class='col-md-3'>" +
                                 "<div class=\"file-area\">" +
@@ -38,24 +45,28 @@ var mediaDirectory = {
                                 "<a class='removeImage' data-url='"+data.imageUrl+"' > <i class='fa fa-times' title='Delete file'></i></a>" +
                                 "</div>" +
                                "</div>";
-                        html = '<span>\n' +
+
+                        currentPositionFile = currentPositionFile + 1 + "file";
+                        html = '<span id='+ currentPositionFile +'>\n' +
                                 ' <a href="#" class="list-group-item list-group-item-action">' + data.imageUrl + '</a>\n' +
                                 ' <i class="fa fa-times-circle remove-file"></i>\n' +
                                 ' <input type="hidden" value="' + data.imageUrl +'">'+
                                 ' </span>\n'
 
+                        $(".category-add-file").attr('currentposition', currentPositionFile);
+                        $(targetDiv).append(html);
+                        $("html, body").animate({ scrollTop: $("#" + currentPositionFile).position().top }, 1000);
                     }
-                    //update button attribute current position
-                    $(".category-add-image").attr('currentposition', currentPosition);
+
+
                     // remove no image
                     $(".no-image").hide();
-                    $(targetDiv).append(html);
-                    //scroll to added element
-                    $("html, body").animate({ scrollTop: $("#" + currentPosition).offset().top }, 1000);
-                });
 
+                    //scroll to added element
+
+                });
             }
-        });
+        }, 'static');
         melisCoreTool.pending($(this));
     }
 };
