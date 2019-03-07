@@ -7,7 +7,6 @@
 ?>
 <div class="col-xs-12 col-lg-12" <?php echo $id.' '.$data_melisKey; ?> style="margin-top:20px;">
     <h4> Filter by site</h4>
-    <p><i class="fa fa-globe"></i> Sites</p>
 	<?php
     	$form = $this->meliscategory_site_filer_form;
     	$form->prepare();
@@ -18,6 +17,7 @@
     <script>
 
         $body.find("#categorySiteFilter").select2({
+            allowClear:true,
             width: '100%',
             disabled: false,
             language : {

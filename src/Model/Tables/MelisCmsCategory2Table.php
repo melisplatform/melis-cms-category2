@@ -495,4 +495,29 @@ class MelisCmsCategory2Table extends MelisGenericTable
         return $resultSet;
     }
 
+    public function getFirstLevelCategoriesPerSite($siteId, $langId)
+    {
+        $select = $this->tableGateway->getSql()->select();
+        $select->columns(array('*'));
+        # join melis_cms_category2_sites
+        $tblToJoin   = "melis_cms_category2_sites";
+        $relation    = "melis_cms_category2_sites.cats2_cat2_id = melis_cms_category2.cat2_id ";
+        $joinColumns = ['*'];
+        $joinType    = $select::JOIN_LEFT;
+        $select->join($tblToJoin,$relation,$joinColumns,$joinType);
+        # join melis_cms_site_domain
+        $tblToJoin   = "melis_cms_category2_trans";
+        $relation    = "melis_cms_category2_trans.catt2_category_id = melis_cms_category2.cat2_id ";
+        $joinColumns = ['catt2_name', 'catt2_description'];
+        $joinType    = $select::JOIN_LEFT;
+        $select->join($tblToJoin,$relation,$joinColumns,$joinType);
+        //site id
+        $select->where->equalTo('melis_cms_category2_sites.cats2_site_id',$siteId);
+        // lang id
+        $select->where->equalTo('melis_cms_category2_trans.catt2_lang_id',$langId);
+        $resultSet = $this->tableGateway->selectWith($select);
+
+        return $resultSet;
+    }
+
 }

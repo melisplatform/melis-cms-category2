@@ -6,7 +6,7 @@
     $idLen = $this->docRelationType.$this->docRelationId;
     $data_melisKey = 'data-melisKey="'.$this->melisKey.'"';
     $media = $this->mediaData;
-
+    $currentPosition = 0;
 ?>
 <div <?= $id . $data_melisKey; ?>>
 	<div class="row">
@@ -23,11 +23,16 @@
                                 <a class="removeImage"  href="#"><i class='fa fa-times' title='Delete image'></i></a>
                             </div>
                         </div>
+                        <?php $currentPosition = $currentPosition + 1;?>
                     <?php }?>
                 <?php }?>
             <?php } else {?>
                 <span class="no-image">No image</span>
             <?php }?>
+            <!-- add to button attribute browse mediacurrent position -->
+            <script>
+                $(".category-add-image").attr('data-currentposition',<?= $currentPosition ?>);
+            </script>
         </div>
 	</div>
 </div>

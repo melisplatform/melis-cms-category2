@@ -353,11 +353,12 @@ class MelisCmsCategoryController extends AbstractActionController
             $melisComCategoryService = $this->getServiceLocator()->get('MelisCmsCategory2Service');
             $categoryData = $melisComCategoryService->getCategoryById($catId);
             $category = $categoryData->getCategory();
-
             $view->categorystatus = ($category->cat2_status) ? 'checked' : '';
         }
 
         $view->melisKey = $melisKey;
+        $view->catId = $catId;
+
         return $view;
     }
 

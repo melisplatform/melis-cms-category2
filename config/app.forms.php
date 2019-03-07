@@ -197,8 +197,8 @@ return array(
                                     'name' => 'categorySiteFilter',
                                     'type' => 'MelisCmsPluginSiteSelect',
                                     'options' => [
-                                        'label' => 'Filter Tree',
-                                        'tooltip' => 'Filtering the tree'
+                                        'label' => 'Sites',
+                                        'tooltip' => 'Filtering the tree by site'
                                     ],
                                     'attributes' => [
                                         'id' => 'categorySiteFilter',

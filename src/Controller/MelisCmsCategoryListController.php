@@ -192,7 +192,8 @@ class MelisCmsCategoryListController extends AbstractActionController
         $langLocale = $this->params()->fromQuery('langlocale');
         $selected = $this->params()->fromQuery('selected');
         $openStateParent = $this->params()->fromQuery('openStateParent');
-        
+        $siteId = $this->params()->fromQuery('siteId');
+
         $idAndNameOnly = $this->params()->fromQuery('idAndNameOnly');
         $categoriesChecked = $this->params()->fromQuery('categoriesChecked');
 
@@ -205,12 +206,52 @@ class MelisCmsCategoryListController extends AbstractActionController
         $currentLang = $cmsLang->getEntryByField('lang_cms_locale',$langLocale)->current();
         $currentLocale = $currentLang->lang_cms_locale ?? null;
         $langId = $currentLang->lang_cms_id;
+        $categoryList = [];
         // Getting Category Tree View form the Category Service
-        $melisCmsCategorySvc = $this->getServiceLocator()->get('MelisCmsCategory2Service');
-        $categoryListData = $melisCmsCategorySvc->getCategoryTreeview(null, $langId,$siteId = null);
 
-        // Category Tree View Preparation
-        $categoryList = $this->prepareCategoryDataForTreeView($categoryListData, $selected, $openStateParent, $idAndNameOnly, $categoriesChecked, $currentLang->lang_cms_id);
+        $melisCmsCategorySvc = $this->getServiceLocator()->get('MelisCmsCategory2Service');
+        if (empty($siteId)) {
+            $categoryListData = $melisCmsCategorySvc->getCategoryTreeview(null, $langId,$siteId = null);
+            // Category Tree View Preparation
+            $categoryList = $this->prepareCategoryDataForTreeView($categoryListData, $selected, $openStateParent, $idAndNameOnly, $categoriesChecked, $currentLang->lang_cms_id);
+        } else {
+            $categoryList = $melisCmsCategorySvc->getFirstLevelCategoriesPerSite($siteId, $langId);
+            $tmpData = [];
+            if (! empty($categoryList)) {
+                foreach ($categoryList as $idx => $val) {
+                    $textColor = 'text-success';
+                    if (!$val['cat2_status']) {
+                        $textColor = "text-danger";
+                    }
+                    $categoryName = null;
+                    if (! empty($val['catt2_name'])) {
+                        $categoryName = $val['catt2_name'];
+                    } else {
+                        $categoryName = "<i>( no title )</i>";
+                    }
+
+                    $tmpData[] = [
+                        'cat2_id' => $val['cat2_id'],
+                        'text'    => $val['cat2_id'] . ' - ' . $categoryName,
+                        'textLang'=> false,
+                        'id'      => $val['cat2_id'] . '_categoryid',
+                        'icon'    => 'fa fa-circle ' . $textColor,
+                        "type"    => 'category',
+                        'a_attr'  => [
+                            'data-textlang' => false,
+                            'data-fathericon' => "<i class='fa fa-book'></i>",
+                            'data-fathercateid' => '-1'
+                        ],
+                        'state'   => [
+                            'opened' => false,
+                            'selected' => false,
+                            'checked' => false
+                        ]
+                    ];
+                }
+            }
+            $categoryList = $tmpData;
+        }
 
         return new JsonModel($categoryList);
     }

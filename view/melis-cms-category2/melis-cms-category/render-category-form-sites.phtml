@@ -18,9 +18,9 @@
                 </div>
     		</div>
     		<form>
-        		<?php 
+        		<?php
         		    $checked = '';
-        		    if (count($siteData) == count($categorySites)){
+        		    if (count($siteData) == count($categorySites) || count($categorySites) == 1){
         		        $checked = 'check';
         		    }
         		?>
@@ -41,7 +41,10 @@
         			?>
         			<div class="col-xs-4">
                     	<label class="cms-category-checkbox">
-                    		<i class="fa fa-<?php echo ($checked) ? $checked.'-' : '' ?>square-o fa-lg"></i> <?php echo !empty($val['site_label']) ? $val['site_label'] : $val['site_name']?>
+                            <?php
+                                $siteName = $val['site_label'] ?? $val['site_name'];
+                            ?>
+                    		<i class="fa fa-<?php echo ($checked) ? $checked.'-' : '' ?>square-o fa-lg"></i> <?php echo $val['site_id'] . " - " . $siteName;?>
                     		<input type="checkbox" name="cat_sites[]" value="<?php echo $val['site_id']?>" <?php echo ($checked && !in_array('-1', $categorySites)) ? $checked.'ed' : '' ?>>
                     	</label>
             		</div>

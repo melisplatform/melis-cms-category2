@@ -5,6 +5,8 @@ var mediaDirectory = {
             $(".category-add-file").removeAttr('disabled ');
 
             if ($(targetDiv).length > 0) {
+                var categoryAddImage = $(".category-add-image");
+                var currentPosition = categoryAddImage.data('currentposition');
                 $('body').on('click','.add-image',function(event) {
                     event.stopPropagation();
                     event.stopImmediatePropagation();
@@ -12,8 +14,10 @@ var mediaDirectory = {
                     var order = data.order;
                     var html  = null;
                     targetDiv = data.targetDiv;
+                    currentPosition = currentPosition + 1 + "image";
+
                     if (data.fileType === 'image') {
-                        html  = "<div class='col-md-12 margin-b-10 category-image'>" +
+                        html  = "<div id='"+ currentPosition  +"' class='col-md-12 margin-b-10 category-image'>" +
                             "<img src='" + data.imageUrl + "' class='img-responsive' />" +
                             "<input type='hidden' value='" + data.imageUrl + "' data-order='" + order + "'/>" +
                             "<div class='category-image-option'>" +
@@ -21,8 +25,7 @@ var mediaDirectory = {
                             " <a class='removeImage' data-url='"+data.imageUrl+"' > <i class='fa fa-times' title='Delete image'></i></a>" +
                             "</div>" +
                             "</div>";
-                        //scroll down
-                        $("html, body").animate({ scrollTop: $(document).height()- $(window).height() });
+
                     } else {
                         html = "<div class='col-md-3'>" +
                                 "<div class=\"file-area\">" +
@@ -42,10 +45,13 @@ var mediaDirectory = {
                                 ' </span>\n'
 
                     }
-
+                    //update button attribute current position
+                    $(".category-add-image").attr('currentposition', currentPosition);
                     // remove no image
                     $(".no-image").hide();
                     $(targetDiv).append(html);
+                    //scroll to added element
+                    $("html, body").animate({ scrollTop: $("#" + currentPosition).offset().top }, 1000);
                 });
 
             }

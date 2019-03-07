@@ -1464,7 +1464,8 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
      * @param boolean $valid
      * @return mixed
      */
-    public function getChildrenByLangId($fatherId, $langId, $valid, $order = false) {
+    public function getChildrenByLangId($fatherId, $langId, $valid, $order = false)
+    {
         //prepare events parameters
         $arrayParameters = $this->makeArrayFromParameters(__METHOD__, func_get_args());
 
@@ -1481,6 +1482,26 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
         $arrayParameters['results'] = $results;
         //service event end
         $arrayParameters = $this->sendEvent('meliscommerce_service_category_get_valid_children_by_lang_id_end', $arrayParameters);
+
+        return $arrayParameters['results'];
+    }
+    public function getFirstLevelCategoriesPerSite($siteId, $langId = 1)
+    {
+        $arrayParameters = $this->makeArrayFromParameters(__METHOD__, func_get_args());
+
+        //service event start
+        $arrayParameters = $this->sendEvent('meliscms_service_category_get_first_level_categories_per_site_start', $arrayParameters);
+        $siteId = $arrayParameters['siteId'];
+        $langId = $arrayParameters['langId'];
+
+        //implementation start
+        $categoryTable = $this->getServiceLocator()->get('MelisCmsCategory2Table');
+        $categories = $categoryTable->getFirstLevelCategoriesPerSite($siteId,$langId)->toArray();
+
+        //implementation end
+        $arrayParameters['results'] = $categories;
+        //service event end
+        $arrayParameters = $this->sendEvent('meliscms_service_category_get_first_level_categories_per_site_end', $arrayParameters);
 
         return $arrayParameters['results'];
     }
