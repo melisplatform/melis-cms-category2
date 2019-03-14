@@ -79,6 +79,8 @@ return [
     //js tree
     'tr_meliscategory_categories_common_btn_add' => 'Add',
     'tr_meliscategory_categories_common_btn_update' => 'Edit',
-    'tr_meliscategory_categories_common_btn_delete' => 'Delete'
+    'tr_meliscategory_categories_common_btn_delete' => 'Delete',
+    'tr_melis_cms_category_empty_media_file' => 'No file uploaded',
+    'tr_melis_cms_category_empty_media_image' => 'No image uploaded',
 
 ];

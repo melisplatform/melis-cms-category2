@@ -427,7 +427,7 @@ class MelisCmsCategoryController extends AbstractActionController
         $view = new ViewModel();
         $view->melisKey = $melisKey;
         $view->tableColumns = $columns;
-        $view->getToolDataTableConfig = $melisTool->getDataTableConfiguration('#categoryProductListTbl', true, false, $tableOption);
+        $view->getToolDataTableConfig = $melisTool->getDataTableConfiguration('//categoryProductListTbl', true, false, $tableOption);
         $view->catId = $catId;
         $view->activateTab = ($activateTab) ? 'active' : '';
         $view->prodCount = $prodCount;
@@ -447,7 +447,8 @@ class MelisCmsCategoryController extends AbstractActionController
         $textTitle = $translator->translate('tr_melis_cms_category_v2');
         $message   = $translator->translate('tr_meliscms_categories_err_category_save_unable');
         $errors    = [];
-        $logTypeCode = "CMS_MELIS_CATEGORY_ADD";
+        $logTypeCode = "CMS_MELIS_CATEGORY2_ADD";
+        $id = null;
         if($request->isPost()) {
             $this->getEventManager()->trigger('meliscms_category_save_start', $this, $request);
             $currentUserLoggedIn = $this->getLoggedInUserInfo();
@@ -459,112 +460,128 @@ class MelisCmsCategoryController extends AbstractActionController
             $passedCatId         = $postValues['cat_id'] ?? null;
             $dateActive          = $postValues['cat_date_valid_start'];
             $dateInactive        = $postValues['cat_date_valid_end'];
-            # melis-core config
+            
+            // melis-core config
             $melisMelisCoreConfig = $this->serviceLocator->get('MelisCoreConfig');
-            # form config
+            // form config
             $appConfigForm  = $melisMelisCoreConfig->getItem('meliscategory/forms/meliscategory_categories/meliscategory_categories_category_information_form');
-            # create form
+            // create form
             $propertyForm   = $this->getForm($appConfigForm);
-            $parentId       = $postValues['cat_father_cat_id'] ?? null;
-            $status         = $postValues['cat_status'] ?? null;
-            # validate Dates
-            $dateValidation = null;
-            $dateValidStart = null;
-            $dateValidEnd   = null;
-            if (! empty($dateActive) && ! empty($dateInactive)) {
-                $dateValidation = $categoryService->validateDates($dateActive,$dateInactive);
-                if ($dateValidation == true) {
-                    $dateValidStart = $postValues['cat_date_valid_start'] ?? null;
-                    $dateValidEnd   = $postValues['cat_date_valid_end'] ?? null;
-                } else {
-                    $trDateStart = $translator->translate('tr_meliscategory_categories_category_valid_from');
-                    $trDateEnd   = $translator->translate('tr_meliscategory_categories_category_valid_to');
-                    $errors  = [
-                        $trDateStart => "<strong>Valid date from</strong> must be less than to<strong> Valid date to</strong>",
-                        $trDateEnd   => "<strong>Valid date to </strong> must be greater than to <strong>Valid date from </strong>"
-                    ];
+            $formValid = [];
+            $propertyFormData = [];
 
-                }
-            }
-
-            if (! empty($dateActive)) {
-                $dateValidStart = $dateActive;
-            }
-            if (! empty($dateInactive)) {
-                $dateValidEnd = $dateInactive;
-            }
-
-            # save Category
-            $categoryId  = $categoryService->saveCategory($parentId, $status,$userId, $dateValidStart, $dateValidEnd, $passedCatId);
-            # save Category translations
+            // validate translations form
             foreach ($catTranslationData as $idx => $val) {
-                $catName        = $val['catt2_name'] ?? null;
-                $catDescription = $val['catt2_description'] ?? null;
-                $catLangId      = $val['catt2_lang_id'] ?? null;
-                if (! empty($catLangId)) {
-                    $categoryService->saveCategoryTexts($categoryId, $catLangId, $catName, $catDescription ,$passedCatId);
-                }
-            }
-            # save category sites
-            $categorySiteId = null;
-            if (! empty($catSitesData)) {
-                $catSiteTbl = $this->getCatSiteTable();
-//                $tmpData = null;
-//                if (! empty($passedCatId)) {
-//                    $tmpData = $catSiteTbl->getEntryByField('cats2_cat2_id',$passedCatId)->toArray();
-//                    foreach($tmpData as $idx => $val) {
-//                        $tmpData[$idx] = $val['cats2_site_id'];
-//                     }
-//
-//                }
-                $catSiteTbl->deleteByField('cats2_cat2_id',$passedCatId);
-                # save data
-                foreach( $catSitesData as $siteId) {
-                    # all selected sites
-                    if ($siteId == -1){
-                        $sitesTable = $this->getServiceLocator()->get('MelisEngineTableSite');
-                        $siteData   = $sitesTable->fetchAll()->toArray();
-                        foreach ($siteData as $idx => $val) {
-                            $categorySiteId = $categoryService->saveCategorySites($categoryId, $val['site_id'], $passedCatId);
-                        }
-                    } else {
-                        $categorySiteId = $categoryService->saveCategorySites($categoryId, $siteId, $passedCatId);
+                $tmpForm[] = $propertyForm->setData($val);
+                if ($propertyForm->isValid()) {
+                    if (!empty($val['catt2_name'])) {
+                        $propertyFormData[] = $propertyForm->getData();
+                        $formValid[$val['catt2_name']] = 1;
                     }
-
-                }
-            }
-            $images = $postValues['cat2_media_image'] ?? [];
-            $files  = $postValues['cat2_media_file'] ?? [];
-            $mediaTable = $this->getServiceLocator()->get('MelisCmsCategory2MediaTable');
-            if (!empty ($passedCatId)) {
-                $mediaTable->deleteByField('catm2_cat_id',$passedCatId);
-            }
-            if (!empty($images)) {
-                foreach($images as $idx => $val) {
-                    $mediaDataImage = [
-                        'catm2_cat_id' => $categoryId,
-                        'catm2_type'   => 'image',
-                        'catm2_path'   => $val
-                    ];
-                    //save media image
-                    $mediaTable->save($mediaDataImage);
-                }
-            }
-            if (! empty($files)) {
-                foreach ($files as $idx => $val) {
-                    $mediaDataFile = [
-                        'catm2_cat_id' => $categoryId,
-                        'catm2_type'   => 'file',
-                        'catm2_path'   => $val
-                    ];
-                    //save media file
-                    $mediaTable->save($mediaDataFile);
+                } else {
+                    $errors[] = $this->formatErrorMessage($appConfigForm,$propertyForm->getMessages());
                 }
             }
 
-            $success = 1;
-            $message = $translator->translate('tr_meliscms_categories_err_category_save_success');
-            $this->getEventManager()->trigger('meliscms_category_save_end', $this, $request);
+            // this means property form name field is filled
+            if (! empty($formValid)) {
+                $parentId       = $postValues['cat_father_cat_id'] ?? null;
+                $status         = $postValues['cat_status'] ?? null;
+                // validate Dates
+                $dateValidation = null;
+                $dateValidStart = null;
+                $dateValidEnd   = null;
+                if (! empty($dateActive) && ! empty($dateInactive)) {
+                    $dateValidation = $categoryService->validateDates($dateActive,$dateInactive);
+                    if ($dateValidation == true) {
+                        $dateValidStart = $postValues['cat_date_valid_start'] ?? null;
+                        $dateValidEnd   = $postValues['cat_date_valid_end'] ?? null;
+                    } else {
+                        $trDateStart = $translator->translate('tr_meliscategory_categories_category_valid_from');
+                        $trDateEnd   = $translator->translate('tr_meliscategory_categories_category_valid_to');
+                        $errors[]  = [
+                            $trDateStart => $translator->translate('tr_meliscategory_categories_category_valid_from_must_equal_high_current_date'),
+                            $trDateEnd   => $translator->translate('tr_meliscategory_categories_category_valid_dates_invalid')
+                        ];
+                    }
+                }
+
+                if (! empty($dateActive)) {
+                    $dateValidStart = $dateActive;
+                }
+                if (! empty($dateInactive)) {
+                    $dateValidEnd = $dateInactive;
+                }
+
+                // save Category
+                $categoryId  = $categoryService->saveCategory($parentId, $status,$userId, $dateValidStart, $dateValidEnd, $passedCatId, $postValues);
+                $id = $categoryId;
+                // save Category translations
+                foreach ($propertyFormData as $idx => $val) {
+                    $catLangId = $val['catt2_lang_id'] ?? null;
+                    if (! empty($catLangId)) {
+                        $categoryService->saveCategoryTexts($categoryId, $catLangId, $val ,$passedCatId);
+                    }
+                }
+                // save category sites
+                $categorySiteId = null;
+                if (! empty($catSitesData)) {
+                    $catSiteTbl = $this->getCatSiteTable();
+                    // delete cause we are assuming data is changing
+                    $catSiteTbl->deleteByField('cats2_cat2_id',$passedCatId);
+                    // save data
+                    foreach( $catSitesData as $siteId) {
+                        // all selected sites
+                        if ($siteId == -1){
+                            $sitesTable = $this->getServiceLocator()->get('MelisEngineTableSite');
+                            $siteData   = $sitesTable->fetchAll()->toArray();
+                            foreach ($siteData as $idx => $val) {
+                                $categorySiteId = $categoryService->saveCategorySites($categoryId, $val['site_id'], $passedCatId);
+                            }
+                        } else {
+                            $categorySiteId = $categoryService->saveCategorySites($categoryId, $siteId, $passedCatId);
+                        }
+
+                    }
+                }
+                $images = $postValues['cat2_media_image'] ?? [];
+                $files  = $postValues['cat2_media_file'] ?? [];
+                $mediaTable = $this->getServiceLocator()->get('MelisCmsCategory2MediaTable');
+                if (!empty ($passedCatId)) {
+                    $mediaTable->deleteByField('catm2_cat_id',$passedCatId);
+                }
+                if (!empty($images)) {
+                    foreach($images as $idx => $val) {
+                        $mediaDataImage = [
+                            'catm2_cat_id' => $categoryId,
+                            'catm2_type'   => 'image',
+                            'catm2_path'   => $val
+                        ];
+                        //save media image
+                        $mediaTable->save($mediaDataImage);
+                    }
+                }
+                if (! empty($files)) {
+                    foreach ($files as $idx => $val) {
+                        $mediaDataFile = [
+                            'catm2_cat_id' => $categoryId,
+                            'catm2_type'   => 'file',
+                            'catm2_path'   => $val
+                        ];
+                        //save media file
+                        $mediaTable->save($mediaDataFile);
+                    }
+                }
+
+                $success = 1;
+                $message = $translator->translate('tr_meliscms_categories_err_category_save_success');
+                $this->getEventManager()->trigger('meliscms_category_save_end', $this, $request);
+            } else {
+                $errors[] = [
+                    'noName' => 'Please fill in a ( name ) atleast one of the given languages',
+                    'label'  => 'Name'
+                ];
+            }
         }
 
         if (!empty($errors)) {
@@ -580,7 +597,7 @@ class MelisCmsCategoryController extends AbstractActionController
         );
 
         $this->getEventManager()->trigger('meliscommerce_category_save_end', 
-            $this, array_merge($response, array('typeCode' => $logTypeCode, 'itemId' => $categoryId)));
+            $this, array_merge($response, array('typeCode' => $logTypeCode, 'itemId' => $id)));
 
         return new JsonModel($response);
     }
@@ -1441,13 +1458,13 @@ class MelisCmsCategoryController extends AbstractActionController
      */
     private function getForm($formConfig)
     {
-        # zend form factory
+        // zend form factory
         $factory = new \Zend\Form\Factory();
-        # get form element manager
+        // get form element manager
         $formElements = $this->serviceLocator->get('FormElementManager');
-        # create form element
+        // create form element
         $factory->setFormElementManager($formElements);
-        # create zend form
+        // create zend form
         $form = $factory->createForm($formConfig);
 
         return $form;
@@ -1466,5 +1483,27 @@ class MelisCmsCategoryController extends AbstractActionController
     private function getCatSiteTable()
     {
         return $this->getServiceLocator()->get('MelisCmsCategory2SitesTable');
+    }
+    /**
+     * This will pop an error after validating the form
+     * @param array $errors
+     * @return array
+     */
+    private function formatErrorMessage($formConfig , $errors = array())
+    {
+        $formConfig = $formConfig['elements'] ?? null;
+        if (! empty($formConfig)) {
+            foreach ($errors as $keyError => $valueError)
+            {
+                foreach ($formConfig as $keyForm => $valueForm)
+                {
+                    if ($valueForm['spec']['name'] == $keyError &&
+                        !empty($valueForm['spec']['options']['label']))
+                        $errors[$keyError]['label'] = $valueForm['spec']['options']['label'];
+                }
+            }
+        }
+
+        return $errors;
     }
 }

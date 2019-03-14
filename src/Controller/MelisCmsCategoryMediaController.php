@@ -15,6 +15,9 @@ use Zend\View\Model\JsonModel;
 
 class MelisCmsCategoryMediaController extends AbstractActionController
 {
+    /**
+     * @return ViewModel
+     */
     public function renderCategoryTabMediaAction()
     {
         $view = new ViewModel();
@@ -22,6 +25,10 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         $view->melisKey = $this->getMelisKey();
         return $view;
     }
+
+    /**
+     * @return ViewModel
+     */
     public function renderCategoryTabMediaHeaderAction()
     {
         $view = new ViewModel();
@@ -29,6 +36,9 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         $view->melisKey = $this->getMelisKey();
         return $view;
     }
+    /**
+     * @return ViewModel
+     */
     public function renderCategoryTabMediaContentAction()
     {
         $view = new ViewModel();
@@ -36,6 +46,10 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         $view->melisKey = $this->getMelisKey();
         return $view;
     }
+
+    /**
+     * @return ViewModel
+     */
     public function renderCategoryTabMediaContentLeftAction()
     {
         $view = new ViewModel();
@@ -43,6 +57,9 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         $view->melisKey = $this->getMelisKey();
         return $view;
     }
+    /**
+     * @return ViewModel
+     */
     public function renderCategoryTabMediaContentLeftImageAction()
     {
         $view = new ViewModel();
@@ -50,6 +67,9 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         $view->melisKey = $this->getMelisKey();
         return $view;
     }
+    /**
+     * @return ViewModel
+     */
     public function renderCategoryTabMediaContentLeftImageListAction()
     {
         $request = $this->getRequest();
@@ -67,6 +87,9 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         $view->mediaData = $categoryMedaiData;
         return $view;
     }
+    /**
+     * @return ViewModel
+     */
     public function renderCategoryTabMediaContentRightAction()
     {
         $view = new ViewModel();
@@ -74,6 +97,10 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         $view->melisKey = $this->getMelisKey();
         return $view;
     }
+
+    /**
+     * @return ViewModel
+     */
     public function renderCategoryTabMediaContentRightFileAction()
     {
         $request = $this->getRequest();
@@ -90,6 +117,10 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         $view->mediaData = $categoryMediaData;
         return $view;
     }
+
+    /**
+     * @return mixed
+     */
     private function getMelisKey()
     {
        return $this->params()->fromRoute('melisKey', '');
@@ -179,15 +210,16 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         if (! empty($request->getFiles())) {
             $file     = $request->getFiles('media_upload');
             $fileName = $file['name'];
-            $path = $_SERVER['DOCUMENT_ROOT'] . "/media/";
-            $status = move_uploaded_file($file['tmp_name'],$path.$fileName);
+            $path     = $_SERVER['DOCUMENT_ROOT'] . "/media/";
+            $status   = move_uploaded_file($file['tmp_name'],$path.$fileName);
+
             if ($status) {
                 $success = true;
             }
         }
 
         $response = [
-            'success' => $success
+            'success' => $success,
         ];
 
         return new JsonModel($response);

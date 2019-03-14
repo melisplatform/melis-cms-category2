@@ -15,7 +15,7 @@
     $title = "Select image";
     $form  = $this->categoryMediaForm;
 ?>
-<div class="modal-content" id="<?= $id; ?>"  data-melisKey="<?= $data_melisKey; ?>">
+<div class="modal-content" id="<?= $id; ?>"  data-melisKey="<?= $data_melisKey; ?>" style="position: relative;">
     <div class="modal-body padding-none">
         <div class="wizard">
             <div class="widget widget-tabs widget-tabs-double widget-tabs-responsive margin-none border-none">
@@ -31,14 +31,14 @@
                                 <h3>Media library</h3>
                                 <p> Directory : <a href="/media" target="_blank">/media</a></p>
                                 <div class="min-upload-image">
-                                    <p>Upload your media files here </p>
+                                    <p><i class="fa fa-upload"></i> Upload your media files here </p>
                                     <?php
                                         $form->prepare();
                                         echo $this->form()->openTag($form);
                                         echo $this->melisFieldCollection($form);
                                     ?>
                                     <br>
-                                    <button type="submit" class="btn btn-primary pull-right" id="category-upload-media" data-type="<?= $this->fileType ?>"><i class="fa fa-upload"></i> Upload</button>
+                                    <button type="submit" class="btn btn-primary pull-right" id="category-upload-media" data-target-area="<?= $this->targetDiv ?>"   data-type="<?= $this->fileType ?>"><i class="fa fa-upload" data-type="<?= $this->fileType ?>"></i> Upload</button>
                                     <?php
                                         echo $this->form()->closeTag($form);
                                     ?>
@@ -93,6 +93,9 @@
                             <button data-dismiss="modal" id="closeMedialibrary" data-target-remove-backdrop ="<?= $targetDiv ?>"  class="btn btn-danger pull-right"><i class="fa fa-times"></i> <?= $this->translate('tr_meliscore_common_close')?></button>
                         </div>
                         <div class="clearfix"></div>
+                        <div class="media-upload-loader">
+                            <div id="loader" class="overlay-loader"><img class="loader-icon spinning-cog" src="/MelisCore/assets/images/cog12.svg" data-cog="cog12"></div>
+                        </div>
                     </div>
                 </div>
             </div>

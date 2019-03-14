@@ -57,6 +57,7 @@ $(function(){
 		var catId = $(this).data('catid');
 		var dataString = new Array;
 		// Serialize Forms of Category Panel
+
 		dataString = $("#id_meliscategory_categories_category form").not(".category_"+catId+"_seo_form, .cat_trans_form").serializeArray()
 		// Category Id
 		dataString.push({
@@ -447,6 +448,7 @@ $(function(){
 				currentPosition : data.currentposition
 			}, ".category-image-list")
         $(".parent-file-list .back-drop").fadeIn("fast")
+		//$("body .modal-dialog").css('margin',"47px 9% 0 auto");
 	});
 
     categoryBody.on('click', ".category-add-file" , function(){
@@ -461,13 +463,17 @@ $(function(){
             currentPosition : data.currentposition
 		},".category-file-list")
 		$(".parent-image-list .back-drop").fadeIn("fast");
+        //$("body .modal-dialog").css('margin',"47px auto 0 24.6%");
+
     });
     categoryBody.on('submit',"#id_meliscategory_media_upload_form",function(e) {
         e.preventDefault();
         var formData = new FormData(this);
         melisCoreTool.pending(this);
         var dataElem = $(".category-add-image").data() ;
-
+		$(".media-upload-loader").fadeIn('medium');
+		var mediaType = $("#category-upload-media").data('type');
+		var targetArea = $("#category-upload-media").data('targetArea');
         $.ajax({
             type: 'POST',
             url: 'melis/MelisCmsCategory2/MelisCmsCategoryMedia/uploadMedia',
@@ -478,25 +484,44 @@ $(function(){
             contentType: false,
             encode: true
         }).success(function(data) {
+            $(".media-upload-loader").fadeOut('medium');
         	if (data.success === true) {
-        		melisHelper.zoneReload("id_meliscategory_mini_media_library","meliscategory_mini_media_library",{fileType:dataElem.type});
+        		melisHelper.zoneReload("id_meliscategory_mini_media_library","meliscategory_mini_media_library",{fileType:mediaType,targetDiv : targetArea});
 			}
 		});
     });
 
     categoryBody.on('click', ".category-image-list .removeImage", function(){
-    	var parentDiv = $(this).parent().parent();
-        parentDiv.remove();
+        var countImage = $(".category-image-list").children('.category-image').length;
+        if (countImage > 0) {
+            var parentDiv = $(this).parent().parent();
+            parentDiv.fadeOut('fast', function(){
+                parentDiv.remove();
+			});
+        }
+        if (countImage === 1) {
+            $(".no-image").fadeIn('fast');
+		}
 	});
     categoryBody.on('click', ".category-file .remove-file", function(){
-        var parentDiv = $(this).parent();
-        parentDiv.remove();
+        var countImage = $(".category-file-list .list-group").children('span').length;
+        if (countImage > 0) {
+            var parentDiv = $(this).parent();
+            parentDiv.fadeOut('fast',function(){
+                parentDiv.remove();
+			});
+        }
+        if (countImage === 1) {
+            $(".no-file").fadeIn('fast');
+		}
     });
 	categoryBody.on('click','#closeMedialibrary', function(){
-		console.log($(this).data());
-
 		var parentDiv = $(this).data('targetRemoveBackdrop');
 		$(parentDiv + " .back-drop").fadeOut('fast');
+	});
+
+	categoryBody.on('click', '#categoryScrollToTop' , function(){
+        $("html, body").animate({scrollTop : 10}, 500);
 	});
 });
 

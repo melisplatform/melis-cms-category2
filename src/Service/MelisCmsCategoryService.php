@@ -25,7 +25,8 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
         $currentUserId,
         $validDateStart,
         $validDateEnd,
-        $categoryId = null
+        $categoryId = null,
+        $postValues
     ) {
 
         // Event parameters prepare
@@ -98,7 +99,7 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
 
         return $arrayParameters['results'];
     }
-    public function saveCategoryTexts($categoryId,$catLangId, $catName , $catDesc = null, $id = null)
+    public function saveCategoryTexts($categoryId,$catLangId, $postData, $id = null)
     {
         // Event parameters prepare
         $arrayParameters = $this->makeArrayFromParameters(__METHOD__, func_get_args());
@@ -108,26 +109,20 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
         // Service implementation start
         $categoryTextsTable = $this->getServiceLocator()->get('MelisCmsCategory2TransTable');
         # construct data
-        $data = [
-            'catt2_category_id' => $categoryId,
-            'catt2_lang_id'     => $catLangId,
-            'catt2_name'        => $catName
-        ];
-
-        if (! empty($catDesc)) {
-            $data['catt2_description'] = $catDesc;
-        }
-
+        $postData['catt2_category_id'] = $categoryId;
+        $postData['catt2_lang_id'] = $catLangId;
+        unset($postData['catt_lang_id']);
         $saveCatTransId = null;
+        // for updating
         if (! empty($id)) {
             $catTransId = $categoryTextsTable->getTextIdByLangIdCatId($id, $catLangId)->current()->catt2_id ?? null;
             if (! empty($catTransId)) {
-                $categoryTextsTable->save($data, $catTransId);
+                $categoryTextsTable->save($postData, $catTransId);
             } else {
-                $categoryTextsTable->save($data);
+                $categoryTextsTable->save($postData);
             }
         } else {
-            $categoryTextsTable->save($data);
+            $categoryTextsTable->save($postData);
         }
 
         // Service implementation end

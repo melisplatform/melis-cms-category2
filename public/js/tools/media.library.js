@@ -4,6 +4,10 @@ var mediaDirectory = {
             $(".category-add-image").removeAttr('disabled ');
             $(".category-add-file").removeAttr('disabled ');
 
+            $('.modal-dialog').draggable({
+                handle: ".modal-content"
+            }).css('cursor',"move");
+
             if ($(targetDiv).length > 0) {
                 var categoryAddImage = $(".category-add-image");
                 var currentPosition = categoryAddImage.data('currentposition');
@@ -19,8 +23,9 @@ var mediaDirectory = {
                     targetDiv = data.targetDiv;
 
                     if (data.fileType === 'image') {
+                        // this is for selecting image
                         currentPosition = currentPosition + 1 + "image";
-                        html  = "<div id='"+ currentPosition  +"' class='col-md-12 margin-b-10 category-image'>" +
+                        html  = "<div id='"+ currentPosition  +"' class='col-md-12 margin-b-10 category-image border-green'>" +
                             "<img src='" + data.imageUrl + "' class='img-responsive' />" +
                             "<input type='hidden' value='" + data.imageUrl + "' data-order='" + order + "'/>" +
                             "<div class='category-image-option'>" +
@@ -32,7 +37,10 @@ var mediaDirectory = {
                         //update button attribute current position
                         $(".category-add-image").attr('currentposition', currentPosition);
                         $(targetDiv).append(html);
-                        $("html, body").animate({ scrollTop: $("#" + currentPosition).offset().top }, 1000);
+                        if ($("#" + currentPosition).length > 0) {
+                            $("html, body").animate({ scrollTop: $("#" + currentPosition).position().top }, 100 );
+                        }
+                        $(".no-image").hide();
                     } else {
                         html = "<div class='col-md-3'>" +
                                 "<div class=\"file-area\">" +
@@ -47,23 +55,19 @@ var mediaDirectory = {
                                "</div>";
 
                         currentPositionFile = currentPositionFile + 1 + "file";
-                        html = '<span id='+ currentPositionFile +'>\n' +
-                                ' <a href="#" class="list-group-item list-group-item-action">' + data.imageUrl + '</a>\n' +
+                        html = '<span id='+ currentPositionFile +' >\n' +
+                                ' <a href="#" class="list-group-item list-group-item-action text-green">' + data.imageUrl + '</a>\n' +
                                 ' <i class="fa fa-times-circle remove-file"></i>\n' +
                                 ' <input type="hidden" value="' + data.imageUrl +'">'+
                                 ' </span>\n'
 
                         $(".category-add-file").attr('currentposition', currentPositionFile);
                         $(targetDiv).append(html);
-                        $("html, body").animate({ scrollTop: $("#" + currentPositionFile).position().top }, 1000);
+                        if ($("#" + currentPositionFile).length > 0) {
+                            $("html, body").animate({ scrollTop: $("#" + currentPositionFile).position().top }, 100);
+                        }
+                        $(".no-file").hide();
                     }
-
-
-                    // remove no image
-                    $(".no-image").hide();
-
-                    //scroll to added element
-
                 });
             }
         }, 'static');

@@ -11,6 +11,7 @@
     $data_melisKey = 'data-melisKey="'.$this->melisKey.'"';
     $mediaData = $this->mediaData;
     $currentPosition = 0;
+    $showNoImage = "display:none";
 ?>
 
 <div <?php echo $id. ' '.$data_melisKey?> class="ecom-doc-container" data-doc-relation-type="<?= $relationType; ?>" data-doc-relation-id="<?= $this->relationId; ?>" data-doc-type="file">
@@ -38,10 +39,14 @@
                                 <?php $currentPosition = $currentPosition + 1;?>
                             <?php }?>
                         <?php }?>
-                    <?php } else {?>
-                        <span class="no-image">No file(s)</span>
-                    <?php }?>
+                    <?php } ?>
                 </div>
+                <?php
+                if ($currentPosition == 0){
+                    $showNoImage = "display:block";
+                }
+                ?>
+                <span class="no-file" style="<?= $showNoImage ?>"><?= $this->translate('tr_melis_cms_category_empty_media_file');?></span>
             </div>
             <!-- add to button attribute browse mediacurrent position -->
             <script>

@@ -73,8 +73,23 @@ return [
     //js tree
     'tr_meliscategory_categories_common_btn_add' => 'Ajouter',
     'tr_meliscategory_categories_common_btn_update' => 'Editer',
-    'tr_meliscategory_categories_common_btn_delete' => 'Supprimer'
+    'tr_meliscategory_categories_common_btn_delete' => 'Supprimer',
+    'tr_meliscategory_categories_category_countries' => 'Sites',
 
+    // Date Validity
+    'tr_meliscategory_categories_category_valid_from' => 'Valid from',
+    'tr_meliscategory_categories_category_valid_from tooltip' => 'Date from which the category will be valid provided that the category is activated',
+    'tr_meliscategory_categories_category_valid_to' => 'Valid to',
+    'tr_meliscategory_categories_category_valid_to tooltip' => 'Date until which the category will be valid provided that the category is activated',
 
+    'tr_meliscategory_categories_category_valid_from_must_equal_high_current_date' => 'Valid from must be equal or higher than the current date',
+    'tr_meliscategory_categories_category_valid_dates_invalid' => 'Valid to must be higher than valid from',
+    'tr_meliscategory_categories_category_valid_to_must_equal_high_current_date' => 'Valid to must be equal or higher than the current date',
+    'tr_meliscategory_categories_category_information_form_cat_name' => 'Name',
+    'tr_meliscategory_categories_category_information_form_cat_name tooltip' => 'Name',
+    'tr_meliscategory_categories_category_information_form_cat_desc' => 'Description',
+    'tr_meliscategory_categories_category_information_form_cat_desc tooltip' => 'Description',
+    'tr_melis_cms_category_empty_media_file' => 'Aucune pièce-jointe',
+    'tr_melis_cms_category_empty_media_image' => 'Aucune image'
 
 ];

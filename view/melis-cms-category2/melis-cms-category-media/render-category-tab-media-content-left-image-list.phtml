@@ -7,6 +7,7 @@
     $data_melisKey = 'data-melisKey="'.$this->melisKey.'"';
     $media = $this->mediaData;
     $currentPosition = 0;
+    $showNoImage = "display:none";
 ?>
 <div <?= $id . $data_melisKey; ?>>
 	<div class="row">
@@ -21,20 +22,25 @@
                                 <input type="hidden" value="<?= $path ?>">
                                 <div class="category-image-option">
                                     <a class="viewImage" target="_blank" href="<?= $path ?>"> <i class='fa fa-eye' title='View image'></i></a>
-                                    <a class="removeImage"  href="#"><i class='fa fa-times' title='Delete image'></i></a>
+                                    <span class="removeImage text-primary" ><i class='fa fa-times' title='Delete image'></i></span>
                                 </div>
                             </div>
                             <?php $currentPosition = $currentPosition + 1;?>
                         <?php }?>
                     <?php }?>
-                <?php } else {?>
-                    <span class="no-image">No image</span>
-                <?php }?>
+                <?php } ?>
+
                 <!-- add to button attribute browse mediacurrent position -->
                 <script>
                     $(".category-add-image").attr('data-currentposition',<?= $currentPosition ?>);
                 </script>
             </div>
+            <?php
+                if ($currentPosition == 0){
+                    $showNoImage = "display:block";
+                }
+            ?>
+            <span class="no-image" style="<?= $showNoImage ?>"><?= $this->translate('tr_melis_cms_category_empty_media_image')?></span>
             <div class="back-drop"></div>
         </div>
 	</div>
