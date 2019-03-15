@@ -22,7 +22,7 @@ class MelisCmsCategory2MediaTable extends MelisGenericTable
     public function __construct(TableGateway $tableGateway)
     {
         parent::__construct($tableGateway);
-        $this->idField = 'catm2_Id';
+        $this->idField = 'catm2_id';
         $this->cacheResults = true;
     }
 

@@ -91,6 +91,7 @@ $(function(){
         $("#id_meliscategory_category_tab_media_content_left").find('input').each(function(index){
             dataString.push({
                 name: "cat2_media_image["+ index + "]",
+				order : index,
                 value : $(this).val()
             });
         });
@@ -98,6 +99,7 @@ $(function(){
         $("#id_meliscategory_category_tab_media_content_right").find('input').each(function(index){
             dataString.push({
                 name: "cat2_media_file["+ index+"]",
+				order: index,
                 value : $(this).val()
             });
         });

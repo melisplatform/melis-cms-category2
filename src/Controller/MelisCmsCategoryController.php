@@ -544,6 +544,7 @@ class MelisCmsCategoryController extends AbstractActionController
                     }
                 }
                 $images = $postValues['cat2_media_image'] ?? [];
+
                 $files  = $postValues['cat2_media_file'] ?? [];
                 $mediaTable = $this->getServiceLocator()->get('MelisCmsCategory2MediaTable');
                 if (!empty ($passedCatId)) {
@@ -554,7 +555,8 @@ class MelisCmsCategoryController extends AbstractActionController
                         $mediaDataImage = [
                             'catm2_cat_id' => $categoryId,
                             'catm2_type'   => 'image',
-                            'catm2_path'   => $val
+                            'catm2_path'   => $val,
+                            'catm2_order'  => $idx + 1
                         ];
                         //save media image
                         $mediaTable->save($mediaDataImage);
@@ -565,7 +567,8 @@ class MelisCmsCategoryController extends AbstractActionController
                         $mediaDataFile = [
                             'catm2_cat_id' => $categoryId,
                             'catm2_type'   => 'file',
-                            'catm2_path'   => $val
+                            'catm2_path'   => $val,
+                            'catm2_order'  => $idx + 1
                         ];
                         //save media file
                         $mediaTable->save($mediaDataFile);
