@@ -453,8 +453,9 @@ $(function(){
 				targetDiv : ".category-image-list",
 				currentPosition : data.currentposition
 			}, ".category-image-list")
-        $(".parent-file-list .back-drop").fadeIn("fast")
-		//$("body .modal-dialog").css('margin',"47px 9% 0 auto");
+        $(".parent-file-list .back-drop").fadeIn("fast");
+        $("html, body").animate({scrollTop : 10}, 500);
+        $("body").css("overflow", "hidden");
 	});
 
     categoryBody.on('click', ".category-add-file" , function(){
@@ -469,7 +470,8 @@ $(function(){
             currentPosition : data.currentposition
 		},".category-file-list")
 		$(".parent-image-list .back-drop").fadeIn("fast");
-        //$("body .modal-dialog").css('margin',"47px auto 0 24.6%");
+        $("html, body").animate({scrollTop : 10}, 500);
+        $("body").css("overflow", "hidden");
 
     });
     categoryBody.on('submit',"#id_meliscategory_media_upload_form",function(e) {
@@ -508,6 +510,7 @@ $(function(){
         if (countImage === 1) {
             $(".no-image").fadeIn('fast');
 		}
+        initButtonScrollToTop();
 	});
     categoryBody.on('click', ".category-file .remove-file", function(){
         var countImage = $(".category-file-list .list-group").children('span').length;
@@ -520,13 +523,26 @@ $(function(){
         if (countImage === 1) {
             $(".no-file").fadeIn('fast');
 		}
+        initButtonScrollToTop();
     });
 	categoryBody.on('click','#closeMedialibrary', function(){
 		var parentDiv = $(this).data('targetRemoveBackdrop');
 		$(parentDiv + " .back-drop").fadeOut('fast');
+		$("body").css("overflow", "auto");
+	});
+
+	categoryBody.on('click', '#categoryScrollToTop' , function(){
+        $("html, body").animate({scrollTop : 10}, 500);
 	});
 });
-
+window.initButtonScrollToTop = function(){
+    var heightContent = $("#id_meliscategory_category_tab_media").height();
+    if (heightContent < 628) {
+        $("#categoryScrollToTop").fadeOut();
+    } else {
+        $("#categoryScrollToTop").fadeIn();
+    }
+};
 window.enableDisableAddCategoryBtn = function(action){
 	var addCategory = $('.addCategory');
 	if(action == 'enable'){
@@ -579,11 +595,16 @@ window.initCmsCategoryTreeView = function(){
             $("#categorySiteFilter").removeAttr('disabled');
             $("#categoryTreeViewSearchInput").removeAttr('disabled');
             $(".category-list-lang-dropdown").removeAttr('disabled');
-            $(".category-list-lang-dropdown").css("cursor","default	");
+            $(".category-list-lang-dropdown").css("cursor","pointer");
             $("#clearSearchInputBtn").removeAttr('disabled');
             $("#collapseCategoryTreeViewBtn").removeAttr('disabled');
             $("#expandCategoryTreeViewBtn").removeAttr('disabled');
             $("#refreshCategoryTreeView").removeAttr('disabled');
+            if ($(".jstree-container-ul").children("li").length ===  0) {
+                $("#noResultData").fadeIn("fast").css("display","inline-block");
+			} else {
+                $("#noResultData").fadeOut("fast");
+			}
 
 		})
 		.on('ready.jstree', function (e, data) {
@@ -651,17 +672,17 @@ window.initCmsCategoryTreeView = function(){
 	        var dataString = new Array();
 			// get data from input
 	        dataString.push({
-				name: "cat_id",
+				name: "cat2_id",
 				value: parseInt(categoryId, 10)
 			});
 			// get date data from param
 			dataString.push({
-				name: "cat_father_cat_id",
+				name: "cat2_father_cat_id",
 				value: parseInt(newParentId, 10)
 			});
 			// get date data from param
 			dataString.push({
-				name: "cat_order",
+				name: "cat2_order",
 				value: categoryNewPosition
 			});
 			// get date data from param
@@ -710,7 +731,7 @@ window.initCmsCategoryTreeView = function(){
 		                	
 		                	var zoneId = "id_meliscategory_categories_category";
 		                	var melisKey = "meliscategory_categories_category";
-		                	
+                            $("#"+zoneId).removeClass("hidden");
 		            		melisHelper.zoneReload(zoneId, melisKey,{catId:0, catFatherId:parentId, catOrder:position});
 		                	
 		                }
@@ -724,7 +745,7 @@ window.initCmsCategoryTreeView = function(){
 		                	
 		            		var zoneId = 'id_meliscategory_categories_category';
 		            		var melisKey = 'meliscategory_categories_category';
-		            		
+                            $("#"+zoneId).removeClass("hidden");
 		            		melisHelper.zoneReload(zoneId, melisKey, {catId : catId});
 		            		
 		            		$("#categoryTreeViewPanel").collapse("hide");
@@ -772,7 +793,7 @@ window.initCmsCategoryTreeView = function(){
 		            		function() {
 		            			$.ajax({
 			        		        type        : "POST", 
-			        		        url         : "/melis/MelisCommerce/MelisComCategory/deleteCategory",
+			        		        url         : "/melis/MelisCmsCategory2/MelisCmsCategory/deleteCategory",
 			        		        data		: dataString,
 			        		        dataType    : "json",
 			        		        encode		: true
@@ -818,7 +839,7 @@ window.initCmsCategoryTreeView = function(){
 	    },
 	    "types" : {
             "#" : {
-                "valid_children" : ["catalog"]
+                "valid_children" : ["category"]
             },
             "catalog" : {
                 "valid_children" : ["category"]
@@ -1782,7 +1803,9 @@ var mediaDirectory = {
 
                     if (data.fileType === 'image') {
                         // this is for selecting image
+                        // get the current position for locating the added image when selecting
                         currentPosition = currentPosition + 1 + "image";
+                        // construct element for saving the image
                         html  = "<div id='"+ currentPosition  +"' class='col-md-12 margin-b-10 category-image border-green'>" +
                             "<img src='" + data.imageUrl + "' class='img-responsive' />" +
                             "<input type='hidden' value='" + data.imageUrl + "' data-order='" + order + "'/>" +
@@ -1800,32 +1823,28 @@ var mediaDirectory = {
                         }
                         $(".no-image").hide();
                     } else {
-                        html = "<div class='col-md-3'>" +
-                                "<div class=\"file-area\">" +
-                                " <span class=\"fa fa-file file-icon\"></span>" +
-                                " <span class=\"description\">colipano1.docx</span>" +
-                                " </div>" +
-                                "<input type='hidden' value='" + data.imageUrl + "' data-order='" + order + "'/>" +
-                                "<div class='category-image-option'>" +
-                                "<a class='viewImage' target='_blank' href='"+data.imageUrl+"'> <i class='fa fa-eye' title='View file'></i></a>" +
-                                "<a class='removeImage' data-url='"+data.imageUrl+"' > <i class='fa fa-times' title='Delete file'></i></a>" +
-                                "</div>" +
-                               "</div>";
-
+                        // this for selecting files
+                        // get the current position for locating the added file when selecting
                         currentPositionFile = currentPositionFile + 1 + "file";
+                        // construct element for saving the file
                         html = '<span id='+ currentPositionFile +' >\n' +
                                 ' <a href="#" class="list-group-item list-group-item-action text-green">' + data.imageUrl + '</a>\n' +
                                 ' <i class="fa fa-times-circle remove-file"></i>\n' +
                                 ' <input type="hidden" value="' + data.imageUrl +'">'+
                                 ' </span>\n'
-
+                        // set the current position of the file for the next select
                         $(".category-add-file").attr('currentposition', currentPositionFile);
+                        // add the file in the target div
                         $(targetDiv).append(html);
+                        // scrolling to the current added file
                         if ($("#" + currentPositionFile).length > 0) {
                             $("html, body").animate({ scrollTop: $("#" + currentPositionFile).position().top }, 100);
                         }
+                        // hide no file label
                         $(".no-file").hide();
                     }
+                    // show/not show the button to scroll upward
+                    initButtonScrollToTop();
                 });
             }
         }, 'static');

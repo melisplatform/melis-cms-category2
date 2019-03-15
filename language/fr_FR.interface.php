@@ -5,7 +5,7 @@
 return [
     'tr_melis_cms_category_v2'              => 'Melis Catégories',
     'tr_melis_cms_category_v2_header_title' => 'Catégories',
-    'tr_melis_cms_category_v2_header_sub_title' => 'Manage here your categories . You can define their order by drag and drop',
+    'tr_melis_cms_category_v2_header_sub_title' => 'Manage here your cms categories . You can define their order by drag and drop',
     'tr_melis_cms_category_v2_header_add_btn' => 'Ajouter une catégorie',
     'tr_melis_cms_category_v2_tool_header'    => 'Header',
     'tr_melis_cms_category_v2__name' => 'Name',

@@ -315,6 +315,7 @@
 .category-image-list {
     padding-top:10px;
     position:relative;
+    min-height:63px;
 }
 .category-image-option {
     position:absolute;
@@ -462,4 +463,33 @@
 }
 .text-green {
     color:#72af46 !important;
+}
+#categoryScrollToTop {
+    float: right;
+    width: 50px;
+    text-align: center;
+    line-height: 56px;
+    cursor: pointer;
+    font-size: 28px;
+    border-radius: 3px;
+    border: 2px solid #e61c23;
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out ;
+    -ms-transition: all 0.3s ase-in-out ;
+    -o-transition: all 0.3s ease-in-out ;
+    transition: all 0.3s ease-in-out ;
+}
+#categoryScrollToTop:hover {
+    background:#e61c23;
+    color:#fff !important;
+}
+#noResultData {
+    display:none;
+}
+.no-image {
+    margin-left:8px;
+}
+.no-file {
+    margin-left:8px;
+
 }

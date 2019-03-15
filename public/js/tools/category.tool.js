@@ -448,6 +448,8 @@ $(function(){
 				currentPosition : data.currentposition
 			}, ".category-image-list")
         $(".parent-file-list .back-drop").fadeIn("fast");
+        $("html, body").animate({scrollTop : 10}, 500);
+        $("body").css("overflow", "hidden");
 	});
 
     categoryBody.on('click', ".category-add-file" , function(){
@@ -462,6 +464,8 @@ $(function(){
             currentPosition : data.currentposition
 		},".category-file-list")
 		$(".parent-image-list .back-drop").fadeIn("fast");
+        $("html, body").animate({scrollTop : 10}, 500);
+        $("body").css("overflow", "hidden");
 
     });
     categoryBody.on('submit',"#id_meliscategory_media_upload_form",function(e) {
@@ -518,6 +522,7 @@ $(function(){
 	categoryBody.on('click','#closeMedialibrary', function(){
 		var parentDiv = $(this).data('targetRemoveBackdrop');
 		$(parentDiv + " .back-drop").fadeOut('fast');
+		$("body").css("overflow", "auto");
 	});
 
 	categoryBody.on('click', '#categoryScrollToTop' , function(){
@@ -584,7 +589,7 @@ window.initCmsCategoryTreeView = function(){
             $("#categorySiteFilter").removeAttr('disabled');
             $("#categoryTreeViewSearchInput").removeAttr('disabled');
             $(".category-list-lang-dropdown").removeAttr('disabled');
-            $(".category-list-lang-dropdown").css("cursor","default	");
+            $(".category-list-lang-dropdown").css("cursor","pointer");
             $("#clearSearchInputBtn").removeAttr('disabled');
             $("#collapseCategoryTreeViewBtn").removeAttr('disabled');
             $("#expandCategoryTreeViewBtn").removeAttr('disabled');
@@ -671,7 +676,7 @@ window.initCmsCategoryTreeView = function(){
 			});
 			// get date data from param
 			dataString.push({
-				name: "cat_order",
+				name: "cat2_order",
 				value: categoryNewPosition
 			});
 			// get date data from param
@@ -828,7 +833,7 @@ window.initCmsCategoryTreeView = function(){
 	    },
 	    "types" : {
             "#" : {
-                "valid_children" : ["catalog"]
+                "valid_children" : ["category"]
             },
             "catalog" : {
                 "valid_children" : ["category"]

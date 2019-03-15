@@ -314,6 +314,7 @@
 .category-image-list {
     padding-top:10px;
     position:relative;
+    min-height:63px;
 }
 .category-image-option {
     position:absolute;
@@ -483,4 +484,11 @@
 }
 #noResultData {
     display:none;
+}
+.no-image {
+    margin-left:8px;
+}
+.no-file {
+    margin-left:8px;
+
 }
