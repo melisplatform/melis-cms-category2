@@ -20,7 +20,7 @@ return array(
                                     'interface' => [
                                         'melis_cms_category_v2_config' => [
                                             'conf' => [
-                                                'type' => 'melis_cms_category_v2_config/interface/melis_cms_categories_v2'
+                                                'type' => '/melis_cms_category_v2_config/interface/melis_cms_categories_v2'
                                             ]
                                         ]
                                     ]
@@ -73,7 +73,9 @@ return array(
                         'id' => 'id_melis_cms_categories_v2',
                         'melisKey' => 'melis_cms_categories_v2',
                         'name' => 'tr_melis_cms_category_v2',
-                        'icon' => 'fa-th-list'
+                        'icon' => 'fa-th-list',
+                        'follow_regular_rendering' => false,
+                        'rights_checkbox_disable' => true,
                     ),
                     'forward' => array(
                         'module' => 'MelisCmsCategory2',
@@ -85,7 +87,7 @@ return array(
                             'conf' => array(
                                 'id' => 'id_melis_cms_categories_v2_list',
                                 'melisKey' => 'melis_cms_categories_v2_list',
-                                'name' => 'tr_meliscommerce_categories_list',
+                                'name' => 'tr_melis_categories_list',
                             ),
                             'forward' => array(
                                 'module' => 'MelisCmsCategory2',
@@ -97,7 +99,8 @@ return array(
                                     'conf' => array(
                                         'id' => 'id_meliscms_categories_list_header',
                                         'melisKey' => 'meliscms_categories_list_header',
-                                        'name' => 'tr_meliscms_categories_list_header'
+                                        'name' => 'tr_meliscore_tool_gen_header',
+                                        'rights_checkbox_disable' => true,
                                     ),
                                     'forward' => array(
                                         'module' => 'MelisCmsCategory2',
@@ -105,18 +108,6 @@ return array(
                                         'action' => 'render-category-list-header',
                                     ),
                                     'interface' => array(
-                                        'meliscms_categories_list_header_add_catalog' => array(
-                                            'conf' => array(
-                                                'id' => 'id_meliscms_categories_list_header_add_catalog',
-                                                'melisKey' => 'meliscms_categories_list_header_add_catalog',
-                                                'name' => 'tr_melis_cms_category_v2_header_add_btn'
-                                            ),
-                                            'forward' => array(
-                                                'module' => 'MelisCmsCategory2',
-                                                'controller' => 'MelisCmsCategoryList',
-                                                'action' => ''
-                                            )
-                                        ),
                                         'meliscms_categories_list_header_add_category' => array(
                                             'conf' => array(
                                                 'id' => 'id_meliscms_categories_list_header_add_category',
@@ -135,7 +126,7 @@ return array(
                                     'conf' => array(
                                         'id' => 'id_meliscms_categories_list_content',
                                         'melisKey' => 'meliscms_categories_list_content',
-                                        'name' => 'tr_meliscms_categories_list_content'
+                                        'name' => 'tr_meliscore_tool_gen_content'
                                     ),
                                     'forward' => array(
                                         'module' => 'MelisCmsCategory2',
@@ -184,11 +175,13 @@ return array(
                                                 ],
                                             ],
                                         ],
+                                        //Category tree view
                                         'meliscms_categories_list_categories_tree' => array(
                                             'conf' => array(
                                                 'id' => 'id_meliscms_catergories_list_categories_tree',
                                                 'melisKey' => 'meliscms_categories_list_categories_tree',
-                                                'name' => 'tr_meliscms_categories_list_categories_tree'
+                                                'name' => 'tr_meliscms_categories_list_categories_tree',
+                                                'rightsDisplay' => 'none'
                                             ),
                                             'forward' => array(
                                                 'module' => 'MelisCmsCategory2',
@@ -205,7 +198,7 @@ return array(
                             'conf' => array(
                                 'id' => 'id_meliscategory_categories_category',
                                 'melisKey' => 'meliscategory_categories_category',
-                                'name' => 'tr_meliscategory_categories_category'
+                                'name' => 'tr_meliscategory_categories_category',
                             ),
                             'forward' => array(
                                 'module' => 'MelisCmsCategory2',
@@ -280,7 +273,7 @@ return array(
                                                             'conf' => array(
                                                                 'id' => 'id_meliscategory_categories_category_tab_main_header',
                                                                 'melisKey' => 'meliscategory_categories_category_tab_main_header',
-                                                                'name' => 'tr_meliscategory_categories_category_tab_main_header'
+                                                                'name' => 'tr_meliscategory_categories_category_header'
                                                             ),
                                                             'forward' => array(
                                                                 'module' => 'MelisCmsCategory2',
@@ -292,7 +285,7 @@ return array(
                                                                     'conf' => array(
                                                                         'id' => 'id_meliscategory_categories_category_form_status',
                                                                         'melisKey' => 'meliscategory_categories_category_form_status',
-                                                                        'name' => 'tr_meliscategory_categories_category_form_status',
+                                                                        'name' => 'tr_meliscategory_categories_common_label_status',
                                                                     ),
                                                                     'forward' => array(
                                                                         'module' => 'MelisCmsCategory2',
@@ -307,7 +300,7 @@ return array(
                                                             'conf' => array(
                                                                 'id' => 'id_meliscategory_categories_category_tab_main_header',
                                                                 'melisKey' => 'meliscategory_categories_category_tab_main_header',
-                                                                'name' => 'tr_meliscategory_categories_category_tab_main_header'
+                                                                'name' => 'tr_meliscategory_categories_category_content'
                                                             ),
                                                             'forward' => array(
                                                                 'module' => 'MelisCmsCategory2',
@@ -319,7 +312,7 @@ return array(
                                                                     'conf' => array(
                                                                         'id' => 'id_meliscategory_categories_category_tab_main_left',
                                                                         'melisKey' => 'meliscategory_categories_category_tab_main_left',
-                                                                        'name' => 'tr_meliscategory_categories_category_tab_main_left'
+                                                                        'name' => 'tr_melis_cms_category_media_tab_content_left'
                                                                     ),
                                                                     'forward' => array(
                                                                         'module' => 'MelisCmsCategory2',
@@ -345,7 +338,7 @@ return array(
                                                                     'conf' => array(
                                                                         'id' => 'id_meliscategory_categories_category_tab_main_right',
                                                                         'melisKey' => 'meliscategory_categories_category_tab_main_right',
-                                                                        'name' => 'tr_meliscategory_categories_category_tab_main_right'
+                                                                        'name' => 'tr_melis_cms_category_media_tab_content_right'
                                                                     ),
                                                                     'forward' => array(
                                                                         'module' => 'MelisCmsCategory2',
@@ -357,7 +350,7 @@ return array(
                                                                             'conf' => array(
                                                                                 'id' => 'id_meliscategory_categories_category_form_date_validity',
                                                                                 'melisKey' => 'meliscategory_categories_category_form_date_validity',
-                                                                                'name' => 'tr_meliscategory_categories_category_form_date_validity',
+                                                                                'name' => 'tr_meliscategory_categories_category_date_validity',
                                                                             ),
                                                                             'forward' => array(
                                                                                 'module' => 'MelisCmsCategory2',
@@ -369,7 +362,7 @@ return array(
                                                                             'conf' => array(
                                                                                 'id' => 'id_meliscategory_categories_category_form_sites',
                                                                                 'melisKey' => 'meliscategory_categories_category_form_sites',
-                                                                                'name' => 'tr_meliscategory_categories_category_form_sites',
+                                                                                'name' => 'tr_meliscategory_categories_category_countries',
                                                                             ),
                                                                             'forward' => array(
                                                                                 'module' => 'MelisCmsCategory2',
@@ -387,7 +380,7 @@ return array(
                                                     'conf' => array(
                                                         'id' => 'id_meliscategory_category_tab_media',
                                                         'melisKey' => 'meliscategory_category_tab_media',
-                                                        'name' => 'Media',
+                                                        'name' => 'tr_melis_cms_category_media_tab',
                                                         'icon' => 'glyphicons picture'
                                                     ),
                                                     'forward' => array(
@@ -400,7 +393,7 @@ return array(
                                                             'conf' => array(
                                                                 'id' => 'id_meliscategory_category_tab_media_header',
                                                                 'melisKey' => 'meliscategory_category_tab_media_header',
-                                                                'name' => 'Media Header',
+                                                                'name' => 'tr_melis_cms_category_media_tab_header',
                                                             ),
                                                             'forward' => array(
                                                                 'module' => 'MelisCmsCategory2',
@@ -412,7 +405,7 @@ return array(
                                                             'conf' => array(
                                                                 'id' => 'id_meliscategory_category_tab_media_content',
                                                                 'melisKey' => 'meliscategory_category_tab_media_content',
-                                                                'name' => 'Media Content',
+                                                                'name' => 'tr_melis_cms_category_media_tab_content',
                                                             ),
                                                             'forward' => array(
                                                                 'module' => 'MelisCmsCategory2',
@@ -424,7 +417,7 @@ return array(
                                                                     'conf' => array(
                                                                         'id' => 'id_meliscategory_category_tab_media_content_left',
                                                                         'melisKey' => 'meliscategory_category_tab_media_content_left',
-                                                                        'name' => 'Media Content Left',
+                                                                        'name' => 'tr_melis_cms_category_media_tab_content_left',
                                                                     ),
                                                                     'forward' => array(
                                                                         'module' => 'MelisCmsCategory2',
@@ -436,7 +429,7 @@ return array(
                                                                             'conf' => array(
                                                                                 'id' => 'meliscategory_category_tab_media_content_left_image',
                                                                                 'melisKey' => 'meliscategory_category_tab_media_content_left_image',
-                                                                                'name' => 'Media Content Left Image',
+                                                                                'name' => 'tr_melis_cms_category_media_tab_content_left_image',
                                                                             ),
                                                                             'forward' => array(
                                                                                 'module' => 'MelisCmsCategory2',
@@ -448,7 +441,7 @@ return array(
                                                                                     'conf' => array(
                                                                                         'id' => 'id_meliscategory_category_tab_media_content_left_image_list',
                                                                                         'melisKey' => 'meliscategory_category_tab_media_content_left_image_list',
-                                                                                        'name' => 'Media Content Left Image List',
+                                                                                        'rightsDisplay' => 'none'
                                                                                     ),
                                                                                     'forward' => array(
                                                                                         'module' => 'MelisCmsCategory2',
@@ -464,7 +457,7 @@ return array(
                                                                     'conf' => array(
                                                                         'id' => 'id_meliscategory_category_tab_media_content_right',
                                                                         'melisKey' => 'meliscategory_category_tab_media_content_right',
-                                                                        'name' => 'Media Content Right',
+                                                                        'name' => 'tr_melis_cms_category_media_tab_content_right',
                                                                     ),
                                                                     'forward' => array(
                                                                         'module' => 'MelisCmsCategory2',
@@ -476,7 +469,7 @@ return array(
                                                                             'conf' => array(
                                                                                 'id' => 'id_meliscategory_category_tab_media_content_right_file',
                                                                                 'melisKey' => 'meliscategory_category_tab_media_content_right_file',
-                                                                                'name' => 'Media Content right file',
+                                                                                'name' => 'tr_melis_cms_category_media_tab_content_right_image',
                                                                             ),
                                                                             'forward' => array(
                                                                                 'module' => 'MelisCmsCategory2',
@@ -500,7 +493,8 @@ return array(
                             'conf' => array(
                                 'id' => 'id_meliscategory_documents_modal_container',
                                 'melisKey' => 'meliscategory_documents_modal_container',
-                                'name' => 'tr_meliscommerce_documents_modal_container'
+                                'name' => 'tr_meliscommerce_documents_modal_container',
+                                'rightsDisplay' => 'none'
                             ),
                             'forward' => array(
                                 'module' => 'MelisCmsCategory2',

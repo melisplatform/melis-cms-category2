@@ -82,7 +82,10 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
         // Service implementation start
         $success = 0;
         if (! empty($dateStart) && ! empty($dateEnd)) {
-            # format times
+            // replace forward slash to dash
+            $dateStart = str_replace('/','-',$dateStart);
+            $dateEnd   = str_replace('/','-',$dateEnd);
+            # format dates
             $dateStart = date("Y-m-d",strtotime($dateStart));
             $dateEnd   = date("Y-m-d",strtotime($dateEnd));
             if ($dateStart < $dateEnd) {
@@ -1497,6 +1500,26 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
         $arrayParameters['results'] = $categories;
         //service event end
         $arrayParameters = $this->sendEvent('meliscms_service_category_get_first_level_categories_per_site_end', $arrayParameters);
+
+        return $arrayParameters['results'];
+    }
+    public function getCategoriesPerSite($siteId, $langId = 1)
+    {
+        $arrayParameters = $this->makeArrayFromParameters(__METHOD__, func_get_args());
+
+        //service event start
+        $arrayParameters = $this->sendEvent('meliscms_service_category_get_categories_per_site_start', $arrayParameters);
+        $siteId = $arrayParameters['siteId'];
+        $langId = $arrayParameters['langId'];
+
+        //implementation start
+        $categoryTable = $this->getServiceLocator()->get('MelisCmsCategory2Table');
+        $categories = $categoryTable->getCategoriesPerSite($siteId,$langId)->toArray();
+
+        //implementation end
+        $arrayParameters['results'] = $categories;
+        //service event end
+        $arrayParameters = $this->sendEvent('meliscms_service_category_get_categories_per_site_end', $arrayParameters);
 
         return $arrayParameters['results'];
     }

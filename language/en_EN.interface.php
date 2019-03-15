@@ -23,7 +23,6 @@ return [
     'tr_melis_cms_category_v2_properties_valid_to' => 'Valid to',
     'tr_melis_cms_category_v2_properties_valid_to tooltip' => 'Date until which the category will be valid provided that the category is activated',
     'tr_melis_cms_category_v2_list' => 'Category Lists',
-
     //search
     'tr_meliscommerce_categories_list_tree_view_search_input' => 'Search a catalog / category', // FORM
     'tr_meliscommerce_categories_list_tree_view_collapse_all' => 'Collapse all',
@@ -35,18 +34,15 @@ return [
     'tr_meliscategory_categories_category_information_form_cat_name tooltip' => 'Name',
     'tr_meliscategory_categories_category_information_form_cat_desc' => 'Description',
     'tr_meliscategory_categories_category_information_form_cat_desc tooltip' => 'Description',
-
     // Date Validity
     'tr_meliscategory_categories_category_date_validity' => 'Dates of validity',
     'tr_meliscategory_categories_category_valid_from' => 'Valid from',
     'tr_meliscategory_categories_category_valid_from tooltip' => 'Date from which the category will be valid provided that the category is activated',
     'tr_meliscategory_categories_category_valid_to' => 'Valid to',
     'tr_meliscategory_categories_category_valid_to tooltip' => 'Date until which the category will be valid provided that the category is activated',
-
     'tr_meliscategory_categories_category_valid_from_must_equal_high_current_date' => 'Valid from must be equal or higher than the current date',
     'tr_meliscategory_categories_category_valid_dates_invalid' => 'Valid to must be higher than valid from',
     'tr_meliscategory_categories_category_valid_to_must_equal_high_current_date' => 'Valid to must be equal or higher than the current date',
-
     'tr_meliscategory_categories_category_countries' => 'Sites',
     'tr_meliscmscategory_invalid_description' => 'Invalid description',
     'tr_meliscmscategory_invalid_name' => 'Invalid name',
@@ -68,10 +64,11 @@ return [
     'tr_meliscategory_documents_image_lists' => 'Image lists',
     # messages
     'tr_meliscms_categories_err_category_save_unable' => 'Unable to save Category, Please try again',
-    'tr_meliscms_categories_err_category_save_success' => 'Category successfully Saved',
+    'tr_meliscms_categories_err_category_save_success' => 'Category successfully saved',
     'tr_meliscategory_categories_common_label_saving' => 'Saving ...',
     'tr_meliscmscategory_search_not_found' => 'not found',
     'tr_meliscategory_categories_list_tree_view_search_input' => 'Search a category',
+    'tr_melis_cms_category_delete_ok' => 'Successfully deleted category',
     // site filter
     'tr_meliscms_categories_site_filter' => 'Site filter on tree view',
     'tr_meliscms_categories_filter_area' => 'Search and filter of tree categories',
@@ -82,5 +79,15 @@ return [
     'tr_meliscategory_categories_common_btn_delete' => 'Delete',
     'tr_melis_cms_category_empty_media_file' => 'No file uploaded',
     'tr_melis_cms_category_empty_media_image' => 'No image uploaded',
+    // some interfaces
+    'tr_melis_cms_category_media_tab' => 'Media',
+    'tr_melis_cms_category_media_tab_header' => 'Header',
+    'tr_melis_cms_category_media_tab_content' => 'Content',
+    'tr_melis_cms_category_media_tab_content_left' => 'Left content',
+    'tr_melis_cms_category_media_tab_content_left_image' => 'Image list',
+    'tr_melis_cms_category_media_tab_content_left_image_list' => 'List',
+    'tr_melis_cms_category_media_tab_content_right' => 'Right content',
+    'tr_melis_cms_category_media_tab_content_right_image' => 'File list',
+    'tr_melis_cms_category_media_tab_content_right_image_list' => 'List',
 
 ];

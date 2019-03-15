@@ -24,7 +24,9 @@ var mediaDirectory = {
 
                     if (data.fileType === 'image') {
                         // this is for selecting image
+                        // get the current position for locating the added image when selecting
                         currentPosition = currentPosition + 1 + "image";
+                        // construct element for saving the image
                         html  = "<div id='"+ currentPosition  +"' class='col-md-12 margin-b-10 category-image border-green'>" +
                             "<img src='" + data.imageUrl + "' class='img-responsive' />" +
                             "<input type='hidden' value='" + data.imageUrl + "' data-order='" + order + "'/>" +
@@ -42,32 +44,28 @@ var mediaDirectory = {
                         }
                         $(".no-image").hide();
                     } else {
-                        html = "<div class='col-md-3'>" +
-                                "<div class=\"file-area\">" +
-                                " <span class=\"fa fa-file file-icon\"></span>" +
-                                " <span class=\"description\">colipano1.docx</span>" +
-                                " </div>" +
-                                "<input type='hidden' value='" + data.imageUrl + "' data-order='" + order + "'/>" +
-                                "<div class='category-image-option'>" +
-                                "<a class='viewImage' target='_blank' href='"+data.imageUrl+"'> <i class='fa fa-eye' title='View file'></i></a>" +
-                                "<a class='removeImage' data-url='"+data.imageUrl+"' > <i class='fa fa-times' title='Delete file'></i></a>" +
-                                "</div>" +
-                               "</div>";
-
+                        // this for selecting files
+                        // get the current position for locating the added file when selecting
                         currentPositionFile = currentPositionFile + 1 + "file";
+                        // construct element for saving the file
                         html = '<span id='+ currentPositionFile +' >\n' +
                                 ' <a href="#" class="list-group-item list-group-item-action text-green">' + data.imageUrl + '</a>\n' +
                                 ' <i class="fa fa-times-circle remove-file"></i>\n' +
                                 ' <input type="hidden" value="' + data.imageUrl +'">'+
                                 ' </span>\n'
-
+                        // set the current position of the file for the next select
                         $(".category-add-file").attr('currentposition', currentPositionFile);
+                        // add the file in the target div
                         $(targetDiv).append(html);
+                        // scrolling to the current added file
                         if ($("#" + currentPositionFile).length > 0) {
                             $("html, body").animate({ scrollTop: $("#" + currentPositionFile).position().top }, 100);
                         }
+                        // hide no file label
                         $(".no-file").hide();
                     }
+                    // show/not show the button to scroll upward
+                    initButtonScrollToTop();
                 });
             }
         }, 'static');

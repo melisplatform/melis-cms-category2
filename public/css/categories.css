@@ -481,3 +481,6 @@
     background:#e61c23;
     color:#fff !important;
 }
+#noResultData {
+    display:none;
+}

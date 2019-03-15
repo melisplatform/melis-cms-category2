@@ -447,7 +447,7 @@ class MelisCmsCategoryController extends AbstractActionController
         $textTitle = $translator->translate('tr_melis_cms_category_v2');
         $message   = $translator->translate('tr_meliscms_categories_err_category_save_unable');
         $errors    = [];
-        $logTypeCode = "CMS_MELIS_CATEGORY2_ADD";
+        $logTypeCode = "CMS_CATEGORY2_SAVE";
         $id = null;
         if($request->isPost()) {
             $this->getEventManager()->trigger('meliscms_category_save_start', $this, $request);
@@ -458,9 +458,8 @@ class MelisCmsCategoryController extends AbstractActionController
             $catTranslationData  = $postValues['cat_trans'] ?? null;
             $catSitesData        = $postValues['cat_sites'] ?? null;
             $passedCatId         = $postValues['cat_id'] ?? null;
-            $dateActive          = $postValues['cat_date_valid_start'];
-            $dateInactive        = $postValues['cat_date_valid_end'];
-            
+            $dateActive          = str_replace(' ',null,$postValues['cat_date_valid_start'] ?? null);
+            $dateInactive        = str_replace(' ',null,$postValues['cat_date_valid_end'] ?? null);
             // melis-core config
             $melisMelisCoreConfig = $this->serviceLocator->get('MelisCoreConfig');
             // form config
@@ -971,88 +970,40 @@ class MelisCmsCategoryController extends AbstractActionController
      *
      * @return \Zend\View\Model\JsonModel
      */
-    public function deleteCategoryAction(){
-
+    public function deleteCategoryAction()
+    {
         $translator = $this->getServiceLocator()->get('translator');
-
         $request = $this->getRequest();
         // Default Values
         $catId = null;
         $errors = array();
-        $status  = 0;
+        $success  = 0;
         $textTitle = '';
         $textMessage = '';
-        $logTypeCode = '';
+        $logTypeCode = 'CMS_CATEGORY2_DELETE';
 
         if($request->isPost()) {
             $postValues = get_object_vars($this->getRequest()->getPost());
             $postValues = $this->getTool()->sanitizeRecursive($postValues);
-
             $catId = (int) $postValues['cat_id'];
-            $catFatherId = (int) $postValues['cat_father_cat_id'];
-            
-            if ($catFatherId == '-1'){
-                $type = 'catalog';
-            }else{
-                $type = 'category';
-            }
-            // Log Type Code
-            $logTypeCode = 'ECOM_'.strtoupper($type).'_DELETE';
-            
-            $textTitle = 'tr_meliscommerce_categories_'.$type.'_delete';
-
-            // Getting Category Details
-            $melisComCategoryService = $this->getServiceLocator()->get('MelisCmsCategory2Service');
-            $categoryData = $melisComCategoryService->getCategoryById($catId);
-            $categoryChildren = $categoryData->getChildren();
-
-            // Checking if Category has a Sub Categories
-            if (empty($categoryChildren)){
-                $melisEcomCategoryTable = $this->getServiceLocator()->get('MelisCmsCategryTable');
-                $melisEcomCategoryTable->deleteById($catId);
-                // Reorder Categories
-
-                $catData = $melisEcomCategoryTable->getChildrenCategoriesOrderedByOrder($catFatherId);
-                $catDatas = $catData->toArray();
-
-                $ecomSeotable = $this->serviceLocator->get('MelisEcomSeoTable');
-                $ecomSeotable->deleteByField('eseo_category_id', $catId);
-
-                // Re-ordering the Children of the Parent Category
-                $ctr = 1;
-                foreach ($catDatas As $key => $val){
-                    $catDatas[$key]['cat_order'] = $ctr++;
-                }
-
-                // Updating  Children of the Parent Category one by one
-                foreach ($catDatas As $key => $val){
-                    $melisEcomCategoryTable->save($catDatas[$key],$catDatas[$key]['cat_id']);
-                }
-
-                $melisEcomCategoryTransTable = $this->getServiceLocator()->get('MelisEcomCategoryTransTable');
-                $melisEcomCategoryTransTable->deleteByField('catt_category_id', $catId);
-                $melisEcomCountryCategoryTable = $this->getServiceLocator()->get('MelisEcomCountryCategoryTable');
-                $melisEcomCountryCategoryTable->deleteByField('ccat_category_id', $catId);
-
-                $textMessage = 'tr_meliscommerce_categories_'.$type.'_delete_success';
-                $status = 1;
-            }else{
-                $textMessage = 'tr_meliscommerce_categories_err_'.$type.'_unable_delete';
-                $errors['category'] = array(
-                    'label' => $translator->translate('tr_meliscommerce_categories_common_label_'.$type),
-                    'deleteUnabled' => $translator->translate('tr_meliscommerce_categories_err_'.$type.'_delete_has_children'),
-                );
+            $categoryTable = $this->getCategory2Table();
+            // execute delete
+            if (! empty($catId)) {
+                $categoryTable->deleteById($catId);
+                $success = 1;
+                $textTitle = "Delete category";
+                $textMessage = 'tr_melis_cms_category_delete_ok';
             }
         }
 
         $response = array(
-            'success' => $status,
+            'success' => $success,
             'textTitle' => $textTitle,
             'textMessage' => $textMessage,
             'errors' => $errors,
         );
 
-        if ($status){
+        if ($success){
             $this->getEventManager()->trigger('meliscommerce_category_delete_end', 
                 $this, array_merge($response, array('typeCode' => $logTypeCode, 'itemId' => $catId)));
         }
@@ -1483,6 +1434,13 @@ class MelisCmsCategoryController extends AbstractActionController
     private function getCatSiteTable()
     {
         return $this->getServiceLocator()->get('MelisCmsCategory2SitesTable');
+    }
+    /**
+     * @return \MelisCmsCategory2\Model\Tables\MelisCmsCategory2SitesTable
+     */
+    private function getCategory2Table()
+    {
+        return $this->getServiceLocator()->get('MelisCmsCategory2Table');
     }
     /**
      * This will pop an error after validating the form

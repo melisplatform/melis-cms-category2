@@ -8,12 +8,17 @@
 
 <div class="tab-pane container-level-a" <?php echo $id.' '.$data_melisKey; ?>>
 	<div class="content-cont">	
-    	<?php 
-    	    if(!empty($this->zoneconfig['interface'])) {
-    	        foreach($this->zoneconfig['interface'] as $keyConfig => $menuConfig) {
-    	            echo $this->$keyConfig;
-    	        }
-    	    }
+    	<?php
+
+		if(empty($this->noAccess)) {
+            if (!empty($this->zoneconfig['interface'])) {
+                foreach ($this->zoneconfig['interface'] as $keyConfig => $menuConfig) {
+                    echo $this->$keyConfig;
+                }
+            }
+        } else {
+            echo '<h4>'.$this->noAccess.'</h4>';
+        }
     	?>
 	</div>
 </div>

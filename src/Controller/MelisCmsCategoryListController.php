@@ -17,15 +17,30 @@ use Zend\Session\Container;
 
 class MelisCmsCategoryListController extends AbstractActionController
 {
+    const TOOL_INDEX = 'melis_cms_category_v2_config';
+    const TOOL_KEY = 'melis_cms_categories_v2';
     /**
      * Render Categories page
      * 
      * @return \Zend\View\Model\ViewModel
      */
-    public function renderCategoriesPageAction(){
+    public function renderCategoriesPageAction()
+    {
         $melisKey = $this->params()->fromRoute('melisKey', '');
+        $noAccessPrompt = '';
+        // Checks wether the user has access to this tools or not
+        $melisCoreRights = $this->getServiceLocator()->get('MelisCoreRights');
+
+        if(!$melisCoreRights->canAccess($melisKey)) {
+            $noAccessPrompt = $translator->translate('tr_tool_no_access');
+        }
+//
+//        $melisTool = $this->getServiceLocator()->get('MelisCoreTool');
+//        $melisTool->setMelisToolKey(self::TOOL_INDEX, self::TOOL_KEY);
+
         $view = new ViewModel();
         $view->melisKey = $melisKey;
+        $view->noAccess = $noAccessPrompt;
         return $view;
     }
     
@@ -33,8 +48,15 @@ class MelisCmsCategoryListController extends AbstractActionController
      * Render Category List
      * @return \Zend\View\Model\ViewModel
      */
-    public function renderCategoryListAction(){
+    public function renderCategoryListAction()
+    {
+
     	$melisKey = $this->params()->fromRoute('melisKey', '');
+        $melisCoreRights = $this->getServiceLocator()->get('MelisCoreRights');
+
+//        $melisTool = $this->getServiceLocator()->get('MelisCoreTool');
+//        $melisTool->setMelisToolKey(self::TOOL_INDEX, self::TOOL_KEY);
+
     	$view = new ViewModel();
     	$view->melisKey = $melisKey;
     	return $view;
@@ -61,6 +83,7 @@ class MelisCmsCategoryListController extends AbstractActionController
     public function renderCategoryListHeaderAction(){
         $melisKey = $this->params()->fromRoute('melisKey', '');
         $view = new ViewModel();
+
         $view->melisKey = $melisKey;
         return $view;
     }

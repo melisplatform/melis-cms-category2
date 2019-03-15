@@ -16,7 +16,7 @@ return [
     'tr_melis_cms_category_v2_name_too_long' => 'Category name too long max characters 100',
     'tr_melis_cms_category_v2_description_invalid' => 'Description is invalid',
     'tr_melis_cms_category_v2_name_invalid' => 'Name is invalid',
-    'tr_melis_cms_category_v2_properties' => 'Properties',
+    'tr_melis_cms_category_v2_properties' => 'Propriétés',
     'tr_melis_cms_category_v2_properties_date_validity' => 'Dates de validité',
     'tr_melis_cms_category_v2_properties_valid_from' => 'Valide du',
     'tr_melis_cms_category_v2_properties_valid_from tooltip' => 'Date à partir de laquelle la catégorie sera valide à condition que celle-ci soit activée',
@@ -43,7 +43,7 @@ return [
     'tr_meliscommerce_categories_category_valid_to_must_equal_high_current_date' => 'Valide au doit être égal ou supérieur à la date actuelle',
     'tr_meliscmscategory_invalid_description' => 'Invalid description',
     'tr_meliscmscategory_invalid_name' => 'Invalid name',
-    'tr_meliscmscategory_properties_tab' => 'Properties',
+    'tr_meliscmscategory_properties_tab' => 'Propriétés',
     'tr_meliscategory_categories_common_label_texts' => 'Texts',
     'tr_meliscategory_categories_common_label_online' => 'Actif',
     'tr_meliscategory_categories_common_label_offline' => 'Inactif',
@@ -67,8 +67,8 @@ return [
     'tr_meliscmscategory_search_not_found' => 'non trouvé',
     'tr_meliscategory_categories_list_tree_view_search_input' => 'Chercher une catégorie',
     // site filter on tree view
-    'tr_meliscms_categories_site_filter' => 'Site filter on tree view',
-    'tr_meliscms_categories_filter_area' => 'Search and filter of tree categories',
+    'tr_meliscms_categories_site_filter' => 'Site filter',
+    'tr_meliscms_categories_filter_area' => 'Search and filter category tree',
     'tr_meliscms_categories_filter_area_empty_site' => 'No site created',
     //js tree
     'tr_meliscategory_categories_common_btn_add' => 'Ajouter',
@@ -90,6 +90,28 @@ return [
     'tr_meliscategory_categories_category_information_form_cat_desc' => 'Description',
     'tr_meliscategory_categories_category_information_form_cat_desc tooltip' => 'Description',
     'tr_melis_cms_category_empty_media_file' => 'Aucune pièce-jointe',
-    'tr_melis_cms_category_empty_media_image' => 'Aucune image'
+    'tr_melis_cms_category_empty_media_image' => 'Aucune image',
+    // notifications || messages
+    'tr_melis_cms_category_delete_ok' => 'Successfully deleted category',
+    'tr_melis_cms_category_media_tab' => 'Media',
+    'tr_melis_cms_category_media_tab_header' => 'Header',
+    'tr_melis_cms_category_media_tab_content' => 'Content',
+    'tr_melis_cms_category_media_tab_content_left' => 'Left content',
+    'tr_melis_cms_category_media_tab_content_left_image' => 'Image list',
+    'tr_melis_cms_category_media_tab_content_left_image_list' => 'List',
+    'tr_melis_cms_category_media_tab_content_right' => 'Right content',
+    'tr_melis_cms_category_media_tab_content_right_image' => 'File list',
+    'tr_melis_cms_category_media_tab_content_right_image_list' => 'List',
+    //rights exclusion
+    'tr_melis_categories_list' => 'Category lists',
+    'tr_meliscategory_categories_category' => 'Category details',
+    'tr_meliscms_categories_list_header' => 'Header',
+    'tr_meliscms_categories_list_categories_tree' => 'Category tree view',
+    'tr_meliscategory_categories_category_header' => 'Header',
+    'tr_meliscategory_categories_category_header_save_category' => 'Save category',
+    'tr_meliscategory_categories_category_content' => 'Content',
+    'tr_meliscategory_categories_category_tab_content' => 'Category tabs',
+    'tr_meliscategory_categories_category_form_transalations' => 'Texts',
+    'tr_meliscms_categories_list_search_input' => 'Search field'
 
 ];
