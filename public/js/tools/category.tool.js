@@ -661,12 +661,12 @@ window.initCmsCategoryTreeView = function(){
 	        var dataString = new Array();
 			// get data from input
 	        dataString.push({
-				name: "cat_id",
+				name: "cat2_id",
 				value: parseInt(categoryId, 10)
 			});
 			// get date data from param
 			dataString.push({
-				name: "cat_father_cat_id",
+				name: "cat2_father_cat_id",
 				value: parseInt(newParentId, 10)
 			});
 			// get date data from param

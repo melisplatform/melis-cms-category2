@@ -464,13 +464,13 @@ class MelisCmsCategoryListController extends AbstractActionController
      */
     public function udpateCategoryTreeViewAction($categoryData, $fatherId, $newParent){
         $datas = $categoryData;
-        $melisEcomCategoryTable = $this->getServiceLocator()->get('MelisEcomCategoryTable');
-        $catData = $melisEcomCategoryTable->getChildrenCategoriesOrderedByOrder($fatherId);
+        $cmsCategory = $this->getServiceLocator()->get('MelisCmsCategory2Table');
+        $catData = $cmsCategory->getChildrenCategoriesOrderedByOrder($fatherId);
         $catDatas = $catData->toArray();
         
         if (empty($catDatas)){
             // Parent Category doesn't have yet Children
-            $melisEcomCategoryTable->save($datas,$datas['cat2_id']);
+            $cmsCategory->save($datas,$datas['cat2_id']);
         }else{
             // Parent Category has already Children
             
@@ -483,18 +483,18 @@ class MelisCmsCategoryListController extends AbstractActionController
                     }
                 }
                 // Adding to specific index of the result array
-                array_splice($catDatas, ($categoryData['cat_order'] - 1), 0, array($categoryData));
+                array_splice($catDatas, ($categoryData['cat2_order'] - 1), 0, array($categoryData));
             }
             
             // Re-ordering the Children of the Parent Category
             $ctr = 1;
             foreach ($catDatas As $key => $val){
-                $catDatas[$key]['cat_order'] = $ctr++;
+                $catDatas[$key]['cat2_order'] = $ctr++;
             }
             
             // Updating  Children of the Parent Category one by one
             foreach ($catDatas As $key => $val){
-                $melisEcomCategoryTable->save($catDatas[$key],$catDatas[$key]['cat2_id']);
+                $cmsCategory->save($catDatas[$key],$catDatas[$key]['cat2_id']);
             }
         }
     }
