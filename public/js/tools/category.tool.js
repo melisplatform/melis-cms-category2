@@ -452,6 +452,8 @@ $(function(){
         $(".parent-file-list .back-drop").fadeIn("fast");
         $("html, body").animate({scrollTop : 10}, 500);
         $("body").css("overflow", "hidden");
+        $("#categoryTreeViewPanel").collapse("hide");
+        // disable buttons
 	});
 
     categoryBody.on('click', ".category-add-file" , function(){
@@ -464,10 +466,11 @@ $(function(){
         	fileType  : data.type,
 			targetDiv : ".category-file-list .list-group",
             currentPosition : data.currentposition
-		},".category-file-list")
+		},".category-file-list");
 		$(".parent-image-list .back-drop").fadeIn("fast");
         $("html, body").animate({scrollTop : 10}, 500);
         $("body").css("overflow", "hidden");
+        $("#categoryTreeViewPanel").collapse("hide");
 
     });
     categoryBody.on('submit',"#id_meliscategory_media_upload_form",function(e) {
@@ -475,24 +478,30 @@ $(function(){
         var formData = new FormData(this);
         melisCoreTool.pending(this);
         var dataElem = $(".category-add-image").data() ;
-		$(".media-upload-loader").fadeIn('medium');
-		var mediaType = $("#category-upload-media").data('type');
-		var targetArea = $("#category-upload-media").data('targetArea');
-        $.ajax({
-            type: 'POST',
-            url: 'melis/MelisCmsCategory2/MelisCmsCategoryMedia/uploadMedia',
-            data: formData,
-            dataType: 'json',
-            processData: false,
-            cache: false,
-            contentType: false,
-            encode: true
-        }).success(function(data) {
-            $(".media-upload-loader").fadeOut('medium');
-        	if (data.success === true) {
-        		melisHelper.zoneReload("id_meliscategory_mini_media_library","meliscategory_mini_media_library",{fileType:mediaType,targetDiv : targetArea});
-			}
-		});
+        var fileUploadValue = $("#id_meliscategory_media_upload_form input[type='file']").val();
+        if (fileUploadValue !== "") {
+            $(".media-upload-loader").fadeIn('medium');
+            var mediaType = $("#category-upload-media").data('type');
+            var targetArea = $("#category-upload-media").data('targetArea');
+            $.ajax({
+                type: 'POST',
+                url: 'melis/MelisCmsCategory2/MelisCmsCategoryMedia/uploadMedia',
+                data: formData,
+                dataType: 'json',
+                processData: false,
+                cache: false,
+                contentType: false,
+                encode: true
+            }).success(function(data) {
+                $(".media-upload-loader").fadeOut('medium');
+                if (data.success === true) {
+                    melisHelper.zoneReload("id_meliscategory_mini_media_library","meliscategory_mini_media_library",{fileType:mediaType,targetDiv : targetArea});
+                }
+            });
+		} else {
+			var message = "Please select a file to upload";
+			melisHelper.melisKoNotification('Melis Categories',message);
+		}
     });
 
     categoryBody.on('click', ".category-image-list .removeImage", function(){
@@ -925,6 +934,9 @@ window.initCategoryProductsImgs = function(){
 	    'resizeDuration': 200,
 	    'wrapAround': true
     })
-}
+};
+window.disableSaveButtons = function(){
+
+};
 
 

@@ -31,6 +31,7 @@ return array(
                 ]
             ]
         ],
+
         'melis_cms_category_v2_config' => [
             'conf' => [
                 'id'   => 'melis_cms_category_v2_config',

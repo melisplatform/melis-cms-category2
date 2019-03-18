@@ -12,48 +12,48 @@
     $domain = $this->host;
     $images = $this->images;
     $title  = $this->title;
-    $title = "Select image";
     $form  = $this->categoryMediaForm;
     if ($this->fileType == 'image') {
-        $title = "Select image";
+        $title = "tr_meliscms_categories_media_select_image";
     } else {
-        $title = "Select file";
+        $title = "tr_meliscms_categories_media_select_file";
     }
+
 ?>
 <div class="modal-content" id="<?= $id; ?>"  data-melisKey="<?= $data_melisKey; ?>" style="position: relative;">
     <div class="modal-body padding-none">
         <div class="wizard">
             <div class="widget widget-tabs widget-tabs-double widget-tabs-responsive margin-none border-none">
-                <div class="widget-head">
+                <div class="widget-head" style="cursor: move">
                     <ul class="nav nav-tabs">
-                        <li class="active"><a href="#<?php echo $this->zoneconfig['conf']['id'] ?>" class="glyphicons check" data-toggle="tab" aria-expanded="true"><i></i><?php echo $this->translate($title) ?></a></li>
+                        <li class="active"><a href="#<?php echo $this->zoneconfig['conf']['id'] ?>" class="glyphicons check" data-toggle="tab" aria-expanded="true" style="cursor: move;"><i></i><?php echo $this->translate($title) ?></a></li>
                     </ul>
                 </div>
                 <div class="widget-body innerAll inner-2x">
                     <div class="tab-content">
                         <div class="tab-pane active" <?php echo $id ?>>
                             <div class="mini-media-library">
-                                <h3>Media library</h3>
-                                <p> Directory : <a href="/media" target="_blank">/media</a></p>
+                                <h3><?= $this->translate('tr_meliscms_categories_media_heading');?></h3>
+                                <p> <?= $this->translate('tr_meliscms_categories_media_sub_heading');?> : <a href="/media" target="_blank">/media</a></p>
                                 <div class="min-upload-image">
-                                    <p><i class="fa fa-upload"></i> Upload your media files here </p>
+                                    <p><i class="fa fa-upload"></i> <?= $this->translate('tr_meliscms_categories_upload_text')?></p>
                                     <?php
                                         $form->prepare();
                                         echo $this->form()->openTag($form);
                                         echo $this->melisFieldCollection($form);
                                     ?>
                                     <br>
-                                    <button type="submit" class="btn btn-primary pull-right" id="category-upload-media" data-target-area="<?= $this->targetDiv ?>"   data-type="<?= $this->fileType ?>"><i class="fa fa-upload" data-type="<?= $this->fileType ?>"></i> Upload</button>
+                                    <button type="submit" class="btn btn-primary pull-right" id="category-upload-media" data-target-area="<?= $this->targetDiv ?>"   data-type="<?= $this->fileType ?>"><i class="fa fa-upload" data-type="<?= $this->fileType ?>"></i> <?= $this->translate('tr_meliscms_categories_media_upload_btn')?> </button>
                                     <?php
                                         echo $this->form()->closeTag($form);
                                     ?>
                                     <script>
                                         $(":file").filestyle({
-                                            buttonBefore: true,
                                             input: true,
                                             badge: true,
                                             size : "sm",
-                                            text: '<?php echo $this->translate('tr_meliscms_user_account_input_file')?>'
+                                            buttonText: '<?php echo $this->translate('tr_meiscms_categories_media_choose_file')?>',
+                                            classButton : 'btn btn-primary'
                                         });
                                     </script>
                                 </div>
@@ -66,7 +66,7 @@
                                                     <div class="image-area">
                                                         <img src="/media/<?= $image ?>" alt="<?= $image ?>" title="<?= $image?>" class="img-responsive">
                                                         <span class="description"><?= $image ?></span>
-                                                        <div class="add-wrapper add-image" data-order="<?= $idx ?>" data-target-div="<?= $this->targetDiv ?>" data-file-type="image" data-image-url="/media/<?= $image ?>" title="Add image <?= $image ?>">
+                                                        <div class="add-wrapper add-image" data-order="<?= $idx ?>" data-target-div="<?= $this->targetDiv ?>" data-file-type="image" data-image-url="/media/<?= $image ?>" title="<?= $this->translate('tr_meliscms_categories_media_add_image')?> <?= $image ?>">
                                                             <i class="fa fa-plus"></i>
                                                         </div>
                                                     </div>
@@ -74,7 +74,7 @@
                                                     <div class="file-area">
                                                         <span class="fa fa-file file-icon"></span>
                                                         <span class="description"><?= $image ?></span>
-                                                        <div class="add-wrapper add-image" data-order="<?= $idx ?>" data-target-div="<?= $this->targetDiv ?>" data-file-type="file" data-image-url="/media/<?= $image ?>" title="Add <?= $image?>">
+                                                        <div class="add-wrapper add-image" data-order="<?= $idx ?>" data-target-div="<?= $this->targetDiv ?>" data-file-type="file" data-image-url="/media/<?= $image ?>" title="<?= $this->translate('tr_meliscms_categories_media_add_file')?> <?=$image?>">
                                                             <i class="fa fa-plus"></i>
                                                         </div>
                                                     </div>

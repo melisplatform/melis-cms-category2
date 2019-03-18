@@ -73,6 +73,8 @@ return [
     'tr_meliscms_categories_site_filter' => 'Site filter on tree view',
     'tr_meliscms_categories_filter_area' => 'Search and filter of tree categories',
     'tr_meliscms_categories_filter_area_empty_site' => 'No site created',
+    'tr_meiscms_categories_fitler_site_heading' => 'Filter by site',
+    'tr_meiscms_categories_fitler_site tooltip' => 'Select a site to filter the categories by the site selected',
     //js tree
     'tr_meliscategory_categories_common_btn_add' => 'Add',
     'tr_meliscategory_categories_common_btn_update' => 'Edit',
@@ -89,5 +91,19 @@ return [
     'tr_melis_cms_category_media_tab_content_right' => 'Right content',
     'tr_melis_cms_category_media_tab_content_right_image' => 'File list',
     'tr_melis_cms_category_media_tab_content_right_image_list' => 'List',
+    'tr_meliscms_categories_add_image' => 'Add image',
+    'tr_meliscms_categories_add_file' => 'Add file',
+    'tr_meliscms_categories_upload_text' => 'Upload your image / file here',
+    //Site selection
+    'tr_meliscms_categories_site_selection tooltip' => 'Select the site(s) linked to this category',
+    //media
+    'tr_meliscms_categories_media_heading' => 'Media directory',
+    'tr_meliscms_categories_media_sub_heading' => 'Directory',
+    'tr_meliscms_categories_media_select_image' => 'Select Image',
+    'tr_meliscms_categories_media_select_file' => 'Select File',
+    'tr_meiscms_categories_media_choose_file' => 'Choose file',
+    'tr_meliscms_categories_media_upload_btn' => 'Upload',
+    'tr_meliscms_categories_media_add_image' => 'Add image',
+    'tr_meliscms_categories_media_add_file'  => 'Add'
 
 ];

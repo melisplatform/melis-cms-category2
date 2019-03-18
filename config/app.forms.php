@@ -199,7 +199,7 @@ return array(
                                     'type' => 'MelisCmsPluginSiteSelect',
                                     'options' => [
                                         'label' => 'Sites',
-                                        'tooltip' => 'Filtering the tree by site'
+                                        'tooltip' => 'tr_meiscms_categories_fitler_site tooltip'
                                     ],
                                     'attributes' => [
                                         'id' => 'categorySiteFilter',
@@ -222,6 +222,9 @@ return array(
                                 'spec' => array(
                                     'name' => 'media_upload',
                                     'type' => 'file',
+                                    'attributes' => [
+                                        'data-classButton' => 'btn btn-primary'
+                                    ]
                                 )
                             ),
                         )

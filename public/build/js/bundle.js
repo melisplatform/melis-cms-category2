@@ -458,6 +458,8 @@ $(function(){
         $(".parent-file-list .back-drop").fadeIn("fast");
         $("html, body").animate({scrollTop : 10}, 500);
         $("body").css("overflow", "hidden");
+        $("#categoryTreeViewPanel").collapse("hide");
+        // disable buttons
 	});
 
     categoryBody.on('click', ".category-add-file" , function(){
@@ -470,10 +472,11 @@ $(function(){
         	fileType  : data.type,
 			targetDiv : ".category-file-list .list-group",
             currentPosition : data.currentposition
-		},".category-file-list")
+		},".category-file-list");
 		$(".parent-image-list .back-drop").fadeIn("fast");
         $("html, body").animate({scrollTop : 10}, 500);
         $("body").css("overflow", "hidden");
+        $("#categoryTreeViewPanel").collapse("hide");
 
     });
     categoryBody.on('submit',"#id_meliscategory_media_upload_form",function(e) {
@@ -481,24 +484,30 @@ $(function(){
         var formData = new FormData(this);
         melisCoreTool.pending(this);
         var dataElem = $(".category-add-image").data() ;
-		$(".media-upload-loader").fadeIn('medium');
-		var mediaType = $("#category-upload-media").data('type');
-		var targetArea = $("#category-upload-media").data('targetArea');
-        $.ajax({
-            type: 'POST',
-            url: 'melis/MelisCmsCategory2/MelisCmsCategoryMedia/uploadMedia',
-            data: formData,
-            dataType: 'json',
-            processData: false,
-            cache: false,
-            contentType: false,
-            encode: true
-        }).success(function(data) {
-            $(".media-upload-loader").fadeOut('medium');
-        	if (data.success === true) {
-        		melisHelper.zoneReload("id_meliscategory_mini_media_library","meliscategory_mini_media_library",{fileType:mediaType,targetDiv : targetArea});
-			}
-		});
+        var fileUploadValue = $("#id_meliscategory_media_upload_form input[type='file']").val();
+        if (fileUploadValue !== "") {
+            $(".media-upload-loader").fadeIn('medium');
+            var mediaType = $("#category-upload-media").data('type');
+            var targetArea = $("#category-upload-media").data('targetArea');
+            $.ajax({
+                type: 'POST',
+                url: 'melis/MelisCmsCategory2/MelisCmsCategoryMedia/uploadMedia',
+                data: formData,
+                dataType: 'json',
+                processData: false,
+                cache: false,
+                contentType: false,
+                encode: true
+            }).success(function(data) {
+                $(".media-upload-loader").fadeOut('medium');
+                if (data.success === true) {
+                    melisHelper.zoneReload("id_meliscategory_mini_media_library","meliscategory_mini_media_library",{fileType:mediaType,targetDiv : targetArea});
+                }
+            });
+		} else {
+			var message = "Please select a file to upload";
+			melisHelper.melisKoNotification('Melis Categories',message);
+		}
     });
 
     categoryBody.on('click', ".category-image-list .removeImage", function(){
@@ -931,7 +940,10 @@ window.initCategoryProductsImgs = function(){
 	    'resizeDuration': 200,
 	    'wrapAround': true
     })
-}
+};
+window.disableSaveButtons = function(){
+
+};
 
 
 
@@ -1786,8 +1798,9 @@ var mediaDirectory = {
             $(".category-add-file").removeAttr('disabled ');
 
             $('.modal-dialog').draggable({
-                handle: ".modal-content"
-            }).css('cursor',"move");
+                handle: ".widget-head"
+            });
+
 
             if ($(targetDiv).length > 0) {
                 var categoryAddImage = $(".category-add-image");
@@ -1808,8 +1821,8 @@ var mediaDirectory = {
                         // get the current position for locating the added image when selecting
                         currentPosition = currentPosition + 1 + "image";
                         // construct element for saving the image
-                        html  = "<div id='"+ currentPosition  +"' class='col-md-12 margin-b-10 category-image border-green'>" +
-                            "<img src='" + data.imageUrl + "' class='img-responsive' />" +
+                        html  = "<div id='"+ currentPosition  +"' class='col-md-12 margin-b-10 category-image'>" +
+                            "<img src='" + data.imageUrl + "' class='img-responsive border-green' />" +
                             "<input type='hidden' value='" + data.imageUrl + "' data-order='" + order + "'/>" +
                             "<div class='category-image-option'>" +
                             " <a class='viewImage' target='_blank' href='"+data.imageUrl+"'> <i class='fa fa-eye' title='View image'></i></a>" +

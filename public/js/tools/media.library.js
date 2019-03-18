@@ -5,8 +5,9 @@ var mediaDirectory = {
             $(".category-add-file").removeAttr('disabled ');
 
             $('.modal-dialog').draggable({
-                handle: ".modal-content"
-            }).css('cursor',"move");
+                handle: ".widget-head"
+            });
+
 
             if ($(targetDiv).length > 0) {
                 var categoryAddImage = $(".category-add-image");
@@ -27,8 +28,8 @@ var mediaDirectory = {
                         // get the current position for locating the added image when selecting
                         currentPosition = currentPosition + 1 + "image";
                         // construct element for saving the image
-                        html  = "<div id='"+ currentPosition  +"' class='col-md-12 margin-b-10 category-image border-green'>" +
-                            "<img src='" + data.imageUrl + "' class='img-responsive' />" +
+                        html  = "<div id='"+ currentPosition  +"' class='col-md-12 margin-b-10 category-image'>" +
+                            "<img src='" + data.imageUrl + "' class='img-responsive border-green' />" +
                             "<input type='hidden' value='" + data.imageUrl + "' data-order='" + order + "'/>" +
                             "<div class='category-image-option'>" +
                             " <a class='viewImage' target='_blank' href='"+data.imageUrl+"'> <i class='fa fa-eye' title='View image'></i></a>" +
