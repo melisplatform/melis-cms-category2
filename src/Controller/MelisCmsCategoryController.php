@@ -449,6 +449,7 @@ class MelisCmsCategoryController extends AbstractActionController
         $errors    = [];
         $logTypeCode = "CMS_CATEGORY2_SAVE";
         $id = null;
+        $createdId = null;
         if($request->isPost()) {
             $this->getEventManager()->trigger('meliscms_category_save_start', $this, $request);
             $currentUserLoggedIn = $this->getLoggedInUserInfo();
@@ -510,6 +511,7 @@ class MelisCmsCategoryController extends AbstractActionController
                 if (empty($errors)) {
                     // save Category
                     $categoryId  = $categoryService->saveCategory($parentId, $status,$userId, $dateActive, $dateInactive, $passedCatId, $postValues);
+                    $createdId = $categoryId;
                     // save Category translations
                     foreach ($propertyFormData as $idx => $val) {
                         $catLangId = $val['catt2_lang_id'] ?? null;
@@ -598,6 +600,7 @@ class MelisCmsCategoryController extends AbstractActionController
             $logTypeCode = "CMS_CATEGORY2_UPDATE";
             $response['textMessage'] = 'tr_meliscms_categories_err_category_update_ok';
         }
+        $id = $id ?? $createdId;
         // flash messenger
         $this->getEventManager()->trigger('meliscms_category2_save_end',
             $this, array_merge($response, array('typeCode' => $logTypeCode, 'itemId' => $id)));
