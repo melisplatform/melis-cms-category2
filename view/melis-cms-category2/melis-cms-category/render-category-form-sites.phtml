@@ -5,6 +5,7 @@
     }
     $data_melisKey = 'data-melisKey="'.$this->melisKey.'"';
     $categorySites = $this->cartegorySites;
+    print_r($categorySites);
     $siteData      = $this->siteData;
 ?>
 <div <?php echo $id. ' '.$data_melisKey?> >
@@ -21,7 +22,8 @@
     		<form>
         		<?php
         		    $checked = '';
-        		    if (count($siteData) == count($categorySites) || count($categorySites) == 1){
+                    $tmp = $categorySites[0];
+        		    if ((count($siteData) == count($categorySites)) || ($tmp == -1)){
         		        $checked = 'check';
         		    }
         		?>
