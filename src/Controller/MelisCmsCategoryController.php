@@ -596,13 +596,13 @@ class MelisCmsCategoryController extends AbstractActionController
 
         if (! empty($id)) {
             $logTypeCode = "CMS_CATEGORY2_UPDATE";
-            $response['message'] = 'tr_meliscms_categories_err_category_update_ok';
+            $response['textMessage'] = 'tr_meliscms_categories_err_category_update_ok';
         }
         // flash messenger
         $this->getEventManager()->trigger('meliscms_category2_save_end',
             $this, array_merge($response, array('typeCode' => $logTypeCode, 'itemId' => $id)));
         // translate
-        $response['textMessage'] = $translator->translate($message);
+        $response['textMessage'] = $translator->translate($response['textMessage']);
 
         return new JsonModel($response);
     }
