@@ -458,6 +458,7 @@ class MelisCmsCategoryController extends AbstractActionController
             $catTranslationData  = $postValues['cat_trans'] ?? null;
             $catSitesData        = $postValues['cat_sites'] ?? null;
             $passedCatId         = $postValues['cat_id'] ?? null;
+            $id = $passedCatId;
             $dateActive          = str_replace(' ',null,str_replace('/','-',$postValues['cat_date_valid_start']) ?? null);
             $dateInactive        = str_replace(' ',null,str_replace('/','-',$postValues['cat_date_valid_end']) ?? null);
             // melis-core config
@@ -509,7 +510,6 @@ class MelisCmsCategoryController extends AbstractActionController
                 if (empty($errors)) {
                     // save Category
                     $categoryId  = $categoryService->saveCategory($parentId, $status,$userId, $dateActive, $dateInactive, $passedCatId, $postValues);
-                    $id = $categoryId;
                     // save Category translations
                     foreach ($propertyFormData as $idx => $val) {
                         $catLangId = $val['catt2_lang_id'] ?? null;
@@ -571,8 +571,7 @@ class MelisCmsCategoryController extends AbstractActionController
                     }
 
                     $success = 1;
-                    $message = $translator->translate('tr_meliscms_categories_err_category_save_success');
-                    $this->getEventManager()->trigger('meliscms_category_save_end', $this, $request);
+                    $message = 'tr_meliscms_categories_err_category_save_success';
                 }
 
             } else {
@@ -595,8 +594,15 @@ class MelisCmsCategoryController extends AbstractActionController
             'errors' => $errors,
         );
 
-        $this->getEventManager()->trigger('meliscommerce_category_save_end', 
+        if (! empty($id)) {
+            $logTypeCode = "CMS_CATEGORY2_UPDATE";
+            $response['message'] = 'tr_meliscms_categories_err_category_update_ok';
+        }
+        // flash messenger
+        $this->getEventManager()->trigger('meliscms_category2_save_end',
             $this, array_merge($response, array('typeCode' => $logTypeCode, 'itemId' => $id)));
+        // translate
+        $response['textMessage'] = $translator->translate($message);
 
         return new JsonModel($response);
     }
@@ -1004,7 +1010,7 @@ class MelisCmsCategoryController extends AbstractActionController
         );
 
         if ($success){
-            $this->getEventManager()->trigger('meliscommerce_category_delete_end', 
+            $this->getEventManager()->trigger('meliscms_category2_save_end',
                 $this, array_merge($response, array('typeCode' => $logTypeCode, 'itemId' => $catId)));
         }
 

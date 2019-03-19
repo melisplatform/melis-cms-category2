@@ -9,12 +9,12 @@
 
 namespace MelisCmsCategory2;
 
+use MelisCmsCategory2\Listener\MelisCmsCategory2FlashMessengerListener;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\ModuleManager\ModuleManager;
 use Zend\Stdlib\ArrayUtils;
 use Zend\Session\Container;
-use MelisCmsCategory2\Listener\AddCategoryListener;
 
 class Module
 {
@@ -29,7 +29,7 @@ class Module
         # attach listener to back-office to avoid conflict in front
         if ($renderType == 'back') {
             # attach listener
-            $eventManager->attach(new AddCategoryListener());
+            $eventManager->attach(new MelisCmsCategory2FlashMessengerListener());
         }
     }
 

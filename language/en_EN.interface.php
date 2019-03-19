@@ -69,6 +69,7 @@ return [
     'tr_meliscmscategory_search_not_found' => 'not found',
     'tr_meliscategory_categories_list_tree_view_search_input' => 'Search a category',
     'tr_melis_cms_category_delete_ok' => 'Successfully deleted category',
+    'tr_meliscms_categories_err_category_update_ok' => 'Category successfully updated',
     // site filter
     'tr_meliscms_categories_site_filter' => 'Site filter on tree view',
     'tr_meliscms_categories_filter_area' => 'Search and filter of tree categories',
