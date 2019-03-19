@@ -515,7 +515,7 @@ class MelisCmsCategory2Table extends MelisGenericTable
         # join melis_cms_site_domain
         $tblToJoin   = "melis_cms_category2_trans";
         $relation    = "melis_cms_category2_trans.catt2_category_id = melis_cms_category2.cat2_id ";
-        $joinColumns = ['catt2_name', 'catt2_description'];
+        $joinColumns = ['catt2_lang_id','catt2_name', 'catt2_description'];
         $joinType    = $select::JOIN_LEFT;
         $select->join($tblToJoin,$relation,$joinColumns,$joinType);
         //site id
@@ -525,7 +525,7 @@ class MelisCmsCategory2Table extends MelisGenericTable
         // connected to root only
         $select->where->equalTo('melis_cms_category2.cat2_father_cat_id',"-1");
         $resultSet = $this->tableGateway->selectWith($select);
-
+        
         return $resultSet;
     }
 
