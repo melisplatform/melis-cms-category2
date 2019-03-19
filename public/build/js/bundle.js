@@ -505,7 +505,7 @@ $(function(){
                 }
             });
 		} else {
-			var message = "Please select a file to upload";
+			var message = translations.tr_melis_cms_category_v2;
 			melisHelper.melisKoNotification('Melis Categories',message);
 		}
     });
@@ -764,7 +764,7 @@ window.initCmsCategoryTreeView = function(){
 		                }
 		            },
 		            "Delete" : {
-		                "label" : translations.tr_meliscategory_categories_common_btn_delete,
+		                "label" : translations.tr_meliscore_common_delete,
 		                "icon"  : "fa fa-trash-o",
 		                "action" : function (obj) {
 		                		
@@ -788,17 +788,13 @@ window.initCmsCategoryTreeView = function(){
 		                	
 		                	dataString = $.param(dataString);
 		                	
-		                	var deleteTitle = translations.tr_meliscategory_categories_category_delete;
-		                	var deleteMessage = translations.tr_meliscategory_categories_category_delete_confirm_msg;
-		                	if(parentId == '-1'){
-		                		deleteTitle = translations.tr_meliscategory_categories_catalog_delete;
-			                	deleteMessage = translations.tr_meliscategory_categories_catalog_delete_confirm_msg;
-		                	}
-		                	
+		                	var deleteTitle = translations.tr_meliscore_common_delete;
+		                	var deleteMessage = translations.tr_meliscms_categories_delete_category_msg;
+
 		                	// deletion confirmation
 		            		melisCoreTool.confirm(
-		            		translations.tr_meliscategory_categories_common_label_yes,
-		            		translations.tr_meliscategory_categories_common_label_no,
+		            		translations.tr_meliscore_common_yes,
+		            		translations.tr_meliscore_common_no,
 		            		deleteTitle, 
 		            		deleteMessage, 
 		            		function() {
@@ -1793,6 +1789,7 @@ window.imagePreview = function(id, fileInput) {
 
 var mediaDirectory = {
     browse: function(modalUrl,zoneId,melisKey,params, targetDiv){
+        //fake backdrop
         melisHelper.createModal(zoneId,melisKey,false,params,modalUrl, function(){
             $(".category-add-image").removeAttr('disabled ');
             $(".category-add-file").removeAttr('disabled ');
@@ -1825,8 +1822,8 @@ var mediaDirectory = {
                             "<img src='" + data.imageUrl + "' class='img-responsive border-green' />" +
                             "<input type='hidden' value='" + data.imageUrl + "' data-order='" + order + "'/>" +
                             "<div class='category-image-option'>" +
-                            " <a class='viewImage' target='_blank' href='"+data.imageUrl+"'> <i class='fa fa-eye' title='View image'></i></a>" +
-                            " <a class='removeImage' data-url='"+data.imageUrl+"' > <i class='fa fa-times' title='Delete image'></i></a>" +
+                            " <a class='viewImage' target='_blank' href='"+data.imageUrl+"'> <i class='fa fa-eye' ></i></a>" +
+                            " <a class='removeImage' data-url='"+data.imageUrl+"' > <i class='fa fa-times' ></i></a>" +
                             "</div>" +
                             "</div>";
 

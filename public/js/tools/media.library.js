@@ -1,5 +1,6 @@
 var mediaDirectory = {
     browse: function(modalUrl,zoneId,melisKey,params, targetDiv){
+        //fake backdrop
         melisHelper.createModal(zoneId,melisKey,false,params,modalUrl, function(){
             $(".category-add-image").removeAttr('disabled ');
             $(".category-add-file").removeAttr('disabled ');
@@ -32,8 +33,8 @@ var mediaDirectory = {
                             "<img src='" + data.imageUrl + "' class='img-responsive border-green' />" +
                             "<input type='hidden' value='" + data.imageUrl + "' data-order='" + order + "'/>" +
                             "<div class='category-image-option'>" +
-                            " <a class='viewImage' target='_blank' href='"+data.imageUrl+"'> <i class='fa fa-eye' title='View image'></i></a>" +
-                            " <a class='removeImage' data-url='"+data.imageUrl+"' > <i class='fa fa-times' title='Delete image'></i></a>" +
+                            " <a class='viewImage' target='_blank' href='"+data.imageUrl+"'> <i class='fa fa-eye' ></i></a>" +
+                            " <a class='removeImage' data-url='"+data.imageUrl+"' > <i class='fa fa-times' ></i></a>" +
                             "</div>" +
                             "</div>";
 

@@ -499,7 +499,7 @@ $(function(){
                 }
             });
 		} else {
-			var message = "Please select a file to upload";
+			var message = translations.tr_melis_cms_category_v2;
 			melisHelper.melisKoNotification('Melis Categories',message);
 		}
     });
@@ -758,7 +758,7 @@ window.initCmsCategoryTreeView = function(){
 		                }
 		            },
 		            "Delete" : {
-		                "label" : translations.tr_meliscategory_categories_common_btn_delete,
+		                "label" : translations.tr_meliscore_common_delete,
 		                "icon"  : "fa fa-trash-o",
 		                "action" : function (obj) {
 		                		
@@ -782,17 +782,13 @@ window.initCmsCategoryTreeView = function(){
 		                	
 		                	dataString = $.param(dataString);
 		                	
-		                	var deleteTitle = translations.tr_meliscategory_categories_category_delete;
-		                	var deleteMessage = translations.tr_meliscategory_categories_category_delete_confirm_msg;
-		                	if(parentId == '-1'){
-		                		deleteTitle = translations.tr_meliscategory_categories_catalog_delete;
-			                	deleteMessage = translations.tr_meliscategory_categories_catalog_delete_confirm_msg;
-		                	}
-		                	
+		                	var deleteTitle = translations.tr_meliscore_common_delete;
+		                	var deleteMessage = translations.tr_meliscms_categories_delete_category_msg;
+
 		                	// deletion confirmation
 		            		melisCoreTool.confirm(
-		            		translations.tr_meliscategory_categories_common_label_yes,
-		            		translations.tr_meliscategory_categories_common_label_no,
+		            		translations.tr_meliscore_common_yes,
+		            		translations.tr_meliscore_common_no,
 		            		deleteTitle, 
 		            		deleteMessage, 
 		            		function() {

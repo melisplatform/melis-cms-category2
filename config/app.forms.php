@@ -71,7 +71,7 @@ return array(
                                     ),
                                     'attributes' => array(
                                         'id' => 'catt_description',
-                                        'class' => 'form-control',
+                                        'class' => 'form-control editme',
                                         'rows' => 10,
                                         'style' => 'resize: vertical;'
                                     )
@@ -140,10 +140,10 @@ return array(
 //                                        ),
 //                                    ),
                                 ),
-                                'filters'  => array(
-                                    array('name' => 'StripTags'),
-                                    array('name' => 'StringTrim'),
-                                )
+//                                'filters'  => array(
+//                                    array('name' => 'StripTags'),
+//                                    array('name' => 'StringTrim'),
+//                                )
                             )
                         )
                     ),
