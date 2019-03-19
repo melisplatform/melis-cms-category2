@@ -21,7 +21,7 @@
     		<form>
         		<?php
         		    $checked = '';
-                    $tmp = $categorySites[0];
+                    $tmp = $categorySites[0] ?? null;
         		    if ((count($siteData) == count($categorySites)) || ($tmp == -1)){
         		        $checked = 'check';
         		    }
