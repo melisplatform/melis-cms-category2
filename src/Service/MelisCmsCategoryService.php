@@ -46,13 +46,16 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
             'cat2_date_creation' => date('Y-m-d'),
             'cat2_user_id_creation' => $currentUserId
         ];
-        $data['cat2_date_valid_start'] = null;
-        $data['cat2_date_valid_end'] = null;
+
         if (! empty($validDateStart)) {
-            $data['cat2_date_valid_start'] = date('Y-m-d h:m:s',strtotime($validDateStart));
+            $data['cat2_date_valid_start'] = date("Y-m-d",strtotime($validDateStart));
+        } else {
+            $data['cat2_date_valid_start'] = null;
         }
         if (! empty($validDateEnd)) {
-            $data['cat2_date_valid_end'] = date('Y-m-d h:m:s',strtotime($validDateEnd));
+            $data['cat2_date_valid_end'] = date("Y-m-d",strtotime($validDateEnd));
+        } else {
+            $data['cat2_date_valid_end'] = null;
         }
 
         # save data in category2 table

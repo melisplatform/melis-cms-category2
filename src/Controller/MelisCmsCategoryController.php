@@ -458,8 +458,8 @@ class MelisCmsCategoryController extends AbstractActionController
             $catTranslationData  = $postValues['cat_trans'] ?? null;
             $catSitesData        = $postValues['cat_sites'] ?? null;
             $passedCatId         = $postValues['cat_id'] ?? null;
-            $dateActive          = str_replace(' ',null,$postValues['cat_date_valid_start'] ?? null);
-            $dateInactive        = str_replace(' ',null,$postValues['cat_date_valid_end'] ?? null);
+            $dateActive          = str_replace(' ',null,str_replace('/','-',$postValues['cat_date_valid_start']) ?? null);
+            $dateInactive        = str_replace(' ',null,str_replace('/','-',$postValues['cat_date_valid_end']) ?? null);
             // melis-core config
             $melisMelisCoreConfig = $this->serviceLocator->get('MelisCoreConfig');
             // form config
@@ -490,94 +490,91 @@ class MelisCmsCategoryController extends AbstractActionController
                 $dateValidation = null;
                 $dateValidStart = null;
                 $dateValidEnd   = null;
+
                 if (! empty($dateActive) && ! empty($dateInactive)) {
                     $dateValidation = $categoryService->validateDates($dateActive,$dateInactive);
                     if ($dateValidation == true) {
-                        $dateValidStart = $postValues['cat_date_valid_start'] ?? null;
-                        $dateValidEnd   = $postValues['cat_date_valid_end'] ?? null;
+                        $dateValidStart = $dateActive;
+                        $dateValidEnd   = $dateInactive;
                     } else {
                         $trDateStart = $translator->translate('tr_meliscategory_categories_category_valid_from');
                         $trDateEnd   = $translator->translate('tr_meliscategory_categories_category_valid_to');
-                        $errors[]  = [
+                        $errors  = [
                             $trDateStart => $translator->translate('tr_meliscategory_categories_category_valid_from_must_equal_high_current_date'),
                             $trDateEnd   => $translator->translate('tr_meliscategory_categories_category_valid_dates_invalid')
                         ];
                     }
                 }
 
-                if (! empty($dateActive)) {
-                    $dateValidStart = $dateActive;
-                }
-                if (! empty($dateInactive)) {
-                    $dateValidEnd = $dateInactive;
-                }
-
-                // save Category
-                $categoryId  = $categoryService->saveCategory($parentId, $status,$userId, $dateValidStart, $dateValidEnd, $passedCatId, $postValues);
-                $id = $categoryId;
-                // save Category translations
-                foreach ($propertyFormData as $idx => $val) {
-                    $catLangId = $val['catt2_lang_id'] ?? null;
-                    if (! empty($catLangId)) {
-                        $categoryService->saveCategoryTexts($categoryId, $catLangId, $val ,$passedCatId);
-                    }
-                }
-                // save category sites
-                $categorySiteId = null;
-                if (! empty($catSitesData)) {
-                    $catSiteTbl = $this->getCatSiteTable();
-                    // delete cause we are assuming data is changing
-                    $catSiteTbl->deleteByField('cats2_cat2_id',$passedCatId);
-                    // save data
-                    foreach( $catSitesData as $siteId) {
-                        // all selected sites
-                        if ($siteId == -1){
-                            $sitesTable = $this->getServiceLocator()->get('MelisEngineTableSite');
-                            $siteData   = $sitesTable->fetchAll()->toArray();
-                            foreach ($siteData as $idx => $val) {
-                                $categorySiteId = $categoryService->saveCategorySites($categoryId, $val['site_id'], $passedCatId);
-                            }
-                        } else {
-                            $categorySiteId = $categoryService->saveCategorySites($categoryId, $siteId, $passedCatId);
+                if (empty($errors)) {
+                    // save Category
+                    $categoryId  = $categoryService->saveCategory($parentId, $status,$userId, $dateActive, $dateInactive, $passedCatId, $postValues);
+                    $id = $categoryId;
+                    // save Category translations
+                    foreach ($propertyFormData as $idx => $val) {
+                        $catLangId = $val['catt2_lang_id'] ?? null;
+                        if (! empty($catLangId)) {
+                            $categoryService->saveCategoryTexts($categoryId, $catLangId, $val ,$passedCatId);
                         }
-
                     }
-                }
-                $images = $postValues['cat2_media_image'] ?? [];
+                    // save category sites
+                    $categorySiteId = null;
+                    if (! empty($catSitesData)) {
+                        $catSiteTbl = $this->getCatSiteTable();
+                        // delete cause we are assuming data is changing
+                        $catSiteTbl->deleteByField('cats2_cat2_id',$passedCatId);
+                        // save data
+                        foreach( $catSitesData as $siteId) {
+                            // all selected sites
+                            if ($siteId == -1){
+                                $sitesTable = $this->getServiceLocator()->get('MelisEngineTableSite');
+                                $siteData   = $sitesTable->fetchAll()->toArray();
+                                foreach ($siteData as $idx => $val) {
+                                    $categorySiteId = $categoryService->saveCategorySites($categoryId, $val['site_id'], $passedCatId);
+                                }
+                            } else {
+                                $categorySiteId = $categoryService->saveCategorySites($categoryId, $siteId, $passedCatId);
+                            }
 
-                $files  = $postValues['cat2_media_file'] ?? [];
-                $mediaTable = $this->getServiceLocator()->get('MelisCmsCategory2MediaTable');
-                if (!empty ($passedCatId)) {
-                    $mediaTable->deleteByField('catm2_cat_id',$passedCatId);
-                }
-                if (!empty($images)) {
-                    foreach($images as $idx => $val) {
-                        $mediaDataImage = [
-                            'catm2_cat_id' => $categoryId,
-                            'catm2_type'   => 'image',
-                            'catm2_path'   => $val,
-                            'catm2_order'  => $idx + 1
-                        ];
-                        //save media image
-                        $mediaTable->save($mediaDataImage);
+                        }
                     }
-                }
-                if (! empty($files)) {
-                    foreach ($files as $idx => $val) {
-                        $mediaDataFile = [
-                            'catm2_cat_id' => $categoryId,
-                            'catm2_type'   => 'file',
-                            'catm2_path'   => $val,
-                            'catm2_order'  => $idx + 1
-                        ];
-                        //save media file
-                        $mediaTable->save($mediaDataFile);
+                    $images = $postValues['cat2_media_image'] ?? [];
+
+                    $files  = $postValues['cat2_media_file'] ?? [];
+                    $mediaTable = $this->getServiceLocator()->get('MelisCmsCategory2MediaTable');
+                    if (!empty ($passedCatId)) {
+                        $mediaTable->deleteByField('catm2_cat_id',$passedCatId);
                     }
+                    if (!empty($images)) {
+                        foreach($images as $idx => $val) {
+                            $mediaDataImage = [
+                                'catm2_cat_id' => $categoryId,
+                                'catm2_type'   => 'image',
+                                'catm2_path'   => $val,
+                                'catm2_order'  => $idx + 1
+                            ];
+                            //save media image
+                            $mediaTable->save($mediaDataImage);
+                        }
+                    }
+                    if (! empty($files)) {
+                        foreach ($files as $idx => $val) {
+                            $mediaDataFile = [
+                                'catm2_cat_id' => $categoryId,
+                                'catm2_type'   => 'file',
+                                'catm2_path'   => $val,
+                                'catm2_order'  => $idx + 1
+                            ];
+                            //save media file
+                            $mediaTable->save($mediaDataFile);
+                        }
+                    }
+
+                    $success = 1;
+                    $message = $translator->translate('tr_meliscms_categories_err_category_save_success');
+                    $this->getEventManager()->trigger('meliscms_category_save_end', $this, $request);
                 }
 
-                $success = 1;
-                $message = $translator->translate('tr_meliscms_categories_err_category_save_success');
-                $this->getEventManager()->trigger('meliscms_category_save_end', $this, $request);
             } else {
                 $errors[] = [
                     'noName' => 'Please fill in a ( name ) atleast one of the given languages',
