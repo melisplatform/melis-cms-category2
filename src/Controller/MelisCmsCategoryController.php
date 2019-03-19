@@ -450,6 +450,7 @@ class MelisCmsCategoryController extends AbstractActionController
         $logTypeCode = "CMS_CATEGORY2_SAVE";
         $id = null;
         $createdId = null;
+        $passedCatId = null;
         if($request->isPost()) {
             $this->getEventManager()->trigger('meliscms_category_save_start', $this, $request);
             $currentUserLoggedIn = $this->getLoggedInUserInfo();
@@ -599,7 +600,7 @@ class MelisCmsCategoryController extends AbstractActionController
             'errors' => $errors,
         );
 
-        if (! empty($id)) {
+        if (! empty($passedCatId)) {
             $logTypeCode = "CMS_CATEGORY2_UPDATE";
             $response['textMessage'] = 'tr_meliscms_categories_err_category_update_ok';
         }
