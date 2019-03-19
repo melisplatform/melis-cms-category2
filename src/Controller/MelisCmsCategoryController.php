@@ -459,7 +459,6 @@ class MelisCmsCategoryController extends AbstractActionController
             $catTranslationData  = $postValues['cat_trans'] ?? null;
             $catSitesData        = $postValues['cat_sites'] ?? null;
             $passedCatId         = $postValues['cat_id'] ?? null;
-            $id = $passedCatId;
             $dateActive          = str_replace(' ',null,str_replace('/','-',$postValues['cat_date_valid_start']) ?? null);
             $dateInactive        = str_replace(' ',null,str_replace('/','-',$postValues['cat_date_valid_end']) ?? null);
             // melis-core config
@@ -511,7 +510,11 @@ class MelisCmsCategoryController extends AbstractActionController
                 if (empty($errors)) {
                     // save Category
                     $categoryId  = $categoryService->saveCategory($parentId, $status,$userId, $dateActive, $dateInactive, $passedCatId, $postValues);
-                    $createdId = $categoryId;
+                    if (! empty($passedCatId)) {
+                        $id = $passedCatId;
+                    } else {
+                        $id = $categoryId;
+                    }
                     // save Category translations
                     foreach ($propertyFormData as $idx => $val) {
                         $catLangId = $val['catt2_lang_id'] ?? null;
@@ -600,7 +603,7 @@ class MelisCmsCategoryController extends AbstractActionController
             $logTypeCode = "CMS_CATEGORY2_UPDATE";
             $response['textMessage'] = 'tr_meliscms_categories_err_category_update_ok';
         }
-        $id = $id ?? $createdId;
+
         // flash messenger
         $this->getEventManager()->trigger('meliscms_category2_save_end',
             $this, array_merge($response, array('typeCode' => $logTypeCode, 'itemId' => $id)));
