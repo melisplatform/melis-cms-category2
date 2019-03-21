@@ -14,7 +14,7 @@
     $title  = $this->title;
     $form  = $this->categoryMediaForm;
     if ($this->fileType == 'image') {
-        $title = "tr_meliscms_categories_media_select_image";
+        $title = "Image";
     } else {
         $title = "tr_meliscms_categories_media_select_file";
     }
@@ -26,7 +26,7 @@
             <div class="widget widget-tabs widget-tabs-double widget-tabs-responsive margin-none border-none">
                 <div class="widget-head" style="cursor: move">
                     <ul class="nav nav-tabs">
-                        <li class="active"><a href="#<?php echo $this->zoneconfig['conf']['id'] ?>" class="glyphicons check" data-toggle="tab" aria-expanded="true" style="cursor: move;"><i></i><?php echo $this->translate($title) ?></a></li>
+                        <li class="active"><a href="#<?php echo $this->zoneconfig['conf']['id'] ?>" class="glyphicons plus" data-toggle="tab" aria-expanded="true" style="cursor: move;"><i></i><?php echo $this->translate($title) ?></a></li>
                     </ul>
                 </div>
                 <div class="widget-body innerAll inner-2x">
@@ -42,7 +42,7 @@
                                         echo $this->melisFieldCollection($form);
                                     ?>
                                     <br>
-                                    <button type="submit" class="btn btn-primary pull-right" id="category-upload-media" data-target-area="<?= $this->targetDiv ?>"   data-type="<?= $this->fileType ?>"><i class="fa fa-upload" data-type="<?= $this->fileType ?>"></i> <?= $this->translate('tr_meliscms_categories_media_upload_btn')?> </button>
+                                    <button type="submit" class="btn btn-success pull-right" id="category-upload-media" data-target-area="<?= $this->targetDiv ?>"   data-type="<?= $this->fileType ?>"><i class="fa fa-upload" data-type="<?= $this->fileType ?>"></i> <?= $this->translate('tr_meliscms_categories_media_upload_btn')?> </button>
                                     <?php
                                         echo $this->form()->closeTag($form);
                                     ?>
