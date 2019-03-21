@@ -499,8 +499,9 @@ $(function(){
                 }
             });
 		} else {
-			var message = translations.tr_melis_cms_category_v2;
-			melisHelper.melisKoNotification('Melis Categories',message);
+			var message = "Please upload a file";
+			var heading = translations.tr_melis_cms_category_v2;
+			melisHelper.melisKoNotification(heading,message);
 		}
     });
 

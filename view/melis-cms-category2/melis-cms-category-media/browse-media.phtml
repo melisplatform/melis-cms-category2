@@ -36,6 +36,7 @@
                                 <h3><?= $this->translate('tr_meliscms_categories_media_heading');?></h3>
                                 <div class="min-upload-image">
                                     <p><i class="fa fa-upload"></i> <?= $this->translate('tr_meliscms_categories_upload_text')?></p>
+                                    <p> <?= $this->translate('tr_meliscms_categories_media_sub_heading');?> : <a href="/media/categories/" target="_blank">/media/categories</a></p>
                                     <?php
                                         $form->prepare();
                                         echo $this->form()->openTag($form);
@@ -59,26 +60,34 @@
                                 <br>
                                 <div class="mini-image-list">
                                     <div class="row">
-                                        <?php foreach ($images as $idx => $image) {?>
-                                            <div class="col-md-3">
-                                                <?php if ($this->fileType == 'image') {?>
-                                                    <div class="image-area">
-                                                        <img src="/media/<?= $image ?>" alt="<?= $image ?>" title="<?= $image?>" class="img-responsive">
-                                                        <span class="description"><?= $image ?></span>
-                                                        <div class="add-wrapper add-image" data-order="<?= $idx ?>" data-target-div="<?= $this->targetDiv ?>" data-file-type="image" data-image-url="/media/<?= $image ?>" title="<?= $this->translate('tr_meliscms_categories_media_add_image')?> <?= $image ?>">
-                                                            <i class="fa fa-plus"></i>
+                                        <?php if (count($images) > 0) {?>
+                                            <?php foreach ($images as $idx => $image) {?>
+                                                <div class="col-md-3">
+                                                    <?php if ($this->fileType == 'image') {?>
+                                                        <div class="image-area">
+                                                            <img src="/media/<?= $image ?>" alt="<?= $image ?>" title="<?= $image?>" class="img-responsive">
+                                                            <span class="description"><?= $image ?></span>
+                                                            <div class="add-wrapper add-image" data-order="<?= $idx ?>" data-target-div="<?= $this->targetDiv ?>" data-file-type="image" data-image-url="/media/<?= $image ?>" title="<?= $this->translate('tr_meliscms_categories_media_add_image')?> <?= $image ?>">
+                                                                <i class="fa fa-plus"></i>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                <?php } else {?>
-                                                    <div class="file-area">
-                                                        <span class="fa fa-file file-icon"></span>
-                                                        <span class="description"><?= $image ?></span>
-                                                        <div class="add-wrapper add-image" data-order="<?= $idx ?>" data-target-div="<?= $this->targetDiv ?>" data-file-type="file" data-image-url="/media/<?= $image ?>" title="<?= $this->translate('tr_meliscms_categories_media_add_file')?> <?=$image?>">
-                                                            <i class="fa fa-plus"></i>
+                                                    <?php } else {?>
+                                                        <div class="file-area">
+                                                            <span class="fa fa-file file-icon"></span>
+                                                            <span class="description"><?= $image ?></span>
+                                                            <div class="add-wrapper add-image" data-order="<?= $idx ?>" data-target-div="<?= $this->targetDiv ?>" data-file-type="file" data-image-url="/media/<?= $image ?>" title="<?= $this->translate('tr_meliscms_categories_media_add_file')?> <?=$image?>">
+                                                                <i class="fa fa-plus"></i>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                <?php }?>
-                                            </div>
+                                                    <?php }?>
+                                                </div>
+                                            <?php }?>
+                                        <?php } else {?>
+                                            <?php if ($this->fileType == 'image') {?>
+                                                <span class="no-file"><?= $this->translate('tr_melis_cms_category_empty_media_image');?></span>
+                                            <?php } else {?>
+                                                <span class="no-file"><?= $this->translate('tr_melis_cms_category_empty_media_file');?></span>
+                                            <?php }?>
                                         <?php }?>
                                     </div>
                                 </div>
@@ -94,7 +103,7 @@
                             }
                         ?>
                         <div class="buttons">
-                            <button data-dismiss="modal" id="closeMedialibrary" data-target-remove-backdrop ="<?= $targetDiv ?>"  class="btn btn-danger pull-right"><i class="fa fa-times"></i> <?= $this->translate('tr_meliscore_common_close')?></button>
+                            <button data-dismiss="modal" id="closeMedialibrary" data-target-remove-backdrop ="<?= $targetDiv ?>"  class="btn btn-danger pull-left"><i class="fa fa-times"></i> <?= $this->translate('tr_meliscore_common_close')?></button>
                         </div>
                         <div class="clearfix"></div>
                         <div class="media-upload-loader">

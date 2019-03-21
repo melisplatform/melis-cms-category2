@@ -148,10 +148,14 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         $fileType = $query['fileType'];
         $targetDiv = $query['targetDiv'];
 
-        $mediaPath = $_SERVER['DOCUMENT_ROOT'] . "/media/";
+        $mediaPath = $_SERVER['DOCUMENT_ROOT'] . "/media/categories/";
         $queryParams = $request->getQuery();
         $fileType = $queryParams['fileType'] ?? 'file';
         $images = [];
+
+        if (!file_exists($mediaPath)) {
+            mkdir($mediaPath, 0777, true);
+        }
 
         if (file_exists($mediaPath)) {
             $files = [];
@@ -210,7 +214,7 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         if (! empty($request->getFiles())) {
             $file     = $request->getFiles('media_upload');
             $fileName = $file['name'];
-            $path     = $_SERVER['DOCUMENT_ROOT'] . "/media/";
+            $path     = $_SERVER['DOCUMENT_ROOT'] . "/media/categories/";
             $status   = move_uploaded_file($file['tmp_name'],$path.$fileName);
 
             if ($status) {
