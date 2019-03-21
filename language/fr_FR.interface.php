@@ -131,5 +131,6 @@ return [
     'tr_meliscms_categories_media_add_image' => 'Ajouter l\'image',
     'tr_meliscms_categories_media_add_file' => 'Ajouter',
     //tree
-    'tr_meliscms_categories_delete_category_msg' => 'Are you sure you want to delete this category?'
+    'tr_meliscms_categories_delete_category_msg' => 'Are you sure you want to delete this category?',
+    'tr_meliscms_categories_site_filter_all' => 'Tous les sites',
 ];

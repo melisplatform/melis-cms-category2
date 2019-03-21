@@ -522,8 +522,8 @@ class MelisCmsCategory2Table extends MelisGenericTable
         $select->where->equalTo('melis_cms_category2_sites.cats2_site_id',$siteId);
         // lang id
         $select->where->equalTo('melis_cms_category2_trans.catt2_lang_id',$langId);
-        // connected to root only
-        $select->where->equalTo('melis_cms_category2.cat2_father_cat_id',"-1");
+
+
         $resultSet = $this->tableGateway->selectWith($select);
         
         return $resultSet;

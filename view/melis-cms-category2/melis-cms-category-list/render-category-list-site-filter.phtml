@@ -14,19 +14,4 @@
     	echo $this->melisFieldCollection($form);
     	echo $this->form()->closeTag();
     ?>
-    <script>
-
-        $body.find("#categorySiteFilter").select2({
-            allowClear:true,
-            width: '100%',
-            disabled: false,
-            language : {
-                noResults:function() {
-                    return translations.tr_meliscms_categories_filter_area_empty_site;
-                }
-            },
-            placeholder: translations.tr_meliscms_form_common_Choose,
-        });
-        $body.find("#categorySiteFilter").select2("val"," ");
-    </script>
 </div> 

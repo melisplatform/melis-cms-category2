@@ -199,7 +199,8 @@ return array(
                                     'type' => 'MelisCmsPluginSiteSelect',
                                     'options' => [
                                         'label' => 'Sites',
-                                        'tooltip' => 'tr_meiscms_categories_fitler_site tooltip'
+                                        'tooltip' => 'tr_meiscms_categories_fitler_site tooltip',
+                                        'empty_option' => 'tr_meliscms_categories_site_filter_all'
                                     ],
                                     'attributes' => [
                                         'id' => 'categorySiteFilter',
