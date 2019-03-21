@@ -30,7 +30,7 @@ class MelisCmsCategoryListController extends AbstractActionController
         $noAccessPrompt = '';
         // Checks wether the user has access to this tools or not
         $melisCoreRights = $this->getServiceLocator()->get('MelisCoreRights');
-
+        $translator = $this->getServiceLocator()->get('translator');
         if(!$melisCoreRights->canAccess($melisKey)) {
             $noAccessPrompt = $translator->translate('tr_tool_no_access');
         }
