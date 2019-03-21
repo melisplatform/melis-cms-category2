@@ -250,7 +250,7 @@ class MelisCmsCategoryListController extends AbstractActionController
                     if (! empty($val['catt2_name'])) {
                         $categoryName = $val['catt2_name'];
                     } else {
-                        $categoryName = "<i>( no title )</i>";
+                        $categoryName = null;
                     }
 
                     $tmpData[] = [
@@ -329,7 +329,7 @@ class MelisCmsCategoryListController extends AbstractActionController
             $categoryList[$key]['type'] = 'category';
             $text = null;
             if ($categoryList[$key]['text'] == ''){
-                $text = '<i>( no title )</i>';
+                $text = null;
             } else {
                 $text = $categoryList[$key]['text'];
             }
