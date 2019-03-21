@@ -449,7 +449,7 @@ $(function(){
 				targetDiv : ".category-image-list",
 				currentPosition : data.currentposition
 			}, ".category-image-list")
-        $(".parent-file-list .back-drop").fadeIn("fast");
+   //     $(".parent-file-list .back-drop").fadeIn("fast");
         $("html, body").animate({scrollTop : 10}, 500);
         $("body").css("overflow", "hidden");
         $("#categoryTreeViewPanel").collapse("hide");
@@ -467,7 +467,7 @@ $(function(){
 			targetDiv : ".category-file-list .list-group",
             currentPosition : data.currentposition
 		},".category-file-list");
-		$(".parent-image-list .back-drop").fadeIn("fast");
+	//	$(".parent-image-list .back-drop").fadeIn("fast");
         $("html, body").animate({scrollTop : 10}, 500);
         $("body").css("overflow", "hidden");
         $("#categoryTreeViewPanel").collapse("hide");

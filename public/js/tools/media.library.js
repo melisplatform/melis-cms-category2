@@ -70,7 +70,7 @@ var mediaDirectory = {
                     initButtonScrollToTop();
                 });
             }
-        }, 'static');
+        });
         melisCoreTool.pending($(this));
     }
 };
