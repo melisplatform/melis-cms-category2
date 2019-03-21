@@ -15,7 +15,7 @@ return array(
                                         'name' => 'tr_melis_cms_category_v2',
                                         'melisKey' => 'meliscommerce_categories_page',
                                         'icon' => 'fa-th-list',
-                                        'rights_checkbox_disable' => true
+                                        'rights_checkbox_disable' => true,
                                     ],
                                     'interface' => [
                                         'melis_cms_category_v2_config' => [
@@ -38,7 +38,7 @@ return array(
                 'name' => 'tr_melis_cms_category_v2',
                 'melisKey' => 'melis_cms_category_v2_config',
                 'icon' => 'fa-th-list',
-                'rights_checkbox_disable' => true
+                'rightsDisplay' => 'none'
             ],
             'datas' => [],
             'ressources' => [
