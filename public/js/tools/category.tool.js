@@ -30,6 +30,7 @@ $(function(){
 		var catTree = $('#categoryTreeView').jstree(true);
 		var catSelected = catTree.get_selected();
 		var catFatherId = '';
+		var catSiteSelected = $("#categorySiteFilter").val();
 		if(catSelected.length >= 1){
 			/**
 			 * using parseInt this will get only the
@@ -40,7 +41,7 @@ $(function(){
             catFatherId = -1;
 		}
 		$("#"+zoneId).removeClass("hidden");
-		melisHelper.zoneReload(zoneId, melisKey, {catId : 0, catFatherId: catFatherId});
+		melisHelper.zoneReload(zoneId, melisKey, {catId : 0, catFatherId: catFatherId, selectedSiteId : catSiteSelected});
 	});
 	
 	$("body").on("click", ".addCatalog", function(e){ 
@@ -58,7 +59,7 @@ $(function(){
 		var dataString = new Array;
 		// Serialize Forms of Category Panel
 
-		dataString = $("#id_meliscategory_categories_category form").not(".category_"+catId+"_seo_form, .cat_trans_form").serializeArray()
+			dataString = $("#id_meliscategory_categories_category form").not(".cat_trans_form").serializeArray();
 		// Category Id
 		dataString.push({
 			name : "cat_id",

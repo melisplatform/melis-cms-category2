@@ -310,6 +310,7 @@ class MelisCmsCategoryController extends AbstractActionController
     {
         $catId = $this->params()->fromQuery('catId');
         $melisKey = $this->params()->fromRoute('melisKey', '');
+        $siteSelectedId = $this->getRequest()->getQuery('selectedSiteId');
 
         $sites = array();
         if (!empty($catId)){
@@ -335,6 +336,9 @@ class MelisCmsCategoryController extends AbstractActionController
         $view->cartegorySites = $sites;
         $view->siteData = $siteData;
         $view->melisKey = $melisKey;
+        $view->catId = $catId;
+        $view->siteSelectedId = $siteSelectedId;
+
         return $view;
     }
 
@@ -517,11 +521,13 @@ class MelisCmsCategoryController extends AbstractActionController
                     // save Category translations
 
                     foreach ($catTranslationData as $idx => $val) {
+
                         $catLangId = $val['catt2_lang_id'] ?? null;
                         if (! empty($catLangId)) {
                             $categoryService->saveCategoryTexts($categoryId, $catLangId, $val ,$passedCatId);
                         }
                     }
+
                     // save category sites
                     $categorySiteId = null;
                     if (! empty($catSitesData)) {
@@ -904,7 +910,7 @@ class MelisCmsCategoryController extends AbstractActionController
                                     'label' => $translator->translate('tr_meliscommerce_categories_category_information_form_cat_name'),
                                     'NotEmpty' => $translator->translate('tr_meliscommerce_categories_input_too_long_100')
                                 );
-                                print_r($propertyForm->getData());
+
                             }
                             else
                             {
