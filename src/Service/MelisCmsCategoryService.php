@@ -1503,9 +1503,7 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
         //implementation start
         $categoryTable = $this->getServiceLocator()->get('MelisCmsCategory2Table');
         $categories = $categoryTable->getFirstLevelCategoriesPerSite($siteId,$langId)->toArray();
-
-        print_r($categories);
-        die;
+        
         //implementation end
         $arrayParameters['results'] = $categories;
         //service event end
