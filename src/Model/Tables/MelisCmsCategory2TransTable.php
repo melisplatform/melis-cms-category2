@@ -114,5 +114,22 @@ class MelisCmsCategory2TransTable extends MelisGenericTable
         $resultSet = $this->tableGateway->selectWith($select);
         return $resultSet;
     }
+    public function getCategoryTranslationsByCatId($catId)
+    {
+        $select = $this->tableGateway->getSql()->select();
+        $select->columns(array('*'));
+
+        $tblToJoin   = "melis_cms_lang";
+        $relation    = "melis_cms_lang.lang_cms_id = melis_cms_category2_trans.catt2_lang_id ";
+        $joinColumns = ['*'];
+        $joinType    = $select::JOIN_LEFT;
+        $select->join($tblToJoin,$relation,$joinColumns,$joinType);
+
+        $select->where->equalTo('catt2_category_id',$catId);
+
+        $resultSet = $this->tableGateway->selectWith($select);
+
+        return $resultSet;
+    }
 
 }

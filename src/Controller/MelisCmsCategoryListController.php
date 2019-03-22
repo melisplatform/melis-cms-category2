@@ -237,8 +237,10 @@ class MelisCmsCategoryListController extends AbstractActionController
             $categoryListData = $melisCmsCategorySvc->getCategoryTreeview(null, $langId,$siteId = null);
             // Category Tree View Preparation
             $categoryList = $this->prepareCategoryDataForTreeView($categoryListData, $selected, $openStateParent, $idAndNameOnly, $categoriesChecked, $currentLang->lang_cms_id);
+
         } else {
             $categoryList = $melisCmsCategorySvc->getFirstLevelCategoriesPerSite($siteId, $langId);
+
             $tmpData = [];
             if (! empty($categoryList)) {
                 foreach ($categoryList as $idx => $val) {
@@ -247,11 +249,27 @@ class MelisCmsCategoryListController extends AbstractActionController
                         $textColor = "text-danger";
                     }
                     $categoryName = null;
-                    if (! empty($val['catt2_name'])) {
-                        $categoryName = $val['catt2_name'];
-                    } else {
-                        $categoryName = null;
+                    $categoryTranslationsData = $this->getCategoryAvailableText($val['cat2_id']);
+                    foreach ($categoryTranslationsData as $i5dx => $val2) {
+                        if ($langId == $val2['lang_cms_id']) {
+                            $categoryName = $val2['catt2_name'] ?? null;
+                        } else {
+                            if (empty($categoryName)) {
+                                $categoryName = $val2['catt2_name'] . " (" . $val2['lang_cms_name'] . ")";
+                            }
+                        }
+
                     }
+//                    // if no name to the current langId find some language that has name
+//                    if (empty($categoryName)) {
+//                        foreach ($categoryTranslationsData as $i5dx => $val2) {
+//                            if ($langId != $val2['lang_cms_id']) {
+//                                if (! empty($val2['catt2_name'])) {
+//                                    $categoryName = $val2['catt2_name'] . " (" . $val2['lang_cms_name'] . ")";
+//                                }
+//                            }
+//                        }
+//                    }
 
                     $tmpData[] = [
                         'cat2_id' => $val['cat2_id'],
@@ -261,7 +279,7 @@ class MelisCmsCategoryListController extends AbstractActionController
                         'icon'    => 'fa fa-circle ' . $textColor,
                         "type"    => 'category',
                         'a_attr'  => [
-                            'data-textlang' => false,
+                            'data-textlang' => true,
                             'data-fathericon' => "<i class='fa fa-book'></i>",
                             'data-fathercateid' => '-1'
                         ],
@@ -327,26 +345,20 @@ class MelisCmsCategoryListController extends AbstractActionController
 
             $itemIcon = '';
             $categoryList[$key]['type'] = 'category';
-            $text = null;
-            if ($categoryList[$key]['text'] == ''){
-                $text = null;
-            } else {
-                $text = $categoryList[$key]['text'];
-            }
             if ($val['cat2_father_cat_id'] == -1)
             {
                 $itemIcon = '<i class="fa fa-book"></i>';
                 $categoryList[$key]['type'] = 'category';
 
-                $categoryList[$key]['text'] = $val['cat2_id'].' - '. $text;
+                $categoryList[$key]['text'] = $val['cat2_id'].' - '. $categoryList[$key]['text'];
             }
             else
             {
-                $categoryList[$key]['text'] = $val['cat2_id'].' - '. $text;
+                $categoryList[$key]['text'] = $val['cat2_id'].' - '. $categoryList[$key]['text'];
             }
 
             $categoryList[$key]['a_attr'] = array(
-                'data-textlang' => $categoryList[$key]['textLang'] ?? 'no translation',
+                'data-textlang' => true,
                 'data-fathericon' => $itemIcon,
                 'data-fathercateid' => $val['cat2_father_cat_id'],
             );
@@ -498,5 +510,14 @@ class MelisCmsCategoryListController extends AbstractActionController
             }
         }
     }
+
+    private function getCategoryAvailableText($categoryId)
+    {
+        $cmsCategory = $this->getServiceLocator()->get('MelisCmsCategory2TransTable');
+        $categoryTranslationsData = $cmsCategory->getCategoryTranslationsByCatId($categoryId)->toArray();
+
+        return $categoryTranslationsData;
+    }
+
 
 }

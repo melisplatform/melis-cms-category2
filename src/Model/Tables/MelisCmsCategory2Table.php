@@ -512,10 +512,16 @@ class MelisCmsCategory2Table extends MelisGenericTable
         $joinColumns = ['*'];
         $joinType    = $select::JOIN_LEFT;
         $select->join($tblToJoin,$relation,$joinColumns,$joinType);
-        # join melis_cms_site_domain
+        # join melis_cms_category2_trans
         $tblToJoin   = "melis_cms_category2_trans";
         $relation    = "melis_cms_category2_trans.catt2_category_id = melis_cms_category2.cat2_id ";
         $joinColumns = ['catt2_lang_id','catt2_name', 'catt2_description'];
+        $joinType    = $select::JOIN_LEFT;
+        $select->join($tblToJoin,$relation,$joinColumns,$joinType);
+        # join melis_cms_lang
+        $tblToJoin   = "melis_cms_lang";
+        $relation    = "melis_cms_lang.lang_cms_id = melis_cms_category2_trans.catt2_lang_id ";
+        $joinColumns = ['*'];
         $joinType    = $select::JOIN_LEFT;
         $select->join($tblToJoin,$relation,$joinColumns,$joinType);
         //site id
