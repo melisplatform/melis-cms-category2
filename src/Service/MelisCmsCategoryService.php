@@ -118,16 +118,21 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
         $postData['catt2_category_id'] = $categoryId;
         $postData['catt2_lang_id'] = $catLangId;
         unset($postData['catt_lang_id']);
+
+
         $saveCatTransId = null;
-        // for updating
+
         if (! empty($id)) {
             $catTransId = $categoryTextsTable->getTextIdByLangIdCatId($id, $catLangId)->current()->catt2_id ?? null;
             if (! empty($catTransId)) {
+                // for updating
                 $categoryTextsTable->save($postData, $catTransId);
             } else {
+                // for creating
                 $categoryTextsTable->save($postData);
             }
         } else {
+            // for creating
             $categoryTextsTable->save($postData);
         }
 
@@ -1499,6 +1504,8 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
         $categoryTable = $this->getServiceLocator()->get('MelisCmsCategory2Table');
         $categories = $categoryTable->getFirstLevelCategoriesPerSite($siteId,$langId)->toArray();
 
+        print_r($categories);
+        die;
         //implementation end
         $arrayParameters['results'] = $categories;
         //service event end

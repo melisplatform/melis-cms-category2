@@ -470,13 +470,11 @@ class MelisCmsCategoryController extends AbstractActionController
             $propertyForm   = $this->getForm($appConfigForm);
             $formValid = [];
             $propertyFormData = [];
-
             // validate translations form
             foreach ($catTranslationData as $idx => $val) {
                 $tmpForm[] = $propertyForm->setData($val);
                 if ($propertyForm->isValid()) {
                     if (!empty($val['catt2_name'])) {
-                        $propertyFormData[] = $propertyForm->getData();
                         $formValid[$val['catt2_name']] = 1;
                     }
                 } else {
@@ -517,7 +515,8 @@ class MelisCmsCategoryController extends AbstractActionController
                         $id = $categoryId;
                     }
                     // save Category translations
-                    foreach ($propertyFormData as $idx => $val) {
+
+                    foreach ($catTranslationData as $idx => $val) {
                         $catLangId = $val['catt2_lang_id'] ?? null;
                         if (! empty($catLangId)) {
                             $categoryService->saveCategoryTexts($categoryId, $catLangId, $val ,$passedCatId);

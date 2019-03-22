@@ -640,20 +640,20 @@ window.initCmsCategoryTreeView = function(){
 				
 				var textlang = $('#'+v+'_anchor').data('textlang');
 				var products = $('#'+v+'_anchor').data('numprods');
-			//	var spanHtml = '<span title="' + translations.tr_meliscategory_categories_list_tree_view_product_num + '">('+ products +')</span>';
+				var spanHtml = null;
 			// 	var seoId = $('#'+v+'_anchor').data('seopage');
 			// 	if(seoId){
 			// 		spanHtml = spanHtml + ' - <span class="fa fa-file-o"></span> ' +  seoId ;
 			// 	}
 				//
-				// if(textlang){
-				// 	spanHtml = ' ' + textlang + spanHtml;
-				// }
+				if(textlang){
+					spanHtml = ' ' + textlang ;
+				}
 				
-				// if(!$('#'+v+'_anchor').hasClass('updatedText')){
-				// 	$('#'+v+'_anchor').append(spanHtml);
-				// 	$('#'+v+'_anchor').addClass('updatedText');
-				// }
+				if(!$('#'+v+'_anchor').hasClass('updatedText')){
+					$('#'+v+'_anchor').append(spanHtml);
+					$('#'+v+'_anchor').addClass('updatedText');
+				}
 				
 			});
 		 })
