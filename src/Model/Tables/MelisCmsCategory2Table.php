@@ -485,11 +485,11 @@ class MelisCmsCategory2Table extends MelisGenericTable
         return $resultSet;
     }
 
-    public function getAvailableOrder($categoryId)
+    public function getAvailableOrder($categoryIdParentId)
     {
         $select = $this->tableGateway->getSql()->select();
         $select->columns(['maxOrder' => new Sql\Expression('MAX(cat2_order)')]);
-        $select->where('cat2_id = ' . $categoryId );
+        $select->where('cat2_father_cat_id = ' . $categoryIdParentId );
         $resultSet = $this->tableGateway->selectWith($select);
 
         return $resultSet;

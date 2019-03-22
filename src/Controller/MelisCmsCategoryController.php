@@ -207,7 +207,7 @@ class MelisCmsCategoryController extends AbstractActionController
         $view = new ViewModel();
         $catId = $this->params()->fromQuery('catId');
         $melisKey = $this->params()->fromRoute('melisKey', '');
-
+        $currentLocale = $this->getRequest()->getQuery('currentLocale');
         if (!empty($catId)){
             // Getting Category Translations
             $melisComCategoryService = $this->getServiceLocator()->get('MelisCmsCategory2Service');
@@ -241,6 +241,8 @@ class MelisCmsCategoryController extends AbstractActionController
         $view->ecomLang = $ecomLangData;
         $view->melisKey = $melisKey;
         $view->formDefaultValues = $formDefaultValues;
+        $view->currentLocale = $currentLocale;
+
         return $view;
     }
 

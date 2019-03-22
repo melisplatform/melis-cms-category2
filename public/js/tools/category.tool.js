@@ -31,6 +31,8 @@ $(function(){
 		var catSelected = catTree.get_selected();
 		var catFatherId = '';
 		var catSiteSelected = $("#categorySiteFilter").val();
+		var currentLocale = $(".category-list-lang-dropdown").data('locale');
+
 		if(catSelected.length >= 1){
 			/**
 			 * using parseInt this will get only the
@@ -41,15 +43,13 @@ $(function(){
             catFatherId = -1;
 		}
 		$("#"+zoneId).removeClass("hidden");
-		melisHelper.zoneReload(zoneId, melisKey, {catId : 0, catFatherId: catFatherId, selectedSiteId : catSiteSelected});
-	});
-	
-	$("body").on("click", ".addCatalog", function(e){ 
-		$("#categoryTreeViewPanel").collapse("hide");
-		var zoneId = 'id_meliscategory_categories_category';
-		var melisKey = 'meliscategory_categories_category';
-		$("#"+zoneId).removeClass("hidden");
-		melisHelper.zoneReload(zoneId, melisKey, {catId : 0, catFatherId: -1});
+
+		melisHelper.zoneReload(zoneId, melisKey, {
+			catId : 0,
+			catFatherId: catFatherId,
+			selectedSiteId : catSiteSelected,
+			currentLocale : currentLocale
+		});
 	});
 	
 	$("body").on("click", "#saveCategory", function(){
@@ -227,6 +227,7 @@ $(function(){
 		categoryOpeningItemFlag = false;
 		var langText = $(this).text();
 		var langLocale = $(this).data('locale');
+
 		$('.cat-tree-view-languages span.filter-key').text(langText);
         // disable buttons
         $("#categoryTreeViewSearchInput").attr("disabled","disabeld");
@@ -238,6 +239,8 @@ $(function(){
         $("#refreshCategoryTreeView").attr("disabled","disabeld");
         var categorySiteFilter = $("#categorySiteFilter");
         categorySiteFilter.attr("disabled","disabeld");
+		//put attribute on button add category
+		$(".category-list-lang-dropdown").attr('data-locale',langLocale);
 
 		$("#categoryTreeView").data('langlocale',langLocale);
 		$("#categoryTreeView").jstree(true).settings.core.data.data = [{name : "langlocale", value: langLocale}, {name:"siteId", value : categorySiteFilter.val()}];
