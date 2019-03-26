@@ -30,18 +30,14 @@
                     <?php }?>
                 <?php } ?>
 
-                <!-- add to button attribute browse mediacurrent position -->
-                <script>
-                    $(".category-add-image").attr('data-currentposition',<?= $currentPosition ?>);
-                </script>
+
             </div>
             <?php
-                if ($currentPosition == 0){
+                if (empty($media)){
                     $showNoImage = "display:block";
                 }
             ?>
             <span class="no-image" style="<?= $showNoImage ?>"><?= $this->translate('tr_melis_cms_category_empty_media_image')?></span>
-            <div class="back-drop"></div>
         </div>
 	</div>
 </div>

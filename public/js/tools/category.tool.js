@@ -48,7 +48,8 @@ $(function(){
 			catId : 0,
 			catFatherId: catFatherId,
 			selectedSiteId : catSiteSelected,
-			currentLocale : currentLocale
+			currentLocale : currentLocale,
+            forAdding : true
 		});
 	});
 	
@@ -391,7 +392,7 @@ $(function(){
 		
 		$("#"+zoneId).removeClass("hidden");
 		
-		melisHelper.zoneReload(zoneId, melisKey, {catId : catId});
+		melisHelper.zoneReload(zoneId, melisKey, {catId : catId , forEditing : true});
 		
 		// Highlighting the node
 		$("#categoryTreeView #"+catId+" div").first().addClass("jstree-wholerow-clicked");
@@ -448,14 +449,14 @@ $(function(){
         var categoryv2ModalUrl = '/melis/MelisCmsCategory2/MelisCmsCategoryMedia/render-mini-media-modal-container';
         var data = $(this).data();
         melisCoreTool.pending($(this));
-		mediaDirectory.browse(categoryv2ModalUrl,catv2ImageZoneId,catv2ImageMelisKey,{
-				fileType  : data.type,
-				targetDiv : ".category-image-list",
-				currentPosition : data.currentposition
-			}, ".category-image-list")
-   //     $(".parent-file-list .back-drop").fadeIn("fast");
-        $("#categoryTreeViewPanel").collapse("hide");
-        // disable buttons
+        melisHelper.createModal(catv2ImageZoneId,catv2ImageMelisKey,true,{
+            fileType  : data.type,
+            targetDiv : ".category-image-list",
+            currentPosition : data.currentposition,
+			catId : data.catId
+        },categoryv2ModalUrl, function(){
+            $(".category-add-image").removeAttr('disabled ');
+		});
 	});
 
     categoryBody.on('click', ".category-add-file" , function(){
@@ -464,25 +465,43 @@ $(function(){
         var categoryv2ModalUrl = '/melis/MelisCmsCategory2/MelisCmsCategoryMedia/render-mini-media-modal-container';
         var data = $(this).data();
         melisCoreTool.pending($(this));
-        mediaDirectory.browse(categoryv2ModalUrl,catv2ImageZoneId,catv2ImageMelisKey,{
-        	fileType  : data.type,
-			targetDiv : ".category-file-list .list-group",
+        melisHelper.createModal(catv2ImageZoneId,catv2ImageMelisKey,true,{
+            fileType  : data.type,
+            targetDiv : ".category-file-list .list-group",
             currentPosition : data.currentposition
-		},".category-file-list");
-	//	$(".parent-image-list .back-drop").fadeIn("fast");
-        $("#categoryTreeViewPanel").collapse("hide");
+        },categoryv2ModalUrl, function(){
+            $(".category-add-file").removeAttr('disabled ');
+        });
 
     });
+    categoryBody.on('click', '#saveCategoryMedia', function(){
+    	$("#id_meliscategory_media_upload_form").trigger('submit');
+    	melisCoreTool.pending(this);
+	});
+    categoryBody.on('change','.upload-category-media-image', function(){
+        var input = this;
+        if (input.files && input.files[0]) {
+			var reader = new FileReader();
+			reader.onload = function (e) {
+				$('.categoryImgDocThumbnail').attr('src', e.target.result);
+			};
+			reader.readAsDataURL(input.files[0]);
+        }
+	});
+
     categoryBody.on('submit',"#id_meliscategory_media_upload_form",function(e) {
         e.preventDefault();
         var formData = new FormData(this);
-        melisCoreTool.pending(this);
-        var dataElem = $(".category-add-image").data() ;
         var fileUploadValue = $("#id_meliscategory_media_upload_form input[type='file']").val();
+        var saveCategoryBtn = $("#saveCategoryMedia");
+        var fileType = saveCategoryBtn.data('fileType');
+        var categoryId = $(".category-add-image").data('catId');
+        // append categoryId
+        formData.append('catId',categoryId);
+        // append file Type
+        formData.append('fileType',fileType);
+
         if (fileUploadValue !== "") {
-            $(".media-upload-loader").fadeIn('medium');
-            var mediaType = $("#category-upload-media").data('type');
-            var targetArea = $("#category-upload-media").data('targetArea');
             $.ajax({
                 type: 'POST',
                 url: 'melis/MelisCmsCategory2/MelisCmsCategoryMedia/uploadMedia',
@@ -493,12 +512,21 @@ $(function(){
                 contentType: false,
                 encode: true
             }).success(function(data) {
-                $(".media-upload-loader").fadeOut('medium');
                 if (data.success === true) {
-                    melisHelper.zoneReload("id_meliscategory_mini_media_library","meliscategory_mini_media_library",{fileType:mediaType,targetDiv : targetArea});
-                }
+                    $("#closeMedialibrary").trigger('click');
+                    var tmpZoneId 	= 'id_meliscategory_category_tab_media_content_right_file';
+                    var tmpMeliskey = 'meliscategory_category_tab_media_content_right_file';
+					if (fileType === 'image') {
+						tmpZoneId   = 'id_meliscategory_category_tab_media_content_left_image_list';
+						tmpMeliskey = 'meliscategory_category_tab_media_content_left_image_list';
+					}
+                    melisHelper.zoneReload(tmpZoneId, tmpMeliskey,{ catId:data.id });
+                } else {
+                    melisHelper.melisKoNotification(data.title, data.message, data.errors);
+				}
             });
 		} else {
+            saveCategoryBtn.removeAttr('disabled');
 			var message = "Please upload a file";
 			var heading = translations.tr_melis_cms_category_v2;
 			melisHelper.melisKoNotification(heading,message);
@@ -738,7 +766,7 @@ window.initCmsCategoryTreeView = function(){
 		                	var zoneId = "id_meliscategory_categories_category";
 		                	var melisKey = "meliscategory_categories_category";
                             $("#"+zoneId).removeClass("hidden");
-		            		melisHelper.zoneReload(zoneId, melisKey,{catId:0, catFatherId:parentId, catOrder:position});
+		            		melisHelper.zoneReload(zoneId, melisKey,{catId:0, catFatherId:parentId, catOrder:position, forAdding : true});
 		                	
 		                }
 		            },
@@ -752,7 +780,7 @@ window.initCmsCategoryTreeView = function(){
 		            		var zoneId = 'id_meliscategory_categories_category';
 		            		var melisKey = 'meliscategory_categories_category';
                             $("#"+zoneId).removeClass("hidden");
-		            		melisHelper.zoneReload(zoneId, melisKey, {catId : catId});
+		            		melisHelper.zoneReload(zoneId, melisKey, {catId : catId, forEditing : true});
 		            		
 		            		$("#categoryTreeViewPanel").collapse("hide");
 		                	

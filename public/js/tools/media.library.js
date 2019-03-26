@@ -5,11 +5,6 @@ var mediaDirectory = {
             $(".category-add-image").removeAttr('disabled ');
             $(".category-add-file").removeAttr('disabled ');
 
-            $('.modal-dialog').draggable({
-                handle: ".widget-head"
-            });
-
-
             if ($(targetDiv).length > 0) {
                 var categoryAddImage = $(".category-add-image");
                 var currentPosition = categoryAddImage.data('currentposition');

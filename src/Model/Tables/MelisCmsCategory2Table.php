@@ -568,4 +568,12 @@ class MelisCmsCategory2Table extends MelisGenericTable
         return $resultSet;
     }
 
+    public function getLastId()
+    {
+        $select = $this->tableGateway->getSql()->select();
+        $select->columns(['maxId' => new Sql\Expression('MAX(cat2_id)')]);
+        $resultSet = $this->tableGateway->selectWith($select);
+
+        return $resultSet;
+    }
 }

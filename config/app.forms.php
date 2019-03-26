@@ -224,7 +224,8 @@ return array(
                                     'name' => 'media_upload',
                                     'type' => 'file',
                                     'attributes' => [
-                                        'data-classButton' => 'btn btn-primary'
+                                        'data-classButton' => 'btn btn-primary',
+                                        'class' => 'upload-category-media-image'
                                     ]
                                 )
                             ),

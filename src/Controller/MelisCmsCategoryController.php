@@ -521,7 +521,6 @@ class MelisCmsCategoryController extends AbstractActionController
                         $id = $categoryId;
                     }
                     // save Category translations
-
                     foreach ($catTranslationData as $idx => $val) {
 
                         $catLangId = $val['catt2_lang_id'] ?? null;
@@ -529,7 +528,6 @@ class MelisCmsCategoryController extends AbstractActionController
                             $categoryService->saveCategoryTexts($categoryId, $catLangId, $val ,$passedCatId);
                         }
                     }
-
                     // save category sites
                     $categorySiteId = null;
                     if (! empty($catSitesData)) {
@@ -551,38 +549,37 @@ class MelisCmsCategoryController extends AbstractActionController
 
                         }
                     }
+                    // media
                     $images = $postValues['cat2_media_image'] ?? [];
-
                     $files  = $postValues['cat2_media_file'] ?? [];
                     $mediaTable = $this->getServiceLocator()->get('MelisCmsCategory2MediaTable');
-                    if (!empty ($passedCatId)) {
-                        $mediaTable->deleteByField('catm2_cat_id',$passedCatId);
-                    }
-                    if (!empty($images)) {
-                        foreach($images as $idx => $val) {
-                            $mediaDataImage = [
-                                'catm2_cat_id' => $categoryId,
-                                'catm2_type'   => 'image',
-                                'catm2_path'   => $val,
-                                'catm2_order'  => $idx + 1
-                            ];
-                            //save media image
-                            $mediaTable->save($mediaDataImage);
+                    // save all media when adding a category
+                    if (empty($passedCatId)) {
+                        if (!empty($images)) {
+                            foreach($images as $idx => $val) {
+                                $mediaDataImage = [
+                                    'catm2_cat_id' => $categoryId,
+                                    'catm2_type'   => 'image',
+                                    'catm2_path'   => $val,
+                                    'catm2_order'  => $idx + 1
+                                ];
+                                //save media image
+                                $mediaTable->save($mediaDataImage);
+                            }
+                        }
+                        if (! empty($files)) {
+                            foreach ($files as $idx => $val) {
+                                $mediaDataFile = [
+                                    'catm2_cat_id' => $categoryId,
+                                    'catm2_type'   => 'file',
+                                    'catm2_path'   => $val,
+                                    'catm2_order'  => $idx + 1
+                                ];
+                                //save media file
+                                $mediaTable->save($mediaDataFile);
+                            }
                         }
                     }
-                    if (! empty($files)) {
-                        foreach ($files as $idx => $val) {
-                            $mediaDataFile = [
-                                'catm2_cat_id' => $categoryId,
-                                'catm2_type'   => 'file',
-                                'catm2_path'   => $val,
-                                'catm2_order'  => $idx + 1
-                            ];
-                            //save media file
-                            $mediaTable->save($mediaDataFile);
-                        }
-                    }
-
                     $success = 1;
                     $message = 'tr_meliscms_categories_err_category_save_success';
                 }

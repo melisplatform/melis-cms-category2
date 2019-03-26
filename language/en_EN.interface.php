@@ -109,4 +109,5 @@ return [
     //tree
     'tr_meliscms_categories_delete_category_msg' => 'Êtes-vous sûr de vouloir supprimer cette catégorie?',
     'tr_meliscms_categories_site_filter_all' => 'All sites',
+    'tr_meliscms_categories_upload_heading' => 'Attach an image to this variant.'
 ];

@@ -9,12 +9,86 @@
 
 namespace MelisCmsCategory2\Controller;
 
+use Zend\Di\ServiceLocatorInterface;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\View\Model\JsonModel;
 
 class MelisCmsCategoryMediaController extends AbstractActionController
 {
+    /**
+     * @var $uploadForm return the form
+     */
+    private $uploadForm;
+    /**
+     * @var $nextId return the expected id or next id
+     */
+    private $nextId;
+    /**
+     * @var $categoryTbl \MelisCmsCategory2\Model\Tables\MelisCmsCategory2Table
+     */
+    private $categoryTbl;
+    /**
+     * @var $mediaCategoryTbl \MelisCmsCategory2\Model\Tables\MelisCmsCategory2MediaTable
+     */
+    private $mediaCategoryTbl;
+    /**
+     * @var $sitesCategoryTbl \MelisCmsCategory2\Model\Tables\MelisCmsCategory2SitesTable
+     */
+    private $sitesCategoryTbl;
+    /**
+     * @var $sitesCategoryTbl \MelisCmsCategory2\Model\Tables\MelisCmsCategory2TransTable
+     */
+    private $transCategoryTbl;
+    protected $serviceLocator = null;
+    public function __construct()
+    {
+       // $this->serviceLocator = $serviceLocator;
+      //  self::initilizeDependencies();
+    }
+    private function initilizeDependencies()
+    {
+        // set category tables
+        self::setTables();
+        // set the next id to be inserted by new data
+        self::setNextId();
+        // set uploadForm
+        self::setUploadForm();
+
+    }
+    private function setTables()
+    {
+        // category2 table
+        $this->categoryTbl      = $this->serviceLocator->get('MelisCmsCategory2Table');
+        // media category table
+        $this->mediaCategoryTbl = $this->serviceLocator->get('MelisCmsCategory2MediaTable');
+        // sites category table
+        $this->sitesCategoryTbl = $this->serviceLocator->get('MelisCmsCategory2SitesTable');
+        // translations category table
+        $this->transCategoryTbl = $this->serviceLocator->get('MelisCmsCategory2TransTable');
+    }
+    private function setNextId()
+    {
+        $lastInsertedId = $this->categoryTbl->getLastId()->current()->maxId ?? null;
+        $expectedNextId = null;
+        if (! empty($lastInsertedId)) {
+            $this->nextId = (int) $lastInsertedId + 1;
+        }
+    }
+    private function setUploadForm()
+    {
+        $config = $this->getServiceLocator()->get('MelisCoreConfig');
+        $formConfig = $config->getItem('meliscategory/forms/meliscategory_categories/meliscategory_media_upload_form');
+
+        $factory = new \Zend\Form\Factory();
+        $formElements = $this->serviceLocator->get('FormElementManager');
+        $factory->setFormElementManager($formElements);
+        $form = $factory->createForm($formConfig);
+
+
+        $this->uploadForm = $form;
+    }
+
     /**
      * @return ViewModel
      */
@@ -62,8 +136,12 @@ class MelisCmsCategoryMediaController extends AbstractActionController
      */
     public function renderCategoryTabMediaContentLeftImageAction()
     {
-        $view = new ViewModel();
+        $request = $this->getRequest();
+        $query   = $request->getQuery();
+        $categoryId = $query->catId ?? null;
 
+        $view = new ViewModel();
+        $view->categoryId = $categoryId;
         $view->melisKey = $this->getMelisKey();
         return $view;
     }
@@ -72,22 +150,55 @@ class MelisCmsCategoryMediaController extends AbstractActionController
      */
     public function renderCategoryTabMediaContentLeftImageListAction()
     {
+        $view = new ViewModel();
         $request = $this->getRequest();
         $query   = $request->getQuery();
-        $categoryId = $query['catId'] ?? null;
+        $categoryId = $query->catId ?? null;
+        $forAdding  = $query->forAdding ?? null;
+
         $categoryMediaTable = $this->getServiceLocator()->get('MelisCmsCategory2MediaTable');
-        $categoryMedaiData = [];
+        $categoryMediaSvc = $this->getServiceLocator()->get('MelisCmsCategory2MediaService');
+        $categoryMediaData = [];
+        // clear directory when adding a new category
+        $categoryTable = $this->getServiceLocator()->get("MelisCmsCategory2Table");
+        if ($forAdding) {
+            if (empty($categoryId)) {
+                $lastInsertedId = $categoryTable->getLastId()->current()->maxId ?? null;
+                if (! empty($lastInsertedId)) {
+                    $expectedNextId = (int) $lastInsertedId + 1;
+                    $categoryId = $expectedNextId;
+                }
+            }
+            $categoryMediaSvc->removeCategoryDir($categoryId);
+        }
 
         if (! empty($categoryId)) {
-            $categoryMedaiData = $categoryMediaTable->getEntryByField('catm2_cat_id',$categoryId)->toArray();
+            $categoryMediaData = $categoryMediaTable->getEntryByField('catm2_cat_id',$categoryId)->toArray();
+            $tmpData = $categoryTable->getEntryById($categoryId)->current();
+            if (empty($tmpData)) {
+                $categoryMediaData = [];
+                $mediaPath = $_SERVER['DOCUMENT_ROOT'] . "/media/categories/$categoryId/";
+                $extensionPattern = "*.{png,jpeg,jpg,svg}";
+                $files = $categoryMediaSvc->getFilesInDir($mediaPath,$extensionPattern, true);
+                if (! isset($files['errors'])) {
+                    if (! empty($files)) {
+                        foreach ($files as $idx => $val) {
+                            $categoryMediaData[$idx] = [
+                                'catm2_path' => "/media/categories/$categoryId/$val",
+                                'catm2_type' => 'image'
+                            ];
+                        }
+                    }
+                }
+            }
         }
-        $view = new ViewModel();
 
         $view->melisKey = $this->getMelisKey();
-        $view->mediaData = $categoryMedaiData;
+        $view->mediaData = $categoryMediaData;
+        $view->categoryId = $categoryId;
         return $view;
     }
-    /**
+    /**5
      * @return ViewModel
      */
     public function renderCategoryTabMediaContentRightAction()
@@ -107,14 +218,39 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         $query   = $request->getQuery();
         $categoryId = $query['catId'] ?? null;
         $categoryMediaTable = $this->getServiceLocator()->get('MelisCmsCategory2MediaTable');
+        $categoryMediaSvc = $this->getServiceLocator()->get('MelisCmsCategory2MediaService');
         $categoryMediaData = [];
+
+        $categoryPath = "/media/categories/$categoryId/";
+        $mediaPath = $_SERVER['DOCUMENT_ROOT'] . $categoryPath;
         if (! empty($categoryId)) {
             $categoryMediaData = $categoryMediaTable->getEntryByField('catm2_cat_id',$categoryId)->toArray();
+            if (empty($categoryMediaData)) {
+
+                $excludedExt = [
+                    'jpg',
+                    'svg',
+                    'png',
+                    'jpeg'
+                ];
+                $mediaData = $categoryMediaSvc->getFilesInDir($mediaPath,null,true,$excludedExt);
+                if (! empty($mediaData)) {
+                    foreach ($mediaData as $idx => $file) {
+                        //remove path
+                        $categoryMediaData[$idx] = [
+                            'catm2_path' => $categoryPath . $file,
+                            'catm2_type' => 'file',
+                        ];
+                    }
+                }
+            }
         }
+
         $view = new ViewModel();
 
         $view->melisKey = $this->getMelisKey();
         $view->mediaData = $categoryMediaData;
+        $view->mediaPath = $categoryPath;
         return $view;
     }
 
@@ -141,49 +277,13 @@ class MelisCmsCategoryMediaController extends AbstractActionController
     {
         //media path
         $request = $this->getRequest();
-        $uri     = $request->getUri();
-        $host    = $uri->getHOst();
-        $scheme  = $uri->getScheme();
-        $query   = $request->getQuery();
-        $fileType = $query['fileType'];
-        $targetDiv = $query['targetDiv'];
-
-        $mediaPath = $_SERVER['DOCUMENT_ROOT'] . "/media/categories/";
         $queryParams = $request->getQuery();
         $fileType = $queryParams['fileType'] ?? 'file';
-        $images = [];
-
-        if (!file_exists($mediaPath)) {
-            mkdir($mediaPath, 0777, true);
-        }
-
-        if (file_exists($mediaPath)) {
-            $files = [];
-            if ($fileType == "image") {
-                $extensionPattern = "*.{png,jpeg,jpg,svg}";
-                $files = glob($mediaPath . $extensionPattern ,GLOB_BRACE);
-            } else {
-                $files = array_diff(glob($mediaPath . "*.*"), glob($mediaPath . "*.{png,jpeg,jpg,svg}" ,GLOB_BRACE));
-            }
-
-            if (! empty($files)) {
-               foreach ($files as $idx => $file) {
-                   //remove path
-                   $images[$idx] = str_replace($mediaPath,null,$file);
-               }
-            }
-        }
 
         $view = new ViewModel();
-
         $view->melisKey = $this->getMelisKey();
-        $view->images = $images;
-        $view->scheme = $scheme;
-        $view->host   = $host;
         $view->categoryMediaForm = $this->getForm();
         $view->fileType = $fileType;
-        $view->targetDiv = $targetDiv;
-
 
         return $view;
     }
@@ -207,23 +307,84 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         return $form;
     }
 
+    /**
+     * this will upload the file on the given directory
+     * @return JsonModel
+     */
     public function uploadMediaAction()
     {
         $request = $this->getRequest();
+        $postData = $request->getPost();
+        $categoryId = $postData['catId'];
+        $fileType = $postData['fileType'];
         $success = false;
-        if (! empty($request->getFiles())) {
-            $file     = $request->getFiles('media_upload');
-            $fileName = $file['name'];
-            $path     = $_SERVER['DOCUMENT_ROOT'] . "/media/categories/";
-            $status   = move_uploaded_file($file['tmp_name'],$path.$fileName);
+        $message = [];
+        $errors  = [];
+        $categoryTable = $this->getServiceLocator()->get("MelisCmsCategory2Table");
+        $categoryMediaSvc = $this->getServiceLocator()->get('MelisCmsCategory2MediaService');
+        // this for adding
+        if (empty($categoryId)) {
+            $lastInsertedId = $categoryTable->getLastId()->current()->maxId ?? null;
+            if (! empty($lastInsertedId)) {
+                $expectedNextId = (int) $lastInsertedId + 1;
+                $categoryId = $expectedNextId;
+            }
+        }
+        if ($request->isPost()) {
+            $file = $request->getFiles('media_upload');
+            if (! empty($file['tmp_name'])) {
+                $fileName = $file['name'];
+                $path     = $_SERVER['DOCUMENT_ROOT'] . "/media";
+                // check first if media directory is writable
+                if (is_writable($path)) {
+                    // create categories folder if not created
+                    $path = $path . "/categories/";
+                    if (! file_exists($path)) {
+                        mkdir($path, 0777);
+                    }
+                    // make folder for every category
+                    if (! file_exists($path . $categoryId."/")) {
+                        mkdir($path . $categoryId."/", 0777);
+                    }
 
-            if ($status) {
-                $success = true;
+                    $path = $path. $categoryId . "/";
+                    // move the file
+                    $tmpFileName = $path.$fileName;
+                    // check first if file exists
+                    // if yes, we will rename the current one
+                    if (file_exists($tmpFileName)) {
+                        $fileName = $categoryMediaSvc->renameFileRec($tmpFileName);
+                    }
+                    // upload to specified folder
+                    $success = $categoryMediaSvc->uploadFile($file,$path . $fileName);
+                    if ($success === true) {
+                        // if success then we will save the img on db
+                        $tmpData = $categoryTable->getEntryById($categoryId)->current();
+                        if (! empty($tmpData)) {
+                            // if data is not empty it means category is on the db
+                            // then we will save the image on db
+                            $data = [
+                                'catm2_type' => $fileType,
+                                'catm2_path' => "/media/categories/$categoryId/$fileName",
+                                'catm2_cat_id' => $categoryId
+                            ];
+                            $catMediaTbl = $this->getServiceLocator()->get('MelisCmsCategory2MediaTable');
+                            $catMediaTbl->save($data);
+                        }
+                    }
+
+                } else {
+                    $message = 'Permission denied';
+                }
             }
         }
 
         $response = [
             'success' => $success,
+            'title' => 'Melis Categories',
+            'message' => $message,
+            'errors' => $errors,
+            'id' => $categoryId,
         ];
 
         return new JsonModel($response);

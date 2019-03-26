@@ -124,7 +124,7 @@ return [
     //media
     'tr_meliscms_categories_media_heading' => 'Répertoire des médias',
     'tr_meliscms_categories_media_sub_heading' => 'Répertoire',
-    'tr_meliscms_categories_media_select_image' => 'Sélectionnez une image',
+    'tr_meliscms_categories_media_select_image' => 'Choisir une image',
     'tr_meliscms_categories_media_select_file' => 'Fichier',
     'tr_meiscms_categories_media_choose_file' => 'Fichier',
     'tr_meliscms_categories_media_upload_btn' => 'Uploader',
@@ -133,4 +133,6 @@ return [
     //tree
     'tr_meliscms_categories_delete_category_msg' => 'Are you sure you want to delete this category?',
     'tr_meliscms_categories_site_filter_all' => 'Tous les sites',
+    'tr_meliscms_categories_upload_heading' => 'Ajoutez une image à ce variant.'
+
 ];

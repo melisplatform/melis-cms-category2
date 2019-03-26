@@ -57,7 +57,8 @@ return array(
             'MelisCmsCategory2MediaTable' => 'MelisCmsCategory2\Model\Tables\Factory\MelisCmsCategory2MediaTableFactory',
 
             //Service
-            'MelisCmsCategory2Service' => 'MelisCmsCategory2\Service\Factory\MelisCmsCategoryServiceFactory'
+            'MelisCmsCategory2Service' => 'MelisCmsCategory2\Service\Factory\MelisCmsCategoryServiceFactory',
+            'MelisCmsCategory2MediaService' => 'MelisCmsCategory2\Service\Factory\MelisCmsCategoryMediaServiceFactory',
         )
     ),
     'controllers' => array(
@@ -67,6 +68,10 @@ return array(
             'MelisCmsCategory2\Controller\MelisCmsCategoryDocument'     => 'MelisCmsCategory2\Controller\MelisCmsCategoryDocumentController',
             'MelisCmsCategory2\Controller\MelisCmsCategoryMedia'     => 'MelisCmsCategory2\Controller\MelisCmsCategoryMediaController',
         ),
+        'factories' => [
+         //   'MelisCmsCategory2\Controller\MelisCmsCategoryMedia' => MelisCmsCategory2\Controller\Factory\MelisCmsCategoryMediaControllerFactory::class
+        ]
+
     ),
     'controller_plugins' => array(
         'invokables' => array(
