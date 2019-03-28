@@ -600,6 +600,9 @@ class MelisCmsCategoryController extends AbstractActionController
                                 $mediaTable->save($mediaDataFile);
                             }
                         }
+                        // clear session tmp data of medias
+                        $category2Session = new Container('melis_cms_category2');
+                        $category2Session->getManager()->getStorage()->clear('melis_cms_category2');
                     }
                     $success = 1;
                     $message = 'tr_meliscms_categories_err_category_save_success';
