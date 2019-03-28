@@ -71,11 +71,12 @@ $(document).ready(function(){
                     var tmpZoneId 	= 'id_meliscategory_category_tab_media_content_right_file';
                     var tmpMeliskey = 'meliscategory_category_tab_media_content_right_file';
                     // zonereload
+                    melisCore.flashMessenger();
                     melisHelper.zoneReload(tmpZoneId, tmpMeliskey,{ catId:category2Id });
                 } else {
                     melisHelper.melisKoNotification(data.textTitle, data.textMessage, data.errors );
                 }
-                melisCore.flashMessenger();
+
 
             }).fail(function(){
                 $(thisButton).button("reset");
@@ -87,7 +88,7 @@ $(document).ready(function(){
         var parent = $(this).parent();
         var currentImageValue = parent.parent().find('input').val();
         var images = "";
-        var panelHeight = $('#categoryInfoPanel .panel-body').height() + 273;
+        var panelHeight = $('#categoryInfoPanel .panel-body').height() + 290;
         $('.viewImage').parent().parent().find('input').each(function(i,val){
             var tmpVal = $(val).val();
             if (currentImageValue === tmpVal) {

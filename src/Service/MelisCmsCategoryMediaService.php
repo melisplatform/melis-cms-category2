@@ -161,11 +161,53 @@ class MelisCmsCategoryMediaService  extends MelisCoreGeneralService
     }
 
     /**
+     * This is to remove a file in a directory
+     * this return bool
+     * @param $path full path of the document
+     * @param $filename with extension
+     * @return mixed
+     */
+    public function getFileInDir($path,$filename)
+    {
+        $arrayParameters = $this->makeArrayFromParameters(__METHOD__, func_get_args());
+        //service event start
+        $arrayParameters = $this->sendEvent('melis_cms_categories_get_files_in_dir_start', $arrayParameters);
+        $path       = $arrayParameters['path'];
+        $filename   = $arrayParameters['filename'];
+        $results    = [];
+        //implementation start
+        if (file_exists($path) && is_writable($path)) {
+            if (file_exists($path)) {
+                // get the files
+                $iterator = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS);
+                $files = new \RecursiveIteratorIterator($iterator,\RecursiveIteratorIterator::CHILD_FIRST);
+                // remove file
+                foreach($files as $file) {
+                    $tmpFilename = $file->getFileName();
+                    if ($tmpFilename == $filename) {
+                        // rmeove files
+                        $results[] = $tmpFilename;
+                    }
+                }
+            }
+        } else {
+            $results = "Path [" . $path . "] does not exists or no permission";
+        }
+
+        $arrayParameters['results'] = $results;
+        //service event end
+        $arrayParameters = $this->sendEvent('melis_cms_categories_get_files_in_dir_end', $arrayParameters);
+
+        return $arrayParameters['results'];
+    }
+
+    /**
      * Upload a file on a directory
      * @param $file
      * @param $dirToSave
+     * @param $fileName
      */
-    public function uploadFile($file,$dirToSave)
+    public function uploadFile($file,$dirToSave,$fileName)
     {
         $arrayParameters = $this->makeArrayFromParameters(__METHOD__, func_get_args());
         //service event start
@@ -176,7 +218,7 @@ class MelisCmsCategoryMediaService  extends MelisCoreGeneralService
         //implentation start
         if (isset($file['tmp_name']) && ! empty($file['tmp_name'])) {
             if (is_writable($dirToSave)) {
-                $uploadStatus = move_uploaded_file($file['tmp_name'],$dirToSave . $file['name']);
+                $uploadStatus = move_uploaded_file($file['tmp_name'],$dirToSave . $fileName);
                 $results = true;
             }
         }

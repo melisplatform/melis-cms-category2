@@ -576,4 +576,17 @@ class MelisCmsCategory2Table extends MelisGenericTable
 
         return $resultSet;
     }
+
+    public function getCategoryOrders($parentId,$currentOrder)
+    {
+        $select = $this->tableGateway->getSql()->select();
+        $select->columns(['*']);
+
+        $select->where->equalTo('cat2_father_cat_id',$parentId);
+        $select->where("cat2_order > $currentOrder");
+
+        $resultSet = $this->tableGateway->selectWith($select);
+
+        return $resultSet;
+    }
 }

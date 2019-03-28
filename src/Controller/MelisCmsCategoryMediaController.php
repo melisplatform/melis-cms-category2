@@ -11,6 +11,7 @@ namespace MelisCmsCategory2\Controller;
 
 use Zend\Di\ServiceLocatorInterface;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Session\Container;
 use Zend\Validator\File\IsImage;
 use Zend\View\Model\ViewModel;
 use Zend\View\Model\JsonModel;
@@ -154,33 +155,32 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         $view = new ViewModel();
         $request = $this->getRequest();
         $query   = $request->getQuery();
+        $category2Session = new Container('melis_cms_category2');
         $categoryId = $query->catId ?? null;
         $forAdding  = $query->forAdding ?? null;
-
         $categoryMediaTable = $this->getServiceLocator()->get('MelisCmsCategory2MediaTable');
         $categoryMediaSvc = $this->getServiceLocator()->get('MelisCmsCategory2MediaService');
         $categoryMediaData = [];
         // clear directory when adding a new category
         $categoryTable = $this->getServiceLocator()->get("MelisCmsCategory2Table");
         if ($forAdding) {
+            $category2Session->getManager()->getStorage()->clear('melis_cms_category2');
             $categoryMediaSvc->removeCategoryDir();
         }
-
-        if (! empty($categoryId)) {
+        if (! empty($categoryId) && $categoryId !== 'tmp') {
             $categoryMediaData = $categoryMediaSvc->getMediaFilesByCategoryId($categoryId,'image');
         } else {
             $mediaPath = $_SERVER['DOCUMENT_ROOT'] . "/media/categories/tmp/";
             $extensionPattern = "*.{png,jpeg,jpg,svg}";
-            $files = $categoryMediaSvc->getFilesInDir($mediaPath,$extensionPattern, true);
+           // $files = $categoryMediaSvc->getFilesInDir($mediaPath,$extensionPattern, true);
 
-            if (! isset($files['errors'])) {
-                if (! empty($files)) {
-                    foreach ($files as $idx => $val) {
-                        $categoryMediaData[$idx] = [
-                            'catm2_path' => "/media/categories/tmp/$val",
-                            'catm2_type' => 'image'
-                        ];
-                    }
+            $files = $category2Session['images'] ?? null;
+            if (! empty($files)) {
+                foreach ($files as $idx => $val) {
+                    $categoryMediaData[$idx] = [
+                        'catm2_path' => "/media/categories/tmp/$val",
+                        'catm2_type' => 'image'
+                    ];
                 }
             }
         }
@@ -213,20 +213,17 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         $categoryMediaTable = $this->getServiceLocator()->get('MelisCmsCategory2MediaTable');
         $categoryMediaSvc = $this->getServiceLocator()->get('MelisCmsCategory2MediaService');
         $categoryMediaData = [];
+        $category2Session = new Container('melis_cms_category2');
+
         $categoryPath = null;
-        if (! empty($categoryId)) {
+        if (! empty($categoryId) && $categoryId != 'tmp') {
             $categoryMediaData = $categoryMediaSvc->getMediaFilesByCategoryId($categoryId);
         } else {
             $categoryPath = "/media/categories/tmp/";
             $mediaPath = $_SERVER['DOCUMENT_ROOT'] . $categoryPath;
-            $excludedExt = [
-                'jpg',
-                'svg',
-                'png',
-                'jpeg'
-            ];
-            $mediaData = $categoryMediaSvc->getFilesInDir($mediaPath,null,true,$excludedExt);
-
+           // $mediaData = $categoryMediaSvc->getFilesInDir($mediaPath,null,true);
+            $category2Session = new Container('melis_cms_category2');
+            $mediaData = $category2Session['file'] ?? null;
             if (! empty($mediaData)) {
                 foreach ($mediaData as $idx => $file) {
                     //remove path
@@ -312,6 +309,7 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         $categoryId = $postData['catId'];
         $fileType = $postData['fileType'];
         $title = 'tr_melis_cms_category_v2';
+        $category2Session = new Container('melis_cms_category2');
         $success = false;
         $message = [];
         $errors  = [];
@@ -364,8 +362,9 @@ class MelisCmsCategoryMediaController extends AbstractActionController
                         if (file_exists($tmpFileName)) {
                             $fileName = $categoryMediaSvc->renameFileRec($tmpFileName);
                         }
+
                         // upload to specified folder
-                        $success = $categoryMediaSvc->uploadFile($file,$path);
+                        $success = $categoryMediaSvc->uploadFile($file,$path,$fileName);
                         if ($success === true) {
                             // if success then we will save the img on db
                             $tmpData = $categoryTable->getEntryById($categoryId)->current();
@@ -384,6 +383,20 @@ class MelisCmsCategoryMediaController extends AbstractActionController
                                     $logTypeCode = 'CMS_CATEGORY2_IMAGE_ADD';
                                 }
                             } else {
+                                $files = [];
+                                if ($fileType == 'image') {
+                                    if (is_array($category2Session['images'])) {
+                                        array_push($category2Session['images'],$fileName);
+                                    } else {
+                                        $category2Session['images'] = [$fileName];
+                                    }
+                                } else {
+                                    if (is_array(  $category2Session['file'])) {
+                                        array_push(  $category2Session['file'],$fileName);
+                                    } else {
+                                        $category2Session['file'] = [$fileName];
+                                    }
+                                }
                                 $tmpUpload = true;
                             }
                         }

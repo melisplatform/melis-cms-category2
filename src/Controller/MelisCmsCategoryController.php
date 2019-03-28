@@ -60,9 +60,8 @@ class MelisCmsCategoryController extends AbstractActionController
             $langId = $melisTool->getCurrentLocaleID();
             
             $melisComCategoryService = $this->getServiceLocator()->get('MelisCmsCategory2Service');
-            $categoryData = $melisComCategoryService->getCategoryById($catId, $langId);
+            $categoryData = $melisComCategoryService->getCategoryById($catId);
             $category = $categoryData->getTranslations();
-            
             $catname = '';
             foreach ($category As $val)
             {
@@ -71,14 +70,18 @@ class MelisCmsCategoryController extends AbstractActionController
                     $catname = $val->catt2_name;
                     break;
                 }
-                else 
+            }
+            if (empty($catname)) {
+                foreach ($category As $val)
                 {
-                    // Getting available Name concatinated with the Language Name
-                    $catname = $val->catt2_name.' ('.$val->lang_cms_name.')';
-                    break;
+                    if ($val->lang_cms_id != $langId)
+                    {
+                        $catname = $val->catt2_name . " (" . $val->lang_cms_name . ") ";
+                        break;
+                    }
                 }
             }
-            
+
             $view->title = $translator->translate('tr_meliscore_common_edit').' "'.$catname.'"';
         }
         else
@@ -516,6 +519,7 @@ class MelisCmsCategoryController extends AbstractActionController
                             $trDateStart => $translator->translate('tr_meliscategory_categories_category_valid_from_must_equal_high_current_date'),
                             $trDateEnd   => $translator->translate('tr_meliscategory_categories_category_valid_dates_invalid')
                         ];
+                        $customError['datesValidation'] = 1;
                     }
                 }
 
@@ -529,7 +533,9 @@ class MelisCmsCategoryController extends AbstractActionController
                     }
                     // rename the tmp folder
                     $tmpPath = $_SERVER['DOCUMENT_ROOT'] . "/media/categories/tmp";
-                    rename ($tmpPath, $_SERVER['DOCUMENT_ROOT'] . "/media/categories/$categoryId");
+                    if (file_exists($tmpPath)) {
+                        rename ($tmpPath, $_SERVER['DOCUMENT_ROOT'] . "/media/categories/$categoryId");
+                    }
                     // save Category translations
                     foreach ($catTranslationData as $idx => $val) {
                         $catLangId = $val['catt2_lang_id'] ?? null;
@@ -546,16 +552,9 @@ class MelisCmsCategoryController extends AbstractActionController
                         // save data
                         foreach( $catSitesData as $siteId) {
                             // all selected sites
-                            if ($siteId == -1){
-                                $sitesTable = $this->getServiceLocator()->get('MelisEngineTableSite');
-                                $siteData   = $sitesTable->fetchAll()->toArray();
-                                foreach ($siteData as $idx => $val) {
-                                    $categorySiteId = $categoryService->saveCategorySites($categoryId, $val['site_id'], $passedCatId);
-                                }
-                            } else {
+                            if ($siteId != -1){
                                 $categorySiteId = $categoryService->saveCategorySites($categoryId, $siteId, $passedCatId);
                             }
-
                         }
                     }
                     // media
@@ -585,7 +584,6 @@ class MelisCmsCategoryController extends AbstractActionController
                                     'catm2_cat_id' => $categoryId,
                                     'catm2_type'   => 'image',
                                     'catm2_path'   => $val,
-                                    'catm2_order'  => $idx + 1
                                 ];
                                 //save media image
                                 $mediaTable->save($mediaDataImage);
@@ -597,7 +595,6 @@ class MelisCmsCategoryController extends AbstractActionController
                                     'catm2_cat_id' => $categoryId,
                                     'catm2_type'   => 'file',
                                     'catm2_path'   => $val,
-                                    'catm2_order'  => $idx + 1
                                 ];
                                 //save media file
                                 $mediaTable->save($mediaDataFile);
@@ -1028,21 +1025,36 @@ class MelisCmsCategoryController extends AbstractActionController
         $textTitle = '';
         $textMessage = '';
         $logTypeCode = 'CMS_CATEGORY2_DELETE';
-
+        $textTitle   = $translator->translate("tr_meliscms_categories_category_delete");
         if($request->isPost()) {
             $postValues = get_object_vars($this->getRequest()->getPost());
             $postValues = $this->getTool()->sanitizeRecursive($postValues);
             $catId = (int) $postValues['cat_id'];
+         //   $catId = 7;
             $categoryTable = $this->getCategory2Table();
             $categoryMediaSvc = $this->getServiceLocator()->get('MelisCmsCategory2MediaService');
+            $categorySvc = $this->getServiceLocator()->get('MelisCmsCategory2Service');
+            $categoryData = $categoryTable->getEntryById($catId)->current();
+            $parentId     = $categoryData->cat2_father_cat_id ?? null;
+            $currentOrder = $categoryData->cat2_order;
+            $getChildren  = $categoryTable->getEntryByField('cat2_father_cat_id',$catId)->toArray();
 
-            // execute delete
             if (! empty($catId)) {
-                $categoryTable->deleteById($catId);
-                $success = 1;
-                $textTitle = "Delete category";
-                $textMessage = 'tr_melis_cms_category_delete_ok';
-                $categoryMediaSvc->removeCategoryDir($catId);
+                if (empty($getChildren)) {
+                    // execute delete
+                    $categoryTable->deleteById($catId);
+                    // re order or update categories after deleting the previous category
+                    $categorySvc->reOrderCategories($parentId, $currentOrder);
+                    $textMessage = $translator->translate('tr_meliscms_categories_category_delete_success');
+                    $categoryMediaSvc->removeCategoryDir($catId);
+                    $success = 1;
+                } else {
+                    $textMessage = $translator->translate('tr_meliscms_categories_err_category_unable_delete');
+                    $errors = [
+                        'Ko' => $translator->translate('tr_meliscms_categories_err_category_delete_has_children'),
+                        'label' => $translator->translate('tr_melis_cms_category_v2_header_title')
+                    ];
+                }
             }
         }
 

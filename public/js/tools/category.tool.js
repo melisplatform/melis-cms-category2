@@ -211,16 +211,24 @@ $(function(){
 			}else{
 				var customErrorSite = data.customError.site;
 				if (customErrorSite === 1) {
-                    $('.category-sites-heading').css('color',"red");
+                    $('.category-sites-heading').css('color',"#ff0000");
 				} else {
                     $('.category-sites-heading').removeAttr('style')
 				}
 				var customErrorTrans = data.customError.trans;
 				if (customErrorTrans === 1) {
-                    $("form input[name='catt2_name']").prev().css('color',"red");
+                    $("form input[name='catt2_name']").prev().addClass('text-red');
 				} else {
-                    $("form input[name='catt2_name']").prev().removeAttr('style');
+                    $("form input[name='catt2_name']").prev().removeClass('text-red');
 				}
+                var customErrorDates = data.customError.datesValidation;
+                if (customErrorDates === 1) {
+                    $("input[name='cat_date_valid_start']").parent().prev().addClass('text-red');
+                    $("input[name='cat_date_valid_end']").parent().prev().addClass('text-red');
+                } else {
+                    $("input[name='cat_date_valid_start']").parent().prev().removeClass('text-red');
+                    $("input[name='cat_date_valid_end']").parent().prev().removeClass('text-red');
+                }
 
 				melisHelper.melisKoNotification(data.textTitle, data.textMessage, data.errors );
                 melisCoreTool.highlightErrors(data.success, data.errors, "id_meliscategory_categories_category_form_transalations");
@@ -759,8 +767,9 @@ window.initCmsCategoryTreeView = function(){
 		                	
 		                	var zoneId = "id_meliscategory_categories_category";
 		                	var melisKey = "meliscategory_categories_category";
+                            var catSiteSelected = $("#categorySiteFilter").val();
                             $("#"+zoneId).removeClass("hidden");
-		            		melisHelper.zoneReload(zoneId, melisKey,{catId:0, catFatherId:parentId, catOrder:position, forAdding : true});
+		            		melisHelper.zoneReload(zoneId, melisKey,{catId:0, catFatherId:parentId, catOrder:position, forAdding : true,selectedSiteId : catSiteSelected});
 		                	
 		                }
 		            },
@@ -790,7 +799,7 @@ window.initCmsCategoryTreeView = function(){
 		                	// New category Parent ID
 		        	        // if value is '#', the Category is on the root of the list
 		        	        var parentId = (node.parent=='#') ? '-1' : parseInt(node.parent, 10);
-		        	        
+		        	        var originalParentId = "";
 		        	        dataString.push({
 		        				name: "cat_father_cat_id",
 		        				value: parentId
@@ -834,7 +843,7 @@ window.initCmsCategoryTreeView = function(){
 			        	            	}
 			        	            	
 			        	            	melisCore.flashMessenger();
-			        					melisHelper.melisOkNotification(data.textTitle, data.textMessage);
+			        					melisHelper.melisOkNotification(translations.data.textTitle, data.textMessage);
 			        				}else{
 			        					melisHelper.melisKoNotification(data.textTitle, data.textMessage, data.errors);
 			        				}

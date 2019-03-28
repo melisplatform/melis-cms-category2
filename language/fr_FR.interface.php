@@ -134,6 +134,11 @@ return [
     'tr_meliscms_categories_delete_category_msg' => 'Are you sure you want to delete this category?',
     'tr_meliscms_categories_site_filter_all' => 'Tous les sites',
     'tr_meliscms_categories_upload_heading' => 'Ajoutez une image à ce variant.',
+    'tr_meliscms_categories_err_category_delete_has_children' => 'Vous ne pouvez pas supprimer une catégorie ayant des catégories enfants',
+    'tr_meliscms_categories_category_delete' => 'Supprimer la catégorie',
+    'tr_meliscms_categories_err_category_unable_delete' => 'Impossible de supprimer la catégorie',
+    'tr_meliscms_categories_category_delete_success' => 'Catégorie supprimée avec succès',
+
     /// errors
     'tr_meliscms_categories_category_name_required_atleast_one' => 'Le nom de le catégories ne peut être vide, veuillez en saisir au moins un dans le langage de votre choix',
     'tr_meliscms_categories_select_site' => 'Veuillez sélectionner un site',

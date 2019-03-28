@@ -1531,5 +1531,36 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
 
         return $arrayParameters['results'];
     }
+    public function reOrderCategories($parentId, $currentOrder)
+    {
+        $arrayParameters = $this->makeArrayFromParameters(__METHOD__, func_get_args());
+
+        //service event start
+        $arrayParameters = $this->sendEvent('meliscms_service_category_get_categories_per_site_start', $arrayParameters);
+        $parentId = $arrayParameters['parentId'];
+        $currentOrder = $arrayParameters['currentOrder'];
+        $results = [];
+        //implementation start
+        $categoryTable = $this->getServiceLocator()->get('MelisCmsCategory2Table');
+        $categoryOrdersData = $categoryTable->getCategoryOrders($parentId,$currentOrder)->toArray();
+        if (! empty($categoryOrdersData)) {
+            foreach ($categoryOrdersData as $idx => $val) {
+                $categoryId = $val['cat2_id'];
+                $categoryOrder = [
+                    'cat2_order' => ($val['cat2_order'] - 1)
+                ];
+                // update the order of category
+                $status = $categoryTable->save($categoryOrder, $categoryId);
+                $results = $status;
+            }
+        }
+
+        //implementation end
+        $arrayParameters['results'] = $results;
+        //service event end
+        $arrayParameters = $this->sendEvent('meliscms_service_category_get_categories_per_site_end', $arrayParameters);
+
+        return $arrayParameters['results'];
+    }
 
 }

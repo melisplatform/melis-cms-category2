@@ -110,10 +110,16 @@ return [
     'tr_meliscms_categories_delete_category_msg' => 'Êtes-vous sûr de vouloir supprimer cette catégorie?',
     'tr_meliscms_categories_site_filter_all' => 'All sites',
     'tr_meliscms_categories_upload_heading' => 'Attach an image to this variant.',
+    'tr_meliscms_categories_err_category_delete_has_children' => 'You cannot delete a category having children categories',
+    'tr_meliscms_categories_category_delete' => 'Delete category',
+    'tr_meliscms_categories_err_category_unable_delete' => 'Unable to delete category',
+    'tr_meliscms_categories_category_delete_success' => 'Category has been deleted successfully',
+
     // errors
     'tr_meliscms_categories_category_name_required_atleast_one' => 'The category name cannot be empty, please enter at least one in any language',
     'tr_meliscms_categories_select_site' => 'Please select site',
     'tr_meliscms_categories_upload_image_fileIsImageNotDetected' => 'Unknown image format, please upload a valid image',
+
     //confirm
         // file
     'tr_meliscms_categories_confirm_delete_file_title' => 'Delete file',

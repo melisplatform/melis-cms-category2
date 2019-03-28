@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `melis_cms_category2` (
   PRIMARY KEY (`cat2_id`))
 ENGINE = InnoDB;
 INSERT INTO `melis_cms_category2` (`cat2_id`, `cat2_father_cat_id`, `cat2_order`, `cat2_status`, `cat2_reference`, `cat2_date_valid_start`, `cat2_date_valid_end`, `cat2_date_creation`, `cat2_user_id_creation`, `cat2_date_edit`, `cat2_user_id_edit`) VALUES
-(1, -1, 1, 1, NULL, NULL, NULL, '2016-12-01 00:00:01', 1, NULL, NULL);
+(1, -1, 1, 1, NULL, NULL, NULL, '2018-12-01 00:00:01', 1, NULL, NULL);
 
 -- -----------------------------------------------------
 -- Table `melis_cms_category2_trans`
@@ -83,7 +83,8 @@ CREATE TABLE IF NOT EXISTS `melis_cms_category2_sites` (
 ENGINE = InnoDB;
 
 CREATE INDEX `relationId_idx` ON `melis_cms_category2_sites` (`cats2_cat2_id` ASC);
-
+INSERT INTO melis_cms_category2_sites (`cats2_site_id`,`cats2_cat2_id`)
+SELECT site_id,'1' FROM `melis_cms_site`;
 
 -- -----------------------------------------------------
 -- Table `melis_cms_category2_media`

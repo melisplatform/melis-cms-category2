@@ -210,8 +210,8 @@ class MelisCmsCategoryListController extends AbstractActionController
      * 
      * @return \Zend\View\Model\JsonModel
      */
-    public function getCategoryTreeViewAction(){
-        
+    public function getCategoryTreeViewAction()
+    {
         $langLocale = $this->params()->fromQuery('langlocale');
         $selected = $this->params()->fromQuery('selected');
         $openStateParent = $this->params()->fromQuery('openStateParent');
@@ -277,7 +277,8 @@ class MelisCmsCategoryListController extends AbstractActionController
                         "type"    => 'category',
                         'a_attr'  => [
                             'data-fathericon' => "",
-                            'data-fathercateid' => '-1'
+                            'data-fathercateid' => '-1',
+                            'data-originalParentId' => $val['cat2_father_cat_id']
                         ],
                         'state'   => [
                             'opened' => false,
