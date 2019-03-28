@@ -33,7 +33,7 @@
                             <?php if ($data['catm2_type'] == 'file' ){?>
                                 <span>
                                     <a href="#" class="list-group-item list-group-item-action"><?= str_replace($this->mediaPath,null,$path) ?></a>
-                                    <i class="fa fa-times-circle remove-file" ></i>
+                                    <i class="fa fa-times-circle remove-file" data-categoryid="<?= $this->categoryId ?>" ></i>
                                      <input type="hidden" value="<?= $path ?>">
                                 </span>
                                 <?php $currentPosition = $currentPosition + 1;?>
@@ -53,7 +53,5 @@
                 $(".category-add-image").attr('data-currentposition',<?= $currentPosition ?>);
             </script>
         </div>
-        <div class="back-drop"></div>
     </div>
-
 </div>

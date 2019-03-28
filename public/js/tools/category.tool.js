@@ -209,8 +209,21 @@ $(function(){
 	    		// Highlighting the node
 	    		$("#categoryTreeView #"+selectedNode+" div").first().addClass("jstree-wholerow-clicked");
 			}else{
+				var customErrorSite = data.customError.site;
+				if (customErrorSite === 1) {
+                    $('.category-sites-heading').css('color',"red");
+				} else {
+                    $('.category-sites-heading').removeAttr('style')
+				}
+				var customErrorTrans = data.customError.trans;
+				if (customErrorTrans === 1) {
+                    $("form input[name='catt2_name']").prev().css('color',"red");
+				} else {
+                    $("form input[name='catt2_name']").prev().removeAttr('style');
+				}
+
 				melisHelper.melisKoNotification(data.textTitle, data.textMessage, data.errors );
-				melisCoreTool.highlightErrors(data.success, data.errors, "id_meliscategory_categories_category_form_transalations");
+                melisCoreTool.highlightErrors(data.success, data.errors, "id_meliscategory_categories_category_form_transalations");
 			}
 			
 			melisCore.flashMessenger();
@@ -523,8 +536,15 @@ $(function(){
                     melisHelper.zoneReload(tmpZoneId, tmpMeliskey,{ catId:data.id });
                 } else {
                     melisHelper.melisKoNotification(data.title, data.message, data.errors);
+                    saveCategoryBtn.removeAttr('disabled');
 				}
-            });
+				if (data.tmpUpload === false) {
+                    melisHelper.melisOkNotification(data.textTitle, data.textMessage);
+                    melisCore.flashMessenger();
+				}
+            }).fail(function(){
+                saveCategoryBtn.removeAttr('disabled');
+			})
 		} else {
             saveCategoryBtn.removeAttr('disabled');
 			var message = "Please upload a file";
@@ -533,32 +553,6 @@ $(function(){
 		}
     });
 
-    categoryBody.on('click', ".category-image-list .removeImage", function(){
-        var countImage = $(".category-image-list").children('.category-image').length;
-        if (countImage > 0) {
-            var parentDiv = $(this).parent().parent();
-            parentDiv.fadeOut('fast', function(){
-                parentDiv.remove();
-			});
-        }
-        if (countImage === 1) {
-            $(".no-image").fadeIn('fast');
-		}
-        initButtonScrollToTop();
-	});
-    categoryBody.on('click', ".category-file .remove-file", function(){
-        var countImage = $(".category-file-list .list-group").children('span').length;
-        if (countImage > 0) {
-            var parentDiv = $(this).parent();
-            parentDiv.fadeOut('fast',function(){
-                parentDiv.remove();
-			});
-        }
-        if (countImage === 1) {
-            $(".no-file").fadeIn('fast');
-		}
-        initButtonScrollToTop();
-    });
 	categoryBody.on('click','#closeMedialibrary', function(){
 		var parentDiv = $(this).data('targetRemoveBackdrop');
 		$(parentDiv + " .back-drop").fadeOut('fast');

@@ -22,7 +22,7 @@
                                 <input type="hidden" value="<?= $path ?>">
                                 <div class="category-image-option">
                                     <a class="viewImage" target="_blank" href="<?= $path ?>"> <i class='fa fa-eye' title='View image'></i></a>
-                                    <span class="removeImage text-primary" ><i class='fa fa-times' title='Delete image'></i></span>
+                                    <span class="removeImage text-primary" data-categoryid="<?= $this->categoryId ?>"><i class='fa fa-times' title='Delete image'></i></span>
                                 </div>
                             </div>
                             <?php $currentPosition = $currentPosition + 1;?>

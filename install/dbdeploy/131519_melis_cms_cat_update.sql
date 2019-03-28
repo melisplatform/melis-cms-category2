@@ -1,1 +1,0 @@
-ALTER TABLE `melis_cms_category2_media` ADD `catm2_order` INT NOT NULL AFTER `catm2_cat_id`;

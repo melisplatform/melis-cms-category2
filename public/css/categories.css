@@ -440,10 +440,50 @@
     position: absolute;
     height:100%;
     width:100%;
-    top:20px;
-    opacity:0.7;
-    background: #000;
+    background: rgba(0,0,0,0.5);
+    display: block;
+    z-index:1999;
+    padding-top:47px;
+    cursor:pointer;
+    top:0;
+}
+.preview-image {
+    text-align: center;
+    position: relative;
+}
+.preview-image span {
+    position: relative;
+}
+.preview-nav {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    z-index: 99999999;
+    display: block;
+}
+.preview-image .close-images {
+    position: absolute;
+    font-size: 30px;
+    cursor: pointer;
+    color: #fff;
+    right: 0;
+    background: url('/MelisCmsCategory2/img/close.png');
+    height: 29px;
+    margin-top: 5px;
+    width: 27px;
+}
+
+.preview-image  img{
+    border:6px solid #fff;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    max-width:93%;
     display: none;
+}
+.preview-image .active {
+    display:inline-block;
 }
 .media-upload-loader {
     background: #e61c23;

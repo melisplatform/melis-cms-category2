@@ -48,6 +48,7 @@ return array(
                     '/MelisCmsCategory2/js/tools/documents.tool.js',
                     '/MelisCmsCategory2/js/tools/documents.tool.js',
                     '/MelisCmsCategory2/js/tools/media.library.js',
+                    '/MelisCmsCategory2/js/tools/category.media.tool.js',
                 ],
                 'css' => [
                     '/MelisCmsCategory2/assets/jstree/dist/themes/proton/style.min.css',
