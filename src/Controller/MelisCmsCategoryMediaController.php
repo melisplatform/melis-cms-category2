@@ -420,8 +420,10 @@ class MelisCmsCategoryMediaController extends AbstractActionController
             'id' => $categoryId,
             'tmpUpload' => $tmpUpload
         ];
-        // flash messenger
-        $this->getEventManager()->trigger('meliscms_category2_save_end', $this, array_merge($response, array('typeCode' => $logTypeCode, 'itemId' => $categoryId)));
+        if ($categoryId != 'tmp') {
+            // flash messenger
+            $this->getEventManager()->trigger('meliscms_category2_save_end', $this, array_merge($response, array('typeCode' => $logTypeCode, 'itemId' => $categoryId)));
+        }
 
         return new JsonModel($response);
     }
