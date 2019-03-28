@@ -51,7 +51,13 @@ CREATE TABLE IF NOT EXISTS `melis_cms_category2_trans` (
     FOREIGN KEY (`catt2_category_id`)
     REFERENCES `melis_cms_category2` (`cat2_id`)
     ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT `trans_relation_cms_lang`
+    FOREIGN KEY (`catt2_lang_id`)
+    REFERENCES `melis_cms_lang` (`lang_cms_id`)
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
+
 ENGINE = InnoDB;
 
 CREATE INDEX `relationId_idx` ON `melis_cms_category2_trans` (`catt2_category_id` ASC);
