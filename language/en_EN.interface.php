@@ -63,7 +63,7 @@ return [
     'tr_meliscategory_documents_product_imgs' => 'Images',
     'tr_meliscategory_documents_image_lists' => 'Image lists',
     # messages
-    'tr_meliscms_categories_err_category_save_unable' => 'Unable to save Category, Please try again',
+    'tr_meliscms_categories_err_category_save_unable' => 'Unable to save the category',
     'tr_meliscms_categories_err_category_save_success' => 'Category successfully saved',
     'tr_meliscategory_categories_common_label_saving' => 'Saving ...',
     'tr_meliscmscategory_search_not_found' => 'not found',
@@ -116,7 +116,7 @@ return [
     'tr_meliscms_categories_category_delete_success' => 'Category has been deleted successfully',
 
     // errors
-    'tr_meliscms_categories_category_name_required_atleast_one' => 'The category name cannot be empty, please enter at least one in any language',
+    'tr_meliscms_categories_category_name_required_atleast_one' => 'Please enter a name',
     'tr_meliscms_categories_select_site' => 'Please select site',
     'tr_meliscms_categories_upload_image_fileIsImageNotDetected' => 'Unknown image format, please upload a valid image',
 

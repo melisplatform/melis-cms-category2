@@ -61,7 +61,7 @@ return [
     'tr_meliscategory_documents_product_imgs' => 'Images',
     'tr_meliscategory_documents_image_lists' => 'Listes des images',
     # error
-    'tr_meliscms_categories_err_category_save_unable' => 'Impossible de sauvegarder la catégorie, veuillez réessayer',
+    'tr_meliscms_categories_err_category_save_unable' => 'Impossible de sauvegarder la catégorie',
     'tr_meliscms_categories_err_category_save_success' => 'Catégorie sauvegardée avec succès', // FORM
     'tr_meliscategory_categories_common_label_saving' => 'Saving ...',
     'tr_meliscmscategory_search_not_found' => 'non trouvé',
@@ -140,7 +140,7 @@ return [
     'tr_meliscms_categories_category_delete_success' => 'Catégorie supprimée avec succès',
 
     /// errors
-    'tr_meliscms_categories_category_name_required_atleast_one' => 'Le nom de le catégories ne peut être vide, veuillez en saisir au moins un dans le langage de votre choix',
+    'tr_meliscms_categories_category_name_required_atleast_one' => 'Veuillez saisir un nom',
     'tr_meliscms_categories_select_site' => 'Veuillez sélectionner un site',
     'tr_meliscms_categories_upload_image_fileIsImageNotDetected' => 'Format de l\'image inconnu, veuillez uploader une image valide',
     //confirm
