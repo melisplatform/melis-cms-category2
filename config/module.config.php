@@ -105,4 +105,8 @@ return array(
             'ViewJsonStrategy',
         ),
     ),
+    // Config Files
+    'tinyMCE' => array(
+        'toolTranslate' => 'MelisCmsCategory2/public/js/tinyMCE/toolTranslate.php',
+    ),
 );
