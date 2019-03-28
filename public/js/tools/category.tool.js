@@ -843,7 +843,7 @@ window.initCmsCategoryTreeView = function(){
 			        	            	}
 			        	            	
 			        	            	melisCore.flashMessenger();
-			        					melisHelper.melisOkNotification(translations.data.textTitle, data.textMessage);
+			        					melisHelper.melisOkNotification(data.textTitle, data.textMessage);
 			        				}else{
 			        					melisHelper.melisKoNotification(data.textTitle, data.textMessage, data.errors);
 			        				}

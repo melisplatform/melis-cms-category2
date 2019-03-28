@@ -1049,6 +1049,7 @@ class MelisCmsCategoryController extends AbstractActionController
                     // re order or update categories after deleting the previous category
                     $categorySvc->reOrderCategories($parentId, $currentOrder);
                     $textMessage = $translator->translate('tr_meliscms_categories_category_delete_success');
+                    // remove files in media directory
                     $categoryMediaSvc->removeCategoryDir($catId);
                     $success = 1;
                 } else {
