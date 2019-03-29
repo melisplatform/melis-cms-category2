@@ -77,7 +77,6 @@ return array(
                         'name' => 'tr_melis_cms_category_v2',
                         'icon' => 'fa-th-list',
                         'follow_regular_rendering' => false,
-                        'rights_checkbox_disable' => true,
                     ),
                     'forward' => array(
                         'module' => 'MelisCmsCategory2',
