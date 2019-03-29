@@ -13,7 +13,7 @@ return array(
                                     'conf' => [
                                         'id' => 'melis_cms_category_v2',
                                         'name' => 'tr_melis_cms_category_v2',
-                                        'melisKey' => 'meliscommerce_categories_page',
+                                        'melisKey' => 'melis_cms_category_v2',
                                         'icon' => 'fa-th-list',
                                     ],
                                     'interface' => [

@@ -107,7 +107,7 @@ return [
     'tr_meliscms_categories_media_add_image' => 'Add image',
     'tr_meliscms_categories_media_add_file'  => 'Add',
     //tree
-    'tr_meliscms_categories_delete_category_msg' => 'Êtes-vous sûr de vouloir supprimer cette catégorie?',
+    'tr_meliscms_categories_delete_category_msg' => 'Are you sure you want to delete this category?',
     'tr_meliscms_categories_site_filter_all' => 'All sites',
     'tr_meliscms_categories_upload_heading' => 'Attach an image to this variant.',
     'tr_meliscms_categories_err_category_delete_has_children' => 'You cannot delete a category having children categories',
