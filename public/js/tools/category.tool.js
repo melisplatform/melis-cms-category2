@@ -204,7 +204,7 @@ $(function(){
 				
 	    		var zoneId = 'id_meliscategory_categories_category';
 	    		var melisKey = 'meliscategory_categories_category';
-	    		melisHelper.zoneReload(zoneId, melisKey, {catId : selectedNode});
+	    		melisHelper.zoneReload(zoneId, melisKey, {catId : data.id});
 	    		
 	    		// Highlighting the node
 	    		$("#categoryTreeView #"+selectedNode+" div").first().addClass("jstree-wholerow-clicked");

@@ -16,7 +16,7 @@ use Zend\Session\Container;
 
 class MelisCmsCategoryController extends AbstractActionController
 {
-    const PLUGIN_INDEX = 'meliscommerce';
+    const PLUGIN_INDEX = 'melis_cms_categories_v2';
     const TOOL_KEY = 'meliscommerce_categories';
 
     /**
@@ -25,7 +25,8 @@ class MelisCmsCategoryController extends AbstractActionController
      *
      * @return \Zend\View\Model\ViewModel
      */
-    public function renderCategoryAction(){
+    public function renderCategoryAction()
+    {
         $melisKey = $this->params()->fromRoute('melisKey', '');
         $catId = $this->params()->fromQuery('catId');
         $catFatherId = $this->params()->fromQuery('catFatherId');
@@ -631,7 +632,8 @@ class MelisCmsCategoryController extends AbstractActionController
             'textTitle' => $textTitle,
             'textMessage' => $message,
             'errors' => $errors,
-            'customError' => $customError
+            'customError' => $customError,
+            'id'          => $id
         );
 
         if (! empty($passedCatId)) {
@@ -1143,7 +1145,7 @@ class MelisCmsCategoryController extends AbstractActionController
             $melisComCategoryService = $this->getServiceLocator()->get('MelisCmsCategory2Service');
 
             $pcatId = $postValues['pcat_id'];
-            
+
             if ($postValues['parent_id'] == '-1'){
                 $type = 'catalog';
             }else{
@@ -1151,7 +1153,7 @@ class MelisCmsCategoryController extends AbstractActionController
             }
             // Log Type Code
             $logTypeCode = 'ECOM_'.strtoupper($type).'_REMOVE_PRODUCT';
-            
+
             $textTitle = 'tr_meliscommerce_categories_'.$type.'_products_removed';
 
             $result = $melisComCategoryService->deleteCategoryProduct($pcatId);
@@ -1173,12 +1175,12 @@ class MelisCmsCategoryController extends AbstractActionController
             'textMessage' => $textMessage,
             'errors' => $errors,
         );
-        
+
         if ($status){
-            $this->getEventManager()->trigger('meliscommerce_category_product_remove_end', 
+            $this->getEventManager()->trigger('meliscommerce_category_product_remove_end',
                 $this, array_merge($response, array('typeCode' => $logTypeCode, 'itemId' => $pcatId)));
         }
-        
+
         return new JsonModel($response);
     }
 
