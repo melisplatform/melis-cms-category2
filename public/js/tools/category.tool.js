@@ -542,14 +542,16 @@ $(function(){
 						tmpMeliskey = 'meliscategory_category_tab_media_content_left_image_list';
 					}
                     melisHelper.zoneReload(tmpZoneId, tmpMeliskey,{ catId:data.id });
+
+                    if (data.tmpUpload === false) {
+                        melisHelper.melisOkNotification(data.textTitle, data.textMessage);
+                        melisCore.flashMessenger();
+                    }
                 } else {
-                    melisHelper.melisKoNotification(data.title, data.message, data.errors);
+                    melisHelper.melisKoNotification(data.textTitle, data.textMessage, data.errors);
                     saveCategoryBtn.removeAttr('disabled');
 				}
-				if (data.tmpUpload === false) {
-                    melisHelper.melisOkNotification(data.textTitle, data.textMessage);
-                    melisCore.flashMessenger();
-				}
+
             }).fail(function(){
                 saveCategoryBtn.removeAttr('disabled');
 			})

@@ -152,6 +152,7 @@ return [
     'tr_meliscms_categories_confirm_delete_image_success' => 'L\'image a été supprimée avec succès',
     // success messages file
     'tr_meliscms_categories_upload_success' => 'L\'image a été uploadée avec succès',
+    'tr_meliscms_categories_upload_file_success' => 'Fichier uploadé avec succès'
 
 
 

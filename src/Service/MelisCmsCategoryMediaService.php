@@ -309,6 +309,19 @@ class MelisCmsCategoryMediaService  extends MelisCoreGeneralService
         // get media files
         $results = $this->categoryMediaTbl->getMediaFilesByCategoryId($categoryId,$fileType)->toArray();
 
+        if (! empty($results)) {
+            // return only file name not the directory path
+            if ($fileType == 'file') {
+                foreach ($results as $idx => $val) {
+                    $path = $val['catm2_path'];
+                    $catId = $val['catm2_cat_id'];
+                    $toRemovePath = "/media/categories/$catId/";
+                    $path = str_replace($toRemovePath,null,$path);
+                    $results[$idx]['catm2_path'] = $path;
+                }
+            }
+        }
+
         $arrayParameters['results'] = $results;
         //service event end
         $arrayParameters = $this->sendEvent('melis_cms_categories_get_media_files_by_id_end', $arrayParameters);

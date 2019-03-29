@@ -218,6 +218,7 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         $categoryPath = null;
         if (! empty($categoryId) && $categoryId != 'tmp') {
             $categoryMediaData = $categoryMediaSvc->getMediaFilesByCategoryId($categoryId);
+
         } else {
             $categoryPath = "/media/categories/tmp/";
             $mediaPath = $_SERVER['DOCUMENT_ROOT'] . $categoryPath;
@@ -325,6 +326,7 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         }
         if ($request->isPost()) {
             $file = $request->getFiles('media_upload');
+
             if (! empty($file['tmp_name'])) {
                 $fileName = $file['name'];
                 if ($fileType == 'image') {
@@ -378,9 +380,11 @@ class MelisCmsCategoryMediaController extends AbstractActionController
                                 ];
                                 $catMediaTbl = $this->getServiceLocator()->get('MelisCmsCategory2MediaTable');
                                 $catMediaTbl->save($data);
-                                $message = "tr_meliscms_categories_upload_success";
+
+                                $message = "tr_meliscms_categories_upload_file_success";
                                 if ($fileType == 'image') {
                                     $logTypeCode = 'CMS_CATEGORY2_IMAGE_ADD';
+                                    $message = 'tr_meliscms_categories_upload_image_success';
                                 }
                             } else {
                                 $files = [];
@@ -401,14 +405,17 @@ class MelisCmsCategoryMediaController extends AbstractActionController
                             }
                         }
                     } else {
+
                         $message = $translator->translate('tr_meliscms_categories_upload_image_fileIsImageNotDetected');
                     }
 
                 } else {
-                    $message = 'Permission denied ';
+
+                    $message = 'Permission denied';
                 }
             } else {
-                $message = "Permission denied ";
+                $maxFileSizeUpload = (($categoryMediaSvc->file_upload_max_size() / 1024) / 1024) . " MB";
+                $message = "Permission denied, current PHP upload_max_filesize is <br><strong>$maxFileSizeUpload</strong>";
             }
         }
 
