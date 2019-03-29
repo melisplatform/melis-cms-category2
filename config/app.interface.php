@@ -37,7 +37,7 @@ return array(
                 'name' => 'tr_melis_cms_category_v2',
                 'melisKey' => 'melis_cms_category_v2_config',
                 'icon' => 'fa-th-list',
-               // 'rightsDisplay' => 'none'
+               'rightsDisplay' => 'none'
             ],
             'datas' => [],
             'ressources' => [
