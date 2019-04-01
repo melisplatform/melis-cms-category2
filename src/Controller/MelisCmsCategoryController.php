@@ -31,13 +31,19 @@ class MelisCmsCategoryController extends AbstractActionController
         $catId = $this->params()->fromQuery('catId');
         $catFatherId = $this->params()->fromQuery('catFatherId');
 
-        // reference that will be used anywhere, for now it will be used in documents
-        $container = new Container('meliscommerce');
-        $container['documents'] = array('docRelationType' => 'category', 'docRelationId' => $catId);
+        $melisCoreRights = $this->getServiceLocator()->get('MelisCoreRights');
+        $translator = $this->getServiceLocator()->get('translator');
+        $access = true;
+        $parentConfigKey = 'melis_cms_category_v2';
+        if(!$melisCoreRights->canAccess($parentConfigKey)) {
+            $access = false;
+        }
 
         $view = new ViewModel();
         $view->melisKey = $melisKey;
         $view->hide = (!is_null($catId)||!is_null($catFatherId)) ? '' : 'hidden';
+        $view->access = $access;
+
         return $view;
     }
 

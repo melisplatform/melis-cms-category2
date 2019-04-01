@@ -8,12 +8,14 @@
 <div <?php echo $id.' '.$data_melisKey; ?> style="position:relative;" class="<?php echo $this->hide ?>">	
 	<div class="panel-group" id="accordion">
 		<div class="panel panel-default"  style="border:none;">
-    		<?php 
-            	if(!empty($this->zoneconfig['interface'])) {
-            	    foreach($this->zoneconfig['interface'] as $keyConfig => $menuConfig) {
-            	        echo $this->$keyConfig.' ';
-            	    }
-            	}
+    		<?php
+                if ($this->access) {
+                    if(!empty($this->zoneconfig['interface'])) {
+                        foreach($this->zoneconfig['interface'] as $keyConfig => $menuConfig) {
+                            echo $this->$keyConfig.' ';
+                        }
+                    }
+                }
             ?>
         </div>
     </div>

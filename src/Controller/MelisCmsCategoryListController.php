@@ -31,16 +31,15 @@ class MelisCmsCategoryListController extends AbstractActionController
         // Checks wether the user has access to this tools or not
         $melisCoreRights = $this->getServiceLocator()->get('MelisCoreRights');
         $translator = $this->getServiceLocator()->get('translator');
-        if(!$melisCoreRights->canAccess($melisKey)) {
-            $noAccessPrompt = $translator->translate('tr_tool_no_access');
+        $access = true;
+        $parentConfigKey = 'melis_cms_category_v2';
+        if(!$melisCoreRights->canAccess($parentConfigKey) ) {
+            $access = false;
         }
-//
-//        $melisTool = $this->getServiceLocator()->get('MelisCoreTool');
-//        $melisTool->setMelisToolKey(self::TOOL_INDEX, self::TOOL_KEY);
 
         $view = new ViewModel();
         $view->melisKey = $melisKey;
-        $view->noAccess = $noAccessPrompt;
+        $view->access = $access;
         return $view;
     }
     

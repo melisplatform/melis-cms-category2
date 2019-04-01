@@ -9,11 +9,14 @@
 <div class="tab-pane container-level-a" <?php echo $id.' '.$data_melisKey; ?>>
 	<div class="content-cont">	
     	<?php
+
+		if($this->access) {
             if (!empty($this->zoneconfig['interface'])) {
                 foreach ($this->zoneconfig['interface'] as $keyConfig => $menuConfig) {
                     echo $this->$keyConfig;
                 }
             }
+        }
     	?>
 	</div>
 </div>

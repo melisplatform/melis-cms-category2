@@ -392,7 +392,7 @@ $(function(){
 		evt.stopPropagation();
 		evt.preventDefault();
 	});
-	
+
 	// Category Information Form Status, Switch Plugin
 	$("body").on("switch-change", "#cat_status", function(event, state) {
 		if(state.value == true){
@@ -574,6 +574,21 @@ $(function(){
 	categoryBody.on('click', '#categoryScrollToTop' , function(){
         $("html, body").animate({scrollTop : 10}, 500);
 	});
+    //Hook up ajax call
+    $.ajaxPrefilter("json script", function( options , originalOptions ,jqXHR ) {
+        //specifiy which ajax you want to call
+        if(options.url === '/melis/MelisCore/ToolUser/updateUser'){
+            jqXHR.done(function(){
+            	var categoryInterface = $("#id_melis_cms_categories_v2").length;
+            	if (categoryInterface > 0){
+                    // reload the category interface whenever the user update his/her info or rights
+                    melisHelper.zoneReload('id_melis_cms_categories_v2','melis_cms_categories_v2');
+				}
+            });
+        }
+    });
+
+
 });
 window.initButtonScrollToTop = function(){
     var heightContent = $("#id_meliscategory_category_tab_media").height();
