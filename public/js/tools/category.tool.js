@@ -303,7 +303,7 @@ $(function(){
 			}else{
 				$("#searchNoResult").addClass('hidden');
 			}
-		}, 1500);
+		}, 5);
 		
 	});
 	
@@ -341,6 +341,7 @@ $(function(){
 		catTree.refresh();
 		$("#categoryTreeViewSearchInput").val("");
 		$('#categoryTreeView').jstree('search', '');
+        $("#searchNoResult").addClass('hidden');
 	});
 	
 	// Category Information Form Countries Custom Checkboxes
