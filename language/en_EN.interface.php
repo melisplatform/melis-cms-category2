@@ -135,4 +135,5 @@ return [
     // upload description
     // image
     'tr_meliscms_categories_upload_file_description' => 'Add a file to this category',
+    'tr_meliscms_categories_upload_image_description' => 'Add a picture to this category',
 ];

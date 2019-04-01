@@ -156,6 +156,7 @@ return [
      // upload description
     // image
     'tr_meliscms_categories_upload_file_description' => 'Ajoutez un fichier à cette catégorie',
+    'tr_meliscms_categories_upload_image_description' => 'Ajoutez une image à cette catégorie',
 
 
 ];
