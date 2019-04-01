@@ -333,6 +333,7 @@ class MelisCmsCategoryMediaController extends AbstractActionController
                     $imageValidator = new IsImage();
                     if (!$imageValidator->isValid($file)) {
                          $imageError = true;
+                        $logTypeCode = 'CMS_CATEGORY2_IMAGE_ADD';
                     }
                 }
                 $path = $_SERVER['DOCUMENT_ROOT'] . "/media";
