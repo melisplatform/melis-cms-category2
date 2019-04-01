@@ -119,7 +119,7 @@ return [
     'tr_meliscms_categories_category_name_required_atleast_one' => 'Please enter a name',
     'tr_meliscms_categories_select_site' => 'Please select site',
     'tr_meliscms_categories_upload_image_fileIsImageNotDetected' => 'Unknown image format, please upload a valid image',
-
+    'tr_meliscms_categories_file_size_limit' => 'Size limit : <strong>%s MB</strong>',
     //confirm
         // file
     'tr_meliscms_categories_confirm_delete_file_title' => 'Delete file',
@@ -137,5 +137,7 @@ return [
     'tr_meliscms_categories_upload_file_description' => 'Add a file to this category',
     'tr_meliscms_categories_upload_image_description' => 'Add a picture to this category',
     // media title
+    'tr_meliscms_categories_common_save' => 'Save'
+
 
 ];

@@ -62,7 +62,7 @@ return [
     'tr_meliscategory_documents_image_lists' => 'Listes des images',
     # error
     'tr_meliscms_categories_err_category_save_unable' => 'Impossible de sauvegarder la catégorie',
-    'tr_meliscms_categories_err_category_save_success' => 'Catégorie sauvegardée avec succès', // FORM
+    'tr_meliscms_categories_err_category_save_success' => 'Catégorie enregistrée avec succès', // FORM
     'tr_meliscategory_categories_common_label_saving' => 'Saving ...',
     'tr_meliscmscategory_search_not_found' => 'non trouvé',
     'tr_meliscategory_categories_list_tree_view_search_input' => 'Chercher une catégorie',
@@ -143,6 +143,7 @@ return [
     'tr_meliscms_categories_category_name_required_atleast_one' => 'Veuillez saisir un nom',
     'tr_meliscms_categories_select_site' => 'Veuillez sélectionner un site',
     'tr_meliscms_categories_upload_image_fileIsImageNotDetected' => 'Format de l\'image inconnu, veuillez uploader une image valide',
+    'tr_meliscms_categories_file_size_limit' => 'Taille limite : <strong>%s MB</strong>',
     //confirm
     'tr_meliscms_categories_confirm_delete_file_title' => 'Supprimer le fichier',
     'tr_meliscms_categories_confirm_delete_file' => 'Êtes-vous sûr de vouloir supprimer ce fichier ?',
@@ -158,6 +159,6 @@ return [
     // image
     'tr_meliscms_categories_upload_file_description' => 'Ajoutez un fichier à cette catégorie',
     'tr_meliscms_categories_upload_image_description' => 'Ajoutez une image à cette catégorie',
-
+    'tr_meliscms_categories_common_save' => 'Enregistrer'
 
 ];

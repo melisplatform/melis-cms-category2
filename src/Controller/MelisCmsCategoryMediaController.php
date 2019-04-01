@@ -315,6 +315,7 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         $message = [];
         $errors  = [];
         $tmpUpload = false;
+        $maxFileSizeUpload = null;
         $imageError = false;
         $logTypeCode = 'CMS_CATEGORY2_FILE_ADD';
         $categoryTable = $this->getServiceLocator()->get("MelisCmsCategory2Table");
@@ -324,6 +325,10 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         if (empty($categoryId)) {
             $categoryId = "tmp";
         }
+        if ($fileType == 'image') {
+            $title = 'tr_meliscms_categories_media_select_image';
+            $logTypeCode = 'CMS_CATEGORY2_IMAGE_ADD';
+        }
         if ($request->isPost()) {
             $file = $request->getFiles('media_upload');
 
@@ -332,11 +337,9 @@ class MelisCmsCategoryMediaController extends AbstractActionController
                 $fileName = $file['name'];
                 if ($fileType == 'image') {
                     // changed title
-                    $title = 'tr_meliscms_categories_media_select_image';
                     $imageValidator = new IsImage();
                     if (!$imageValidator->isValid($file)) {
                          $imageError = true;
-                        $logTypeCode = 'CMS_CATEGORY2_IMAGE_ADD';
                     }
                 }
                 $path = $_SERVER['DOCUMENT_ROOT'] . "/media";
@@ -418,8 +421,9 @@ class MelisCmsCategoryMediaController extends AbstractActionController
                     $message = 'Permission denied';
                 }
             } else {
-                $maxFileSizeUpload = (($categoryMediaSvc->file_upload_max_size() / 1024) / 1024) . " MB";
-                $message = "Permission denied, current PHP upload_max_filesize is <br><strong>$maxFileSizeUpload</strong>";
+                $maxFileSizeUpload = (($categoryMediaSvc->file_upload_max_size() / 1024) / 1024) ;
+                $message = 'tr_meliscms_categories_file_size_limit';
+
             }
         }
 
@@ -435,6 +439,8 @@ class MelisCmsCategoryMediaController extends AbstractActionController
             // flash messenger
             $this->getEventManager()->trigger('meliscms_category2_save_end', $this, array_merge($response, array('typeCode' => $logTypeCode, 'itemId' => $categoryId)));
         }
+        $response['textMessage'] =  sprintf($translator->translate($response['textMessage']),$maxFileSizeUpload);
+
 
         return new JsonModel($response);
     }
