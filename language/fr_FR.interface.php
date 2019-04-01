@@ -130,6 +130,8 @@ return [
     'tr_meliscms_categories_media_upload_btn' => 'Uploader',
     'tr_meliscms_categories_media_add_image' => 'Ajouter l\'image',
     'tr_meliscms_categories_media_add_file' => 'Ajouter',
+    'tr_meliscms_categories_media_select_image_button' => 'Sélectionner une image',
+    'tr_meliscms_categories_media_select_file_button' => 'Sélectionner un fichier',
     //tree
     'tr_meliscms_categories_delete_category_msg' => 'Etes-vous sûr de vouloir supprimer cette catégorie ?',
     'tr_meliscms_categories_site_filter_all' => 'Tous les sites',

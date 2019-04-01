@@ -125,7 +125,7 @@ class Module
             $container = new Container('meliscore');
             $locale    = $container['melis-lang-locale'];
         }
-
+        $locale = "fr_FR";
         if (!empty($locale)){
             //translation type
             $translationType = array(

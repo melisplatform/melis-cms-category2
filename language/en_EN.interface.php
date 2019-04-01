@@ -106,6 +106,9 @@ return [
     'tr_meliscms_categories_media_upload_btn' => 'Upload',
     'tr_meliscms_categories_media_add_image' => 'Add image',
     'tr_meliscms_categories_media_add_file'  => 'Add',
+    'tr_meliscms_categories_media_select_image_button' => 'Image',
+    'tr_meliscms_categories_media_select_file_button' => 'Select file',
+
     //tree
     'tr_meliscms_categories_delete_category_msg' => 'Are you sure you want to delete this category?',
     'tr_meliscms_categories_site_filter_all' => 'All sites',
