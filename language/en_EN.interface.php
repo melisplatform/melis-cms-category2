@@ -95,6 +95,18 @@ return [
     'tr_meliscms_categories_add_image' => 'Add image',
     'tr_meliscms_categories_add_file' => 'Add file',
     'tr_meliscms_categories_upload_text' => 'Upload your image / file here',
+    //rights exclusion
+    'tr_melis_categories_list' => 'Category lists',
+    'tr_meliscategory_categories_category' => 'Category details',
+    'tr_meliscms_categories_list_header' => 'Header',
+    'tr_meliscms_categories_list_categories_tree' => 'Category tree view',
+    'tr_meliscategory_categories_category_header' => 'Header',
+    'tr_meliscategory_categories_category_header_save_category' => 'Save category',
+    'tr_meliscategory_categories_category_content' => 'Content',
+    'tr_meliscategory_categories_category_tab_content' => 'Category tabs',
+    'tr_meliscategory_categories_category_form_transalations' => 'Texts',
+    'tr_meliscms_categories_list_search_input' => 'Search field',
+
     //Site selection
     'tr_meliscms_categories_site_selection tooltip' => 'Select the site(s) linked to this category',
     //media
