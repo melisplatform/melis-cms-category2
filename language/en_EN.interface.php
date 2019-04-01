@@ -75,7 +75,7 @@ return [
     'tr_meliscms_categories_filter_area' => 'Search and filter of tree categories',
     'tr_meliscms_categories_filter_area_empty_site' => 'No site created',
     'tr_meiscms_categories_fitler_site_heading' => 'Filter by site',
-    'tr_meiscms_categories_fitler_site tooltip' => 'Select a site to filter the categories by the site selected',
+    'tr_meiscms_categories_fitler_site tooltip' => 'Filter the categories by site',
     //js tree
     'tr_meliscategory_categories_common_btn_add' => 'Add',
     'tr_meliscategory_categories_common_btn_update' => 'Edit',
