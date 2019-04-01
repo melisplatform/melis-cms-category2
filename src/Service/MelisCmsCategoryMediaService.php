@@ -275,7 +275,6 @@ class MelisCmsCategoryMediaService  extends MelisCoreGeneralService
         // implentation start
         //first  delete the file in the db
         $status = $this->categoryMediaTbl->deleteByField('catm2_path',$filenamePath);
-        $status = true;
         if ($status) {
             // get the file name and extension
             $fileInfo = pathinfo($filenamePath);
@@ -308,19 +307,6 @@ class MelisCmsCategoryMediaService  extends MelisCoreGeneralService
         // implentation start
         // get media files
         $results = $this->categoryMediaTbl->getMediaFilesByCategoryId($categoryId,$fileType)->toArray();
-
-        if (! empty($results)) {
-            // return only file name not the directory path
-            if ($fileType == 'file') {
-                foreach ($results as $idx => $val) {
-                    $path = $val['catm2_path'];
-                    $catId = $val['catm2_cat_id'];
-                    $toRemovePath = "/media/categories/$catId/";
-                    $path = str_replace($toRemovePath,null,$path);
-                    $results[$idx]['catm2_path'] = $path;
-                }
-            }
-        }
 
         $arrayParameters['results'] = $results;
         //service event end

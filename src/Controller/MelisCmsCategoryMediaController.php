@@ -215,7 +215,7 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         $categoryMediaData = [];
         $category2Session = new Container('melis_cms_category2');
 
-        $categoryPath = null;
+        $categoryPath = "/media/categories/$categoryId/";
         if (! empty($categoryId) && $categoryId != 'tmp') {
             $categoryMediaData = $categoryMediaSvc->getMediaFilesByCategoryId($categoryId);
 
@@ -309,7 +309,7 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         $postData = $request->getPost();
         $categoryId = $postData['catId'];
         $fileType = $postData['fileType'];
-        $title = 'tr_melis_cms_category_v2';
+        $title = 'tr_meliscms_categories_media_select_file';
         $category2Session = new Container('melis_cms_category2');
         $success = false;
         $message = [];
@@ -328,8 +328,11 @@ class MelisCmsCategoryMediaController extends AbstractActionController
             $file = $request->getFiles('media_upload');
 
             if (! empty($file['tmp_name'])) {
+                // file name
                 $fileName = $file['name'];
                 if ($fileType == 'image') {
+                    // changed title
+                    $title = 'tr_meliscms_categories_media_select_image';
                     $imageValidator = new IsImage();
                     if (!$imageValidator->isValid($file)) {
                          $imageError = true;
@@ -444,16 +447,19 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         $errors  = [];
         $id      = null;
         $message = "tr_meliscms_categories_delete_file_ko";
-        $title   = "tr_melis_cms_category_v2";
+        $title   = "tr_meliscms_categories_media_select_file";
 
         if ($request->isPost()){
             // media service
             $categoryMediaSvc = $this->getServiceLocator()->get('MelisCmsCategory2MediaService');
             // post values
-            $postvalues = $toolSvc->sanitizeRecursive(get_object_vars($request->getPost()));
+            $postvalues = get_object_vars($request->getPost());
             $imageName  = $postvalues['imageName'] ??  null;
             $fileType   = $postvalues['fileType'] ?? null;
             $categoryId = $postvalues['categoryId'] ?? null;
+            if ($fileType == 'image') {
+                $title = 'tr_meliscms_categories_media_select_image';
+            }
 
             if (! empty($imageName) && ! empty($categoryId)) {
                 // delete category in db and delete files in the directory

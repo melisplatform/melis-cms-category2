@@ -124,7 +124,7 @@ return [
     //media
     'tr_meliscms_categories_media_heading' => 'Répertoire des médias',
     'tr_meliscms_categories_media_sub_heading' => 'Répertoire',
-    'tr_meliscms_categories_media_select_image' => 'Choisir une image',
+    'tr_meliscms_categories_media_select_image' => 'Image',
     'tr_meliscms_categories_media_select_file' => 'Fichier',
     'tr_meiscms_categories_media_choose_file' => 'Fichier',
     'tr_meliscms_categories_media_upload_btn' => 'Uploader',
@@ -151,8 +151,9 @@ return [
     'tr_meliscms_categories_confirm_delete_image' => 'Êtes-vous sûr de vouloir supprimer cette image?',
     'tr_meliscms_categories_confirm_delete_image_success' => 'L\'image a été supprimée avec succès',
     // success messages file
-    'tr_meliscms_categories_upload_success' => 'L\'image a été uploadée avec succès',
+    'tr_meliscms_categories_upload_image_success' => 'L\'image a été uploadée avec succès',
     'tr_meliscms_categories_upload_file_success' => 'Fichier uploadé avec succès',
+
      // upload description
     // image
     'tr_meliscms_categories_upload_file_description' => 'Ajoutez un fichier à cette catégorie',

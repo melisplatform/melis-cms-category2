@@ -100,7 +100,7 @@ return [
     //media
     'tr_meliscms_categories_media_heading' => 'Media directory',
     'tr_meliscms_categories_media_sub_heading' => 'Directory',
-    'tr_meliscms_categories_media_select_image' => 'Select Image',
+    'tr_meliscms_categories_media_select_image' => 'Image',
     'tr_meliscms_categories_media_select_file' => 'File',
     'tr_meiscms_categories_media_choose_file' => 'File',
     'tr_meliscms_categories_media_upload_btn' => 'Upload',
@@ -136,4 +136,6 @@ return [
     // image
     'tr_meliscms_categories_upload_file_description' => 'Add a file to this category',
     'tr_meliscms_categories_upload_image_description' => 'Add a picture to this category',
+    // media title
+
 ];
