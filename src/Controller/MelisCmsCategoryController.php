@@ -17,7 +17,7 @@ use Zend\Session\Container;
 class MelisCmsCategoryController extends AbstractActionController
 {
     const PLUGIN_INDEX = 'melis_cms_categories_v2';
-    const TOOL_KEY = 'meliscommerce_categories';
+    const TOOL_KEY = 'meliscategory_categories_category';
 
     /**
      * Render Category Page Zone
