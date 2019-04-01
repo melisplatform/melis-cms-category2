@@ -532,10 +532,13 @@ class MelisCmsCategoryController extends AbstractActionController
                     } else {
                         $id = $categoryId;
                     }
-                    // rename the tmp folder
-                    $tmpPath = $_SERVER['DOCUMENT_ROOT'] . "/media/categories/tmp";
-                    if (file_exists($tmpPath)) {
-                        rename ($tmpPath, $_SERVER['DOCUMENT_ROOT'] . "/media/categories/$categoryId");
+                    // rename only the tmp file in adding new category
+                    if (empty($passedCatId)) {
+                        // rename the tmp folder
+                        $tmpPath = $_SERVER['DOCUMENT_ROOT'] . "/media/categories/tmp";
+                        if (file_exists($tmpPath)) {
+                            rename ($tmpPath, $_SERVER['DOCUMENT_ROOT'] . "/media/categories/$categoryId");
+                        }
                     }
                     // save Category translations
                     foreach ($catTranslationData as $idx => $val) {
