@@ -407,7 +407,7 @@ class MelisCmsCategoryMediaController extends AbstractActionController
                         }
                     } else {
 
-                        $message = $translator->translate('tr_meliscms_categories_upload_image_fileIsImageNotDetected');
+                        $message = 'tr_meliscms_categories_upload_image_fileIsImageNotDetected';
                     }
 
                 } else {
@@ -456,7 +456,7 @@ class MelisCmsCategoryMediaController extends AbstractActionController
             $categoryId = $postvalues['categoryId'] ?? null;
 
             if (! empty($imageName) && ! empty($categoryId)) {
-                // delete the file in directory and db
+                // delete category in db and delete files in the directory
                 $fullPath = $_SERVER['DOCUMENT_ROOT'] . "/../public/media/categories/$categoryId/";
                 $status = $categoryMediaSvc->deleteFile($fullPath,$imageName);
                 // default

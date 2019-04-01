@@ -131,5 +131,8 @@ return [
     'tr_meliscms_categories_confirm_delete_image_success' => 'Image has been successfully deleted',
     // success messages file
     'tr_meliscms_categories_upload_image_success' => 'Image has been uploaded successfully',
-    'tr_meliscms_categories_upload_file_success' => 'File uploaded successfully'
+    'tr_meliscms_categories_upload_file_success' => 'File uploaded successfully',
+    // upload description
+    // image
+    'tr_meliscms_categories_upload_file_description' => 'Add a file to this category',
 ];

@@ -9,6 +9,7 @@
 
     $title  = $this->title;
     $form  = $this->categoryMediaForm;
+
     if ($this->fileType == 'image') {
         $title = "Image";
         $uploadLabel  = 'tr_meliscms_categories_media_select_image';
@@ -32,7 +33,7 @@
                         <div class="tab-pane active" <?php echo $id ?>>
                             <div class="mini-media-library">
                                 <div class="min-upload-image">
-                                    <p><?= $this->translate('tr_meliscms_categories_upload_heading')?></p>
+                                    <p><?= $this->translate('tr_meliscms_categories_upload_file_description')?></p>
                                     <?php if ($this->fileType == 'image'){?>
                                         <div class="center-block">
                                                 <span class="thumbnail">
