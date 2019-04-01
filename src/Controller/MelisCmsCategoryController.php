@@ -626,6 +626,10 @@ class MelisCmsCategoryController extends AbstractActionController
         if (empty($catSitesData)) {
             $customError['site'] = 1;
         }
+        if (! empty($passedCatId)) {
+            $logTypeCode = "CMS_CATEGORY2_UPDATE";
+            $message = 'tr_meliscms_categories_err_category_update_ok';
+        }
 
         $response = array(
             'success' => $success,
@@ -636,16 +640,11 @@ class MelisCmsCategoryController extends AbstractActionController
             'id'          => $id
         );
 
-        if (! empty($passedCatId)) {
-            $logTypeCode = "CMS_CATEGORY2_UPDATE";
-            $response['textMessage'] = 'tr_meliscms_categories_err_category_update_ok';
-        }
-
         // flash messenger
         $this->getEventManager()->trigger('meliscms_category2_save_end',
             $this, array_merge($response, array('typeCode' => $logTypeCode, 'itemId' => $id)));
         // translate
-        $response['textMessage'] = $translator->translate($response['textMessage']);
+        //$response['textMessage'] = $translator->translate($response['textMessage']);
 
         return new JsonModel($response);
     }

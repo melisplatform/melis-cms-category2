@@ -106,7 +106,7 @@ return [
     'tr_melis_cms_category_media_tab_content_right_image_list' => 'List',
     //rights exclusion
     'tr_melis_categories_list' => 'Category lists',
-    'tr_meliscms_categories_err_category_update_ok' => 'Category successfully updated',
+    'tr_meliscms_categories_err_category_update_ok' => 'Catégorie mise à jour avec succès',
     'tr_meliscategory_categories_category' => 'Category details',
     'tr_meliscms_categories_list_header' => 'Header',
     'tr_meliscms_categories_list_categories_tree' => 'Category tree view',
