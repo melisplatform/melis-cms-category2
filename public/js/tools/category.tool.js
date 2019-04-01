@@ -321,6 +321,7 @@ $(function(){
 		var catTree = $('#categoryTreeView').jstree(true);
 		$("#categoryTreeViewSearchInput").val("");
 		$('#categoryTreeView').jstree('search', '');
+        $("#searchNoResult").addClass('hidden');
 	});
 	
 	// Toggle Buttons for Category Tree View
