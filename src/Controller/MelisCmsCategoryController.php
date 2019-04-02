@@ -547,7 +547,9 @@ class MelisCmsCategoryController extends AbstractActionController
                     if (! empty($catSitesData)) {
                         $catSiteTbl = $this->getCatSiteTable();
                         // delete cause we are assuming data is changing
-                        $catSiteTbl->deleteByField('cats2_cat2_id',$passedCatId);
+                        if (! empty($passedCatId)) {
+                            $catSiteTbl->deleteByField('cats2_cat2_id',$passedCatId);
+                        }
                         // save data
                         foreach( $catSitesData as $siteId) {
                             // all selected sites
