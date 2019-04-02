@@ -890,6 +890,7 @@ window.initCmsCategoryTreeView = function(){
 			        	            	
 			        	            	melisCore.flashMessenger();
 			        					melisHelper.melisOkNotification(data.textTitle, data.textMessage);
+                                        boldCategoryParents();
 			        				}else{
 			        					melisHelper.melisKoNotification(data.textTitle, data.textMessage, data.errors);
 			        				}
