@@ -346,7 +346,7 @@ class MelisCmsCategoryListController extends AbstractActionController
             
             if (!empty($val['children']))
             {
-                $categoryList[$key]['children'] = $this->prepareCategoryDataForTreeView($categoryList[$key]['children'], $selected, $openedStateParent, $idAndNameOnly, $categoryChecked, $langId);
+                $categoryList[$key]['children'] = $this->prepareCategoryDataForTreeView($categoryList[$key]['children'], $selected, $openedStateParent, $idAndNameOnly, $categoryChecked, $langId, $siteId);
                 
                 /**
                  * Checking if the node children has a Open, Checked, Selected state
