@@ -118,7 +118,7 @@ return [
     'tr_meliscms_categories_media_upload_btn' => 'Upload',
     'tr_meliscms_categories_media_add_image' => 'Add image',
     'tr_meliscms_categories_media_add_file'  => 'Add',
-    'tr_meliscms_categories_media_select_image_button' => 'Image',
+    'tr_meliscms_categories_media_select_image_button' => 'Select image',
     'tr_meliscms_categories_media_select_file_button' => 'Select file',
 
     //tree
