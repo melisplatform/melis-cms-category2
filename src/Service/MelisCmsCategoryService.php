@@ -37,7 +37,7 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
         // Service implementation start
         $categoryTable = $this->getServiceLocator()->get('MelisCmsCategory2Table');
         # order
-        $order = $categoryTable->getAvailableOrder($parentId)->current()->maxOrder + 1;
+        $order = $categoryTable->getAvailableOrder($parentId)->current()->maxOrder;
         # construct data
         $data = [
             'cat2_father_cat_id' => $parentId,
