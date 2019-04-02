@@ -159,7 +159,21 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
             'cats2_cat2_id' => $categoryId
         ];
 
-        $saveCatSiteId =  $categorySitesTable->save($data);
+        $saveCatSiteId = null;
+        if (! empty($id)) {
+            $catSiteId = $categorySitesTable->getCatSiteBySiteIdCatId($siteId, $id)->current()->cats2_id ?? null;
+            if (! empty($catSiteId)) {
+                $categorySitesTable->save($data, $catSiteId);
+            } else {
+                $categorySitesTable->save($data);
+            }
+            if ($tobeDeleted) {
+                $categorySitesTable->deleteById($catSiteId);
+            }
+
+        } else {
+            $categorySitesTable->save($data);
+        }
 
         // Service implementation end
         $arrayParameters['results'] = $saveCatSiteId;
