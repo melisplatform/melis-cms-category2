@@ -34,9 +34,9 @@ return [
     // Date Validity
     'tr_meliscategory_categories_category_date_validity' => 'Dates de validité',
     'tr_meliscategory_categories_category_valid_from' => 'Valide du',
-    'tr_meliscategory_categories_category_valid_from tooltip' => 'Date à partir de laquelle la catégorie sera valide à condition que celle-ci soit activée',
+    'tr_meliscategory_categories_category_valid_from tooltip' => 'Date à partir de laquelle la catégorie sera valide à condition que celle-ci soit activée (dd/mm/yyyy)',
     'tr_meliscategory_categories_category_valid_to' => 'Valide au',
-    'tr_meliscategory_categories_category_valid_to tooltip' => 'Date jusqu&#39;à laquelle catégorie sera valide à condition que celle-ci soit activée',
+    'tr_meliscategory_categories_category_valid_to tooltip' => 'Date jusqu&#39;à laquelle catégorie sera valide à condition que celle-ci soit activée (dd/mm/yyyy)',
 
     'tr_meliscommerce_categories_category_valid_from_must_equal_high_current_date' => 'Valide du doit être égal ou supérieur à la date actuelle',
     'tr_meliscommerce_categories_category_valid_dates_invalid' => 'Valide au doit être supérieur à Valide du',

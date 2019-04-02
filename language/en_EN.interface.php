@@ -37,9 +37,9 @@ return [
     // Date Validity
     'tr_meliscategory_categories_category_date_validity' => 'Dates of validity',
     'tr_meliscategory_categories_category_valid_from' => 'Valid from',
-    'tr_meliscategory_categories_category_valid_from tooltip' => 'Date from which the category will be valid provided that the category is activated',
+    'tr_meliscategory_categories_category_valid_from tooltip' => 'Date from which the category will be valid provided that the category is activated (dd/mm/yyyy)',
     'tr_meliscategory_categories_category_valid_to' => 'Valid to',
-    'tr_meliscategory_categories_category_valid_to tooltip' => 'Date until which the category will be valid provided that the category is activated',
+    'tr_meliscategory_categories_category_valid_to tooltip' => 'Date until which the category will be valid provided that the category is activated (dd/mm/yyyy)',
     'tr_meliscategory_categories_category_valid_from_must_equal_high_current_date' => 'Valid from must be equal or higher than the current date',
     'tr_meliscategory_categories_category_valid_dates_invalid' => 'Valid to must be higher than valid from',
     'tr_meliscategory_categories_category_valid_to_must_equal_high_current_date' => 'Valid to must be equal or higher than the current date',

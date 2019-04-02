@@ -22,7 +22,16 @@
         	echo $this->form()->openTag($form); 
         	echo $this->melisFieldCollection($form);
         	echo $this->form()->closeTag(); 
-        	echo $this->datepickerInit;
+
         ?>
+        <script>
+            $(function () {
+                $(".categoryValidateDates").datepicker({
+                    language: "<?= $this->locale?>",
+                    format: "dd/mm/yyyy ",
+                });
+            });
+
+        </script>
 	</div>
 </div>

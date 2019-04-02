@@ -268,38 +268,25 @@ class MelisCmsCategoryController extends AbstractActionController
         $formElements = $this->serviceLocator->get('FormElementManager');
         $factory->setFormElementManager($formElements);
         $propertyForm = $factory->createForm($appConfigForm);
-
+        // Get the locale used from meliscore session
+        $container = new Container('meliscore');
+        $locale = $container['melis-lang-locale'];
         if (!empty($catId)){
-
-            // Get the locale used from meliscore session
-            $container = new Container('meliscore');
-            $locale = $container['melis-lang-locale'];
             $melisTranslation = $this->getServiceLocator()->get('MelisCoreTranslation');
 
             $melisComCategoryService = $this->getServiceLocator()->get('MelisCmsCategory2Service');
             $categoryData = $melisComCategoryService->getCategoryById($catId);
             $category = $categoryData->getCategory();
+            $validFrom = $category->cat2_date_valid_start ?? null;
+            $validTo = $category->cat2_date_valid_end ?? null;
 
-            $validFrom = ((string) $category->cat2_date_valid_start != '0000-00-00 00:00:00') ?
-                strftime($melisTranslation->getDateFormatByLocate($locale), strtotime($category->cat2_date_valid_start)) : null;
-            $validTo = ((string) $category->cat2_date_valid_end  != '0000-00-00 00:00:00') ?
-                strftime($melisTranslation->getDateFormatByLocate($locale), strtotime($category->cat2_date_valid_end)) : null;
-
-            if (!is_null($validFrom))
-            {
-                $validFrom = explode(' ', $validFrom);
-                $validFrom = (string) $validFrom[0] == '01/01/1970' ? '' : $validFrom[0];
+            if (! empty($validFrom)) {
+                $category->cat_date_valid_start = date('d/m/Y', strtotime($validFrom));
             }
 
-
-            if (!is_null($validTo))
-            {
-                $validTo = explode(' ', $validTo);
-                $validTo = (string) $validTo[0] == '01/01/1970' ? '' : $validTo[0];
+            if (! empty($validTo)) {
+                $category->cat_date_valid_end = date('d/m/Y', strtotime($validTo));
             }
-
-            $category->cat_date_valid_start = (!is_null($validFrom)) ? $validFrom : null;
-            $category->cat_date_valid_end = (!is_null($validTo)) ? $validTo : null;
 
             $propertyForm->bind($category);
         }
@@ -309,6 +296,8 @@ class MelisCmsCategoryController extends AbstractActionController
         $melisKey = $this->params()->fromRoute('melisKey', '');
         $view->setVariable('meliscommerce_categories_date_validty_form', $propertyForm);
         $view->datepickerInit = $melisTool->datePickerInit('categoryValidateDates');
+        $view->locale = $locale;
+
         return $view;
     }
 
