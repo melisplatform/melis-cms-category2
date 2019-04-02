@@ -550,13 +550,24 @@ class MelisCmsCategoryController extends AbstractActionController
                         if (! empty($passedCatId)) {
                             $catSiteTbl->deleteByField('cats2_cat2_id',$passedCatId);
                         }
-                        // save data
-                        foreach( $catSitesData as $siteId) {
-                            // all selected sites
-                            if ($siteId != -1){
-                                $categorySiteId = $categoryService->saveCategorySites($categoryId, $siteId, $passedCatId);
+                        if (in_array('-1',$catSitesData)) {
+                            $engineSite = $this->getServiceLocator()->get('MelisEngineTableSite');
+                            $sites = $engineSite->fetchAll()->toArray();
+                            if (! empty($sites)) {
+                                foreach ($sites as $idx => $val) {
+                                    $categorySiteId = $categoryService->saveCategorySites($categoryId, $val['site_id'], $passedCatId);
+                                }
+                            }
+                        } else {
+                            // save data
+                            foreach( $catSitesData as $siteId) {
+                                // all selected sites
+                                if ($siteId != -1){
+                                    $categorySiteId = $categoryService->saveCategorySites($categoryId, $siteId, $passedCatId);
+                                }
                             }
                         }
+
                     }
                     // media
                     $images = $postValues['cat2_media_image'] ?? [];
