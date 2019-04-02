@@ -685,6 +685,7 @@ window.initCmsCategoryTreeView = function(){
 			} else {
                 $("#noResultData").fadeOut("fast");
 			}
+            $("#categoryTreeViewSearchInput").trigger('keydown');
 
 		})
 		.on('ready.jstree', function (e, data) {
