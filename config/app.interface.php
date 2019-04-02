@@ -394,6 +394,7 @@ return array(
                                                                 'id' => 'id_meliscategory_category_tab_media_header',
                                                                 'melisKey' => 'meliscategory_category_tab_media_header',
                                                                 'name' => 'tr_melis_cms_category_media_tab_header',
+                                                                'rightsDisplay' => 'none'
                                                             ),
                                                             'forward' => array(
                                                                 'module' => 'MelisCmsCategory2',
