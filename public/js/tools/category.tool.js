@@ -544,7 +544,7 @@ $(function(){
         if (fileUploadValue !== "") {
             $.ajax({
                 type: 'POST',
-                url: 'melis/MelisCmsCategory2/MelisCmsCategoryMedia/uploadMedia',
+                url: '/melis/MelisCmsCategory2/MelisCmsCategoryMedia/uploadMedia',
                 data: formData,
                 dataType: 'json',
                 processData: false,
