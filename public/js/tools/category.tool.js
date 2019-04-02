@@ -306,6 +306,23 @@ $(function(){
 		}, 5);
 		
 	});
+
+    $("body").on("keydown", "#categoryTreeViewSearchInput", function(e){
+        categoryOpeningItemFlag = false;
+
+        var searchString = $(this).val().trim();
+        var searchResult = $('#categoryTreeView').jstree('search', searchString);
+
+        setTimeout(function(){
+            if($(searchResult).find('.jstree-search').length == 0 && searchString != ''){
+                $("#searchNoResult").removeClass('hidden');
+                $("#searchNoResult").find("strong").text(searchString);
+            }else{
+                $("#searchNoResult").addClass('hidden');
+            }
+        }, 5);
+
+    });
 	
 	$("body").on('keyup keypress', '#categoryTreeViewSearchForm', function(e) {
 		var keyCode = e.keyCode || e.which;
