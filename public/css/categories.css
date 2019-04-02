@@ -18,7 +18,9 @@
 .cms-category-checkbox input{
     display : none;
 }
-
+#categorySiteFilter {
+    cursor: pointer;
+}
 /** 
 * Category Tree View Container
 */
