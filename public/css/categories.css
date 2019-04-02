@@ -31,6 +31,13 @@
     /* padding-bottom: 30px; */
 }
 
+.jstree-proton .jstree-search {
+    background: rgba(249, 124, 119, 0.42);
+    box-shadow: inset 0 0 1px rgba(169, 68, 66, 0.38);
+    border-radius: 0px;
+    color:unset;
+    padding-right: 10px;
+}
 /** 
 * Category Tree View Language Dropdown
 */
@@ -101,7 +108,13 @@
     border-radius: 0px;
     padding-right: 10px;
 }
-
+.custom-search .jstree-hovered {
+    background: rgba(249, 124, 119, 0.42);
+    box-shadow: inset 0 0 1px rgba(169, 68, 66, 0.38);
+    color: #525151;
+    border-radius: 0px;
+    padding-right: 10px;
+}
 /**
 * Category Header Panel Buttons Styles
 **/

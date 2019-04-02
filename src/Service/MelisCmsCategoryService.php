@@ -159,21 +159,7 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
             'cats2_cat2_id' => $categoryId
         ];
 
-        $saveCatSiteId = null;
-        if (! empty($id)) {
-            $catSiteId = $categorySitesTable->getCatSiteBySiteIdCatId($siteId, $id)->current()->cats2_id ?? null;
-            if (! empty($catSiteId)) {
-                $categorySitesTable->save($data, $catSiteId);
-            } else {
-                $categorySitesTable->save($data);
-            }
-            if ($tobeDeleted) {
-                $categorySitesTable->deleteById($catSiteId);
-            }
-
-        } else {
-            $categorySitesTable->save($data);
-        }
+        $saveCatSiteId =  $categorySitesTable->save($data);
 
         // Service implementation end
         $arrayParameters['results'] = $saveCatSiteId;
@@ -1138,9 +1124,11 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
         $fatherId = $arrayParameters['fatherId'];
         $langId = $arrayParameters['langId'];
         $onlyValid= $arrayParameters['onlyValid'];
+        $siteId   = $arrayParameters['siteId'];
+
 
         $melisCmsCategory2Tbl = $this->getServiceLocator()->get('MelisCmsCategory2Table');
-        $categoryData = $melisCmsCategory2Tbl->getCategoryByFatherId($fatherId, $onlyValid);
+        $categoryData = $melisCmsCategory2Tbl->getCategoryByFatherId($fatherId, $onlyValid, $siteId);
         $catData = $categoryData->toArray();
 
         /**
@@ -1150,6 +1138,7 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
 
         foreach ($catData As $key => $val)
         {
+            $cat2Id = $val['cat2_id'];
             // Getting Category Name
             $categoryData = $this->getCategoryById($val['cat2_id'], $langId, $onlyValid);
             $category = $categoryData->getTranslations();
@@ -1174,10 +1163,11 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
 
             $catData[$key]['text'] = $escaper->escapeHtml($catName); //$tool->escapeHtml($catName);
             $catData[$key]['textLang'] = (!empty($catNameLangName)) ?? null;
+            $catData[$key]['sites'] = $this->getSiteCategoryById($cat2Id);
 
             $fatherId = $catData[$key]['cat2_id'];
 
-            $catData[$key]['children'] = $this->getCategoryTreeview($fatherId, $langId, $onlyValid);
+            $catData[$key]['children'] = $this->getCategoryTreeview($fatherId, $langId, $onlyValid, $siteId);
 
         }
 
@@ -1561,6 +1551,18 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
         $arrayParameters = $this->sendEvent('meliscms_service_category_get_categories_per_site_end', $arrayParameters);
 
         return $arrayParameters['results'];
+    }
+    public function getSiteCategoryById($categoryId)
+    {
+        $categorySiteTbl = $this->getServiceLocator()->get('MelisCmsCategory2SitesTable');
+        $categorySitesData = $categorySiteTbl->getEntryByField('cats2_cat2_id',$categoryId)->toArray();
+        $data = [];
+        if (! empty($categorySitesData)) {
+            foreach ($categorySitesData as $idx => $val) {
+                $data[] = $val['cats2_site_id'];
+            }
+        }
+        return $data;
     }
 
 }

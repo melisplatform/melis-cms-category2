@@ -178,7 +178,7 @@ class MelisCmsCategory2Table extends MelisGenericTable
      * @param boolean $onlyValid
      * @return MelisEcomCategory Object
      */
-    public function getCategoryByFatherId($fatherId = 0, $onlyValid = false){
+    public function getCategoryByFatherId($fatherId = 0, $onlyValid = false, $siteId = null){
         $select = $this->tableGateway->getSql()->select();
 
         $select->columns(array('cat2_id', 'cat2_status', 'cat2_father_cat_id'));
@@ -192,7 +192,6 @@ class MelisCmsCategory2Table extends MelisGenericTable
         if(is_bool($onlyValid) && $onlyValid){
             $select->where('cat2_status = 1');
         }
-
         $select->order('cat2_order ASC');
 
         $dataCategory = $this->tableGateway->selectWith($select);
