@@ -336,7 +336,9 @@ class MelisCmsCategoryListController extends AbstractActionController
                     }
                 }
             }
-            
+            if (! empty($siteId)) {
+                $openState = true;
+            }
             // Node State
             $categoryList[$key]['state'] = array(
                 'opened' => $openState,
