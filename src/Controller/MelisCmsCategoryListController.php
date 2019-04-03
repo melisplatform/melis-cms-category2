@@ -341,7 +341,7 @@ class MelisCmsCategoryListController extends AbstractActionController
             }
             // Node State
             $categoryList[$key]['state'] = array(
-                'opened' => $openState,
+                'opened' => true,
                 'selected' =>  $selectedState,
                 'checked' =>  $checked,
             );
