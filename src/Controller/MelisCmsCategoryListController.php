@@ -305,7 +305,7 @@ class MelisCmsCategoryListController extends AbstractActionController
             if (! empty($siteId)) {
                 $sitesData = $val['sites'];
                 if (in_array($siteId,$sitesData)) {
-                    $categoryList[$key]['li_attr'] = [ 'class' => 'text-success'];
+                    $categoryList[$key]['li_attr'] = [ 'class' => 'site-filtered'];
                 }
             }
 

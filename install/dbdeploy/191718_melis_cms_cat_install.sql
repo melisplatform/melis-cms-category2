@@ -79,6 +79,11 @@ CREATE TABLE IF NOT EXISTS `melis_cms_category2_sites` (
     FOREIGN KEY (`cats2_cat2_id`)
     REFERENCES `melis_cms_category2` (`cat2_id`)
     ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT `sites_relation_id_sites`
+    FOREIGN KEY (`cats2_site_id`)
+    REFERENCES `melis_cms_site` (`site_id`)
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 

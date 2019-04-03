@@ -604,7 +604,9 @@ $(function(){
             });
         }
     });
-
+	categoryBody.on('click', '#id_meliscms_catergories_list_categories_tree' , function(){
+        $('#categoryTreeView').jstree("deselect_all");
+	});
 
 });
 window.initButtonScrollToTop = function(){

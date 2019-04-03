@@ -25,7 +25,7 @@
 * Category Tree View Container
 */
 .cat-div {
-    width: 100%;
+    width: auto;
     overflow-y: auto !important;
 }
 
@@ -37,7 +37,6 @@
     background: rgb(247, 230, 230);
     box-shadow: inset 0 0 1px rgba(169, 68, 66, 0.38);
     border-radius: 0px;
-    color:unset;
     padding-right: 10px;
 }
 /** 
@@ -109,6 +108,9 @@
     color: #525151;
     border-radius: 0px;
     padding-right: 10px;
+}
+#id_meliscms_catergories_list_categories_tree {
+    min-height:202px;
 }
 .custom-search .jstree-hovered {
     background: rgba(249, 124, 119, 0.42);
@@ -559,4 +561,7 @@
 }
 .text-red {
     color:#ff0000 !important;
+}
+.site-filtered  > .jstree-anchor{
+    color:#72af46;
 }

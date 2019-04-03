@@ -449,7 +449,7 @@ class MelisCmsCategoryController extends AbstractActionController
         $translator = $this->getServiceLocator()->get('translator');
         $request = $this->getRequest();
         $success = 0;
-        $textTitle = $translator->translate('tr_melis_cms_category_v2');
+        $textTitle = 'tr_melis_cms_category_v2';
         $message   = $translator->translate('tr_meliscms_categories_err_category_save_unable');
         $errors    = [];
         $logTypeCode = "CMS_CATEGORY2_ADD";
@@ -471,6 +471,7 @@ class MelisCmsCategoryController extends AbstractActionController
                     'label' => $translator->translate('tr_meliscategory_categories_category_countries'),
                 ];
             }
+
             $passedCatId         = $postValues['cat_id'] ?? null;
             $dateActive          = str_replace(' ',null,str_replace('/','-',$postValues['cat_date_valid_start']) ?? null);
             $dateInactive        = str_replace(' ',null,str_replace('/','-',$postValues['cat_date_valid_end']) ?? null);
