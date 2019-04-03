@@ -33,8 +33,8 @@
     /* padding-bottom: 30px; */
 }
 
-.jstree-proton .jstree-search {
-    background: rgba(249, 124, 119, 0.42);
+#id_meliscms_catergories_list_categories_tree.jstree-proton .jstree-search {
+    background: rgb(247, 230, 230);
     box-shadow: inset 0 0 1px rgba(169, 68, 66, 0.38);
     border-radius: 0px;
     color:unset;
@@ -97,13 +97,13 @@
     font-size: 12px;
 }
 /*Node Selected/Highlight*/
-.jstree-proton .jstree-clicked {
+#id_meliscms_catergories_list_categories_tree .jstree-proton .jstree-clicked {
     background: #e61c23;
     box-shadow: inset 0 0 1px #e61c23;
     border-radius: 0px;
     padding-right: 10px;
 }
-.jstree-proton .jstree-hovered {
+#id_meliscms_catergories_list_categories_tree .jstree-proton .jstree-hovered {
     background: rgba(249, 124, 119, 0.42);
     box-shadow: inset 0 0 1px rgba(169, 68, 66, 0.38);
     color: #525151;
