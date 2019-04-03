@@ -452,7 +452,7 @@ class MelisCmsCategoryController extends AbstractActionController
         $textTitle = $translator->translate('tr_melis_cms_category_v2');
         $message   = $translator->translate('tr_meliscms_categories_err_category_save_unable');
         $errors    = [];
-        $logTypeCode = "CMS_CATEGORY2_SAVE";
+        $logTypeCode = "CMS_CATEGORY2_ADD";
         $id = null;
         $createdId = null;
         $passedCatId = null;
