@@ -101,6 +101,7 @@
     box-shadow: inset 0 0 1px #e61c23;
     border-radius: 0px;
     padding-right: 10px;
+    color:#fff !important;
 }
 #id_meliscms_catergories_list_categories_tree .jstree-proton .jstree-hovered {
     background: rgba(249, 124, 119, 0.42);
@@ -563,5 +564,5 @@
     color:#ff0000 !important;
 }
 .site-filtered  > .jstree-anchor{
-    color:#72af46 !important;
+    color:#72af46;
 }

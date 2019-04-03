@@ -488,7 +488,8 @@ $(function(){
     	var catv2ImageMelisKey = "meliscategory_mini_media_library";
         var categoryv2ModalUrl = '/melis/MelisCmsCategory2/MelisCmsCategoryMedia/render-mini-media-modal-container';
         var data = $(this).data();
-        melisCoreTool.pending($(this));
+        var element = $(this);
+        melisCoreTool.pending(element);
         melisHelper.createModal(catv2ImageZoneId,catv2ImageMelisKey,true,{
             fileType  : data.type,
             targetDiv : ".category-image-list",
@@ -496,6 +497,7 @@ $(function(){
 			catId : data.catId
         },categoryv2ModalUrl, function(){
             $(".category-add-image").removeAttr('disabled ');
+            melisCoreTool.pending(element);
 		});
 	});
 
@@ -504,13 +506,15 @@ $(function(){
         var catv2ImageMelisKey = "meliscategory_mini_media_library";
         var categoryv2ModalUrl = '/melis/MelisCmsCategory2/MelisCmsCategoryMedia/render-mini-media-modal-container';
         var data = $(this).data();
-        melisCoreTool.pending($(this));
+        var element = $(this);
+        melisCoreTool.pending(element);
         melisHelper.createModal(catv2ImageZoneId,catv2ImageMelisKey,true,{
             fileType  : data.type,
             targetDiv : ".category-file-list .list-group",
             currentPosition : data.currentposition
         },categoryv2ModalUrl, function(){
             $(".category-add-file").removeAttr('disabled ');
+            melisCoreTool.pending(element);
         });
 
     });
