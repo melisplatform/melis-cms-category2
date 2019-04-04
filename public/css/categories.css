@@ -82,6 +82,12 @@
         display: none;
     }
 }
+@media (max-width: 768px){
+    #id_melis_cms_categories_v2_list{
+        padding-top:48px;
+    }
+}
+
 
 /*** JSTree ***/
 
