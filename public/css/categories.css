@@ -85,6 +85,8 @@
 @media (max-width: 768px){
     #id_melis_cms_categories_v2_list{
         margin-top:48px;
+    }
+    #categoryTreeViewPanel {
         margin-bottom:30px;
     }
 }
