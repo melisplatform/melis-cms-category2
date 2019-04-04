@@ -84,7 +84,8 @@
 }
 @media (max-width: 768px){
     #id_melis_cms_categories_v2_list{
-        padding-top:48px;
+        margin-top:48px;
+        margin-bottom:30px;
     }
 }
 
