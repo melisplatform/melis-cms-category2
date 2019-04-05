@@ -633,12 +633,12 @@ window.enableDisableAddCategoryBtn = function(action){
 };
 window.boldCategoryParents = function(){
     var temp = $('ul.jstree-container-ul > li > a');
-    temp.each(function(){
-        var father = $(this);
-        var fatherIcon = father.data('fathericon');
-        var temp = father.find('i');
-        father.html(temp.get(0).outerHTML + '<strong>' + fatherIcon +' ' + father.text() + '</strong>');
-    });
+    // temp.each(function(){
+    //     var father = $(this);
+    //     var fatherIcon = father.data('fathericon');
+    //     var temp = father.find('i');
+    //     father.html(temp.get(0).outerHTML + '<strong>' + fatherIcon +' ' + father.text() + '</strong>');
+    // });
 };
 window.initCmsCategoryTreeView = function(){
 	
@@ -666,7 +666,7 @@ window.initCmsCategoryTreeView = function(){
 				var father = $(this);
 				var fatherIcon = father.data('fathericon');
 				var temp = father.find('i');
-				father.html(temp.get(0).outerHTML + '<b>' + fatherIcon +' ' + father.text() + '</b>');
+				father.html(temp.get(0).outerHTML + fatherIcon +' ' + father.text() );
 			})
 
 		})
@@ -676,7 +676,7 @@ window.initCmsCategoryTreeView = function(){
 				var father = $(this);
 				var fatherIcon = father.data('fathericon');
 				var temp = father.find('i');
-				father.html(temp.get(0).outerHTML + '<b>' + fatherIcon +' ' + father.text() + '</b>');
+				father.html(temp.get(0).outerHTML  + fatherIcon +' ' + father.text() );
 			});
             $("#categorySiteFilter").removeAttr('disabled');
             $("#categoryTreeViewSearchInput").removeAttr('disabled');
