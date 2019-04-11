@@ -1018,7 +1018,6 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
         $results = [];
         if (! empty($categoryData)) {
             foreach ($categoryData as $idx => $val) {
-                echo $val['cat2_id'];
                 if (in_array($siteIdFilter,$val['sites'])) {
                     // put a key that indicates linked to the site
                     $categoryData[$idx]['linked_to_site_bool'] = true;
