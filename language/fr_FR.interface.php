@@ -166,7 +166,7 @@ return [
     'tr_MelisCmsCategoryDisplayCategories_Name' => 'Affichage catégories',
     'tr_PluginSection_meliscmscategory2' => 'Melis Catégories',
     'tr_MelisCmsCategoryDisplayCategories_Description' => 'The category list plugin displays a list of the categories, based on the categories tool',
-    'tr_melis_cms_categories_affected_to_site_message' => 'Les catégories affectées à ce site sont affichées en %svert%s',
+    'tr_melis_cms_categories_affected_to_site_message' => 'Les catégories affectées à ce site sont affichées en vert',
 
 
 ];
