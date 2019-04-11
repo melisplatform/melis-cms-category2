@@ -283,7 +283,11 @@ $(function(){
             $("#collapseCategoryTreeViewBtn").attr("disabled","disabeld");
             $("#expandCategoryTreeViewBtn").attr("disabled","disabeld");
             $("#refreshCategoryTreeView").attr("disabled","disabeld");
-
+			if (value !== "") {
+				$(".info-site-filter").fadeIn('medium');
+			} else {
+                $(".info-site-filter").fadeOut('medium');
+			}
             cmsCategoryTree.jstree(true).settings.core.data.data = [{name : "langlocale", value: langLocale},{name:"siteId", value : value}];
             cmsCategoryTree.jstree(true).refresh();
 		}

@@ -578,6 +578,7 @@
 .site-filtered  > .jstree-anchor{
     color:#72af46;
 }
-#meliscms_categories_site_filter p {
+#meliscms_categories_site_filter .info-site-filter {
     font-size:12px;
+    display: none;
 }
