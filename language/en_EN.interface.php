@@ -152,7 +152,11 @@ return [
     'tr_meliscms_categories_upload_file_description' => 'Add a file to this category',
     'tr_meliscms_categories_upload_image_description' => 'Add a picture to this category',
     // media title
-    'tr_meliscms_categories_common_save' => 'Save'
-
+    'tr_meliscms_categories_common_save' => 'Save',
+    // plugins
+    'tr_MelisCmsCategoryDisplayCategories_Name' => 'Category display',
+    'tr_PluginSection_meliscmscategory2' => 'Melis Categories',
+    'tr_MelisCmsCategoryDisplayCategories_Description' => 'The latest news plugin displays a list of the latest news, based on the news tool.',
+    'tr_melis_cms_categories_affected_to_site_message' => 'Categories affected to this site are displayed in green',
 
 ];

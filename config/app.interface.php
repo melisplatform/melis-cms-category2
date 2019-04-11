@@ -45,13 +45,15 @@ return array(
                     '/MelisCmsCategory2/assets/jstree/dist/jstree.min.js',
                     '/MelisCmsCategory2/js/tools/category.tool.js',
                     '/MelisCmsCategory2/js/tools/documents.tool.js',
-                    '/MelisCmsCategory2/js/tools/documents.tool.js',
-                    '/MelisCmsCategory2/js/tools/media.library.js',
                     '/MelisCmsCategory2/js/tools/category.media.tool.js',
+                    // for selecting a category in a tree
+                    '/MelisCmsCategory2/plugins/js/category.plugin.select.js',
                 ],
                 'css' => [
                     '/MelisCmsCategory2/assets/jstree/dist/themes/proton/style.min.css',
-                    '/MelisCmsCategory2/css/categories.css'
+                    '/MelisCmsCategory2/css/categories.css',
+                     // for selecting a category in a tree
+                    '/MelisCmsCategory2/plugins/css/category.plugin.select.css',
                 ],
                 /**
                  * the "build" configuration compiles all assets into one file to make
@@ -517,93 +519,37 @@ return array(
                                 ],
                             )
                         ),
-//                        'meliscategory_documents_image_attachments_conf' => array(
-//                            'conf' => array(
-//                                'id' => 'id_meliscms_documents_image_attachments',
-//                                'melisKey' => 'meliscms_documents_image_attachments',
-//                                'name' => 'tr_meliscms_documents_image_attachments',
-//                            ),
-//                            'forward' => array(
-//                                'module' => 'MelisCmsCategory2',
-//                                'controller' => 'MelisCmsCategoryDocument',
-//                                'action' => 'render-document-image-plugin',
-//                            ),
-//                            'interface' => array(
-//                                'meliscms_documents_image_lists' => array(
-//                                    'conf' => array(
-//                                        'id' => 'id_meliscms_documents_image_lists',
-//                                        'melisKey' => 'meliscms_documents_image_lists',
-//                                        'name' => 'tr_meliscms_documents_image_lists',
-//                                    ),
-//                                    'forward' => array(
-//                                        'module' => 'MelisCmsCategory2',
-//                                        'controller' => 'MelisCmsCategoryDocument',
-//                                        'action' => 'render-document-image-lists',
-////                                 'jscallback' => 'initImageDocuments();',
-//                                    ),
-//                                ),
-//                            )
-//                        ),
-//                        'meliscategory_documents_file_attachments_conf' => array(
-//                            'conf' => array(
-//                                'id' => 'id_meliscommerce_documents_file_attachments',
-//                                'melisKey' => 'meliscommerce_documents_file_attachments',
-//                                'name' => 'tr_meliscommerce_documents_file_attachments',
-//                            ),
-//                            'forward' => array(
-//                                'module' => 'MelisCmsCategory2',
-//                                'controller' => 'MelisCmsCategoryDocument',
-//                                'action' => 'render-document-file-plugin',
-//                            ),
-//                            'interface' => array(
-//                                'meliscommerce_documents_file_attachments_lists' => array(
-//                                    'conf' => array(
-//                                        'id' => 'id_meliscommerce_documents_file_attachments_lists',
-//                                        'melisKey' => 'meliscommerce_documents_file_attachments_lists',
-//                                        'name' => 'tr_meliscommerce_documents_file_attachments_lists',
-//                                    ),
-//                                    'forward' => array(
-//                                        'module' => 'MelisCmsCategory2',
-//                                        'controller' => 'MelisCmsCategoryDocument',
-//                                        'action' => 'render-document-file-lists',
-//                                    ),
-//                                ),
-//                            )
-//                        ),
-
+                        'melis_cms_categories_category_select_modal' => [
+                            'conf' => [
+                                'id' => 'melis_cms_categories_category_select_modal',
+                                'melisKey' => 'melis_cms_categories_category_select_modal',
+                                'rightsDisplay' => 'none'
+                            ],
+                            'forward' => [
+                                'module' => 'MelisCmsCategory2',
+                                'controller' => 'MelisCmsCategorySelect',
+                                'action'     => 'render-category-select-modal',
+                                'jscallback' => '',
+                                'jsdatas' => array()
+                            ],
+                            'interface' => [
+                                'melis_cms_categories_category_select_modal_content' => [
+                                    'conf' => [
+                                        'id' => 'melis_cms_categories_category_select_modal_content',
+                                        'melisKey' => 'melis_cms_categories_category_select_modal_content',
+                                    ],
+                                    'forward' => [
+                                        'module' => 'MelisCmsCategory2',
+                                        'controller' => 'MelisCmsCategorySelect',
+                                        'action'     => 'render-category-select-modal-content',
+                                        'jscallback' => "initCategorySelectTree('.melis-cms-category-select-tree')",
+                                        'jsdatas' => array()
+                                    ],
+                                ]
+                            ]
+                        ]
                     )
                 )
-//                'melis_cms_category_v2_display' => [
-//                    'conf' => [
-//                        'id'       => 'melis_cms_category_v2_display',
-//                        'name'     => 'tr_melis_cms_category_v2_header_title',
-//                        'melisKey' => 'melis_cms_category_v2_display',
-//                        'icon'     => 'fa-th-list',
-//                        'rights_checkbox_disable' => true
-//                    ],
-//                    'forward' => [
-//                        'module'     => 'MelisCmsCategory2',
-//                        'controller' => 'MelisCmsCategory2',
-//                        'action'     => 'render-category-container'
-//                    ],
-//                    'interface' => [
-//                        'melis_cms_category_v2_display_header' => [
-//                            'conf' => [
-//                                'id'       => 'melis_cms_category_v2_display',
-//                                'name'     => 'tr_melis_cms_category_v2_header_title',
-//                                'melisKey' => 'melis_cms_category_v2_display',
-//                                'icon'     => 'fa-th-list',
-//                                'rights_checkbox_disable' => true
-//                            ],
-//                            'forward' => [
-//                                'module'     => 'MelisCmsCategory2',
-//                                'controller' => 'MelisCmsCategory2',
-//                                'action'     => 'render-category-container'
-//                            ],
-//                        ]
-//                    ]
-//                ]
-
             ]
         ]
     ]

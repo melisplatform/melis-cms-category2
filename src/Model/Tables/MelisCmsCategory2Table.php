@@ -99,7 +99,7 @@ class MelisCmsCategory2Table extends MelisGenericTable
         $cacheKey = 'category-' . $categoryId . '_getCategoryTranslationBylangId_' . $categoryId . '_' . $langId;
         $cacheConfig = 'commerce_memory_services';
         $melisEngineCacheSystem = $this->getServiceLocator()->get('MelisEngineCacheSystem');
-        $results = $melisEngineCacheSystem->getCacheByKey($cacheKey, $cacheConfig);
+        $results = null;#$melisEngineCacheSystem->getCacheByKey($cacheKey, $cacheConfig);
 
         if (!empty($results)) {
             return $results;
@@ -121,7 +121,7 @@ class MelisCmsCategory2Table extends MelisGenericTable
         $dataCategory = $this->tableGateway->selectWith($select);
 
         if ($this->cacheResults) {
-            $melisEngineCacheSystem->setCacheByKey($cacheKey, $cacheConfig, $dataCategory);
+            #$melisEngineCacheSystem->setCacheByKey($cacheKey, $cacheConfig, $dataCategory);
         }
 
         return $dataCategory;

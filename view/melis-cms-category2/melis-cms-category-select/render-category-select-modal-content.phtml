@@ -1,0 +1,39 @@
+<?php
+$id = '';
+if (!empty($this->zoneconfig['conf']['name']))
+    $name = $this->zoneconfig['conf']['name'];
+if (!empty($this->zoneconfig['conf']['id']))
+    $id = $this->zoneconfig['conf']['id'];
+
+$data_melisKey = $this->melisKey;
+$title = "Add category";
+?>
+<div class="modal-content" id="<?= $id; ?>"  data-melisKey="<?= $data_melisKey; ?>" style="position: relative;">
+    <div class="modal-body padding-none">
+        <div class="wizard">
+            <div class="widget widget-tabs widget-tabs-double widget-tabs-responsive margin-none border-none">
+                <div class="widget-head">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#<?php echo $this->zoneconfig['conf']['id'] ?>" class="glyphicons plus" data-toggle="tab" aria-expanded="true" ><i></i><?php echo $this->translate($title) ?></a></li>
+                    </ul>
+                </div>
+                <div class="widget-body innerAll inner-2x">
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="<?php echo $id ?>">
+                            <h5>Melis cms categories</h5>
+                            <div class="filter-area">
+
+                            </div>
+                            <div class="melis-cms-category-select-tree" data-langlocale="<?= $this->locale?>"></div>
+                            <div class="buttons">
+                                <button data-dismiss="modal" id="close-category-select-modal" class="btn btn-danger pull-left"><i class="fa fa-times"></i> <?= $this->translate('tr_meliscore_common_close')?></button>
+                                <button data-dismiss="modal" id="add-selected-category" class="btn btn-success pull-right" ><i class="fa fa-plus"></i> <?= $this->translate('tr_meliscore_common_add')?></button>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,12 @@
+.melis-cms-category-select {
+    max-width: 91%;
+    display: inline-block;
+}
+.melis-cms-category-select-button {
+    width: 9%;
+    vertical-align: top;
+}
+.melis-cms-category-select-tree {
+    margin:25px 0;
+    display: inline-block;
+}

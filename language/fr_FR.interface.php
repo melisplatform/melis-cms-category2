@@ -161,6 +161,12 @@ return [
     // image
     'tr_meliscms_categories_upload_file_description' => 'Ajoutez un fichier à cette catégorie',
     'tr_meliscms_categories_upload_image_description' => 'Ajoutez une image à cette catégorie',
-    'tr_meliscms_categories_common_save' => 'Enregistrer'
+    'tr_meliscms_categories_common_save' => 'Enregistrer',
+    // plugins
+    'tr_MelisCmsCategoryDisplayCategories_Name' => 'Affichage catégories',
+    'tr_PluginSection_meliscmscategory2' => 'Melis Catégories',
+    'tr_MelisCmsCategoryDisplayCategories_Description' => 'The category list plugin displays a list of the categories, based on the categories tool',
+    'tr_melis_cms_categories_affected_to_site_message' => 'Les catégories affectées à ce site sont affichées en vert',
+
 
 ];
