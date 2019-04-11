@@ -78,7 +78,6 @@ class MelisCmsCategoryDisplayCategoriesPlugin extends MelisTemplatingPlugin
         $pageSvc       = $this->getServiceLocator()->get('MelisEnginePage');
         $pageData      = $pageSvc->getDatasPage($pageId);
         $melisPageTree = $pageData->getMelisPageTree();
-        $locale        = $melisPageTree->lang_cms_locale;
         // put in the data for view
         $data['renderMode']  = $this->renderMode;
         $data['previewMode'] = $this->previewMode;
@@ -88,7 +87,7 @@ class MelisCmsCategoryDisplayCategoriesPlugin extends MelisTemplatingPlugin
             $categoryStart = $melisCmsCategorySvc->getCategoryDataById($categoryStart)->cat2_father_cat_id;
         }
         // category data
-        $categoryListData = $melisCmsCategorySvc->getCategoryTreeview($categoryStart,$locale,$siteId);
+        $categoryListData = $melisCmsCategorySvc->getCategoryTreeview($categoryStart,$langId,$siteId);
         // start only on what is set category_start
         if (! empty($data['category_start'])) {
             if (! empty($categoryListData)) {
