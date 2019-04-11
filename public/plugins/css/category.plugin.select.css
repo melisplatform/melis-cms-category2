@@ -7,6 +7,14 @@
     vertical-align: top;
 }
 .melis-cms-category-select-tree {
-    margin:25px 0;
+    margin:0 0 25px 0;
     display: inline-block;
+}
+#melis_cms_categories_category_select_modal_content .root-option {
+    margin-left:4px;
+}
+#melis_cms_categories_category_select_modal_content .root-option span {
+    display: inline-block;
+    vertical-align: top;
+    margin-left:5px;
 }

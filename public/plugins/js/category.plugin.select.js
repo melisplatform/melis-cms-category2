@@ -44,10 +44,12 @@ $(function(){
     body.on('click', categorySelectBtn, function(){
         var zoneId = "melis_cms_categories_category_select_modal_content";
         var melisKey = "melis_cms_categories_category_select_modal_content";
-        var params = {};
         var modalUrl = "/melis/MelisCmsCategory2/MelisCmsCategorySelect/render-category-select-modal";
         melisCmsCategorySelectField = $(categorySelectBtn).prev();
-        melisHelper.createModal(zoneId,melisKey,false,params,modalUrl);
+        var params = {};
+        melisHelper.createModal(zoneId,melisKey,false,params,modalUrl,function(){
+
+        });
     });
     //selecting a category
     body.on('click','#add-selected-category', function(){
@@ -55,10 +57,18 @@ $(function(){
         if (selectedCategory.length > 0 ) {
             var categoryid = selectedCategory.attr('id').split('_')[0];
             melisCmsCategorySelectField.val(categoryid);
+        } else {
+            melisCmsCategorySelectField.val($("#root-checkbox").val());
         }
     });
     body.on('dblclick','#melis_cms_categories_category_select_modal_content .jstree-node', function(){
        console.log('i am selected');
+    });
+    body.on('click', '#root-checkbox', function(){
+        $(".melis-cms-category-select-tree .jstree-clicked").removeClass('jstree-clicked');
+    });
+    body.on('click','#melis_cms_categories_category_select_modal_content .jstree-node', function(){
+        $("#root-checkbox").prop("checked", false);
     });
 
 });

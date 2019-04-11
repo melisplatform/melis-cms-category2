@@ -20,10 +20,11 @@ $title = "Add category";
                 <div class="widget-body innerAll inner-2x">
                     <div class="tab-content">
                         <div class="tab-pane active" id="<?php echo $id ?>">
-                            <h5>Melis cms categories</h5>
+                            <h5><?= $this->translate('tr_melis_cms_category_v2_header_title')?></h5>
                             <div class="filter-area">
 
                             </div>
+                            <label for="root-checkbox" class="root-option"><input id="root-checkbox" type="checkbox" value="0"/><span>root</span></label>
                             <div class="melis-cms-category-select-tree" data-langlocale="<?= $this->locale?>"></div>
                             <div class="buttons">
                                 <button data-dismiss="modal" id="close-category-select-modal" class="btn btn-danger pull-left"><i class="fa fa-times"></i> <?= $this->translate('tr_meliscore_common_close')?></button>
