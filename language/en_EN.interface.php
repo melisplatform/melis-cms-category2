@@ -157,6 +157,6 @@ return [
     'tr_MelisCmsCategoryDisplayCategories_Name' => 'Category display',
     'tr_PluginSection_meliscmscategory2' => 'Melis Categories',
     'tr_MelisCmsCategoryDisplayCategories_Description' => 'The latest news plugin displays a list of the latest news, based on the news tool.',
-    'tr_melis_cms_categories_affected_to_site_message' => 'Categories affected to this site are displayed in green',
+    'tr_melis_cms_categories_affected_to_site_message' => 'Categories affected to this site are displayed in %sgreen%s',
 
 ];
