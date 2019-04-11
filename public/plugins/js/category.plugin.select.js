@@ -4,8 +4,20 @@ window.initCategorySelectField  =  function(){
     var btn = "<a class='btn btn-default melis-cms-category-select-button'><i class='fa fa-sitemap'></i></a>";
     targetElement.after(btn);
 };
+
 window.initCategorySelectTree = function(targetElement){
-    $(targetElement).jstree({
+    $(targetElement).on('refresh.jstree', function (e, data) {
+        melisCoreTool.done('#categorySelectSiteFilter');
+        melisCoreTool.done('#clear-search');
+        melisCoreTool.done('#expand-tree');
+        melisCoreTool.done('#collapse-tree');
+        melisCoreTool.done('#refresh-tree');
+        melisCoreTool.done('#categorySelectSiteFilter');
+        melisCoreTool.done('#categorySelectLangFilter');
+        melisCoreTool.done('#category-select-search-tree');
+        $("#category-select-search-tree").trigger('keyup');
+
+    }).jstree({
         "core" : {
             "multiple": false,
             "check_callback": true,
@@ -70,5 +82,89 @@ $(function(){
     body.on('click','#melis_cms_categories_category_select_modal_content .jstree-node', function(){
         $("#root-checkbox").prop("checked", false);
     });
+    body.on("keydown", "#melis_cms_categories_category_select_modal_content #category-select-search-tree", function(e){
+        var searchString = $(this).val().trim();
+        $('.melis-cms-category-select-tree').jstree('search', searchString);
+        // setTimeout(function(){
+        //     if($(searchResult).find('.jstree-search').length == 0 && searchString != ''){
+        //         $("#searchNoResult").removeClass('hidden');
+        //         $("#searchNoResult").find("strong").text(searchString);
+        //     }else{
+        //         $("#searchNoResult").addClass('hidden');
+        //     }
+        // }, 5);
+    });
+    body.on("keyup", "#melis_cms_categories_category_select_modal_content #category-select-search-tree", function(e){
+        var searchString = $(this).val().trim();
+        $('.melis-cms-category-select-tree').jstree('search', searchString);
+        // setTimeout(function(){
+        //     if($(searchResult).find('.jstree-search').length == 0 && searchString != ''){
+        //         $("#searchNoResult").removeClass('hidden');
+        //         $("#searchNoResult").find("strong").text(searchString);
+        //     }else{
+        //         $("#searchNoResult").addClass('hidden');
+        //     }
+        // }, 5);
 
+    });
+    // Clear Input Search
+    body.on("click", "#clear-search", function(e){
+        categoryOpeningItemFlag = false;
+        $("#category-select-search-tree").val("");
+        $('.melis-cms-category-select-tree').jstree('search', '');
+        // $("#searchNoResult").addClass('hidden');
+    });
+    // Toggle Buttons for Category Tree View
+    body.on("click", "#expand-tree", function(e){
+        $(".melis-cms-category-select-tree").jstree("open_all");
+    });
+    body.on("click", "#collapse-tree", function(e){
+        $(".melis-cms-category-select-tree").jstree("close_all");
+    });
+    // Refrech Category Tree View
+    body.on("click", "#refresh-tree", function(e){
+        categoryOpeningItemFlag = false;
+        var catTree = $('.melis-cms-category-select-tree').jstree(true);
+        catTree.deselect_all();
+        catTree.refresh();
+        $("#category-select-search-tree").val("");
+        $('.melis-cms-category-select-tree').jstree('search', '');
+        // $("#searchNoResult").addClass('hidden');
+    });
+    // site filter
+    body.on('change',"#categorySelectSiteFilter", function(){
+        var value = this.value;
+        var cmsCategoryTree = $(".melis-cms-category-select-tree");
+        var langLocale = $("#categorySelectLangFilter").val();
+        if (typeof(cmsCategoryTree.jstree(true).settings) !== "undefined" ) {
+            melisCoreTool.pending('#categorySelectSiteFilter');
+            melisCoreTool.pending('#category-select-search-tree');
+            melisCoreTool.pending('#clear-search');
+            melisCoreTool.pending('#expand-tree');
+            melisCoreTool.pending('#collapse-tree');
+            melisCoreTool.pending('#refresh-tree');
+            melisCoreTool.pending('#categorySelectLangFilter');
+            melisCoreTool.pending(this);
+            cmsCategoryTree.jstree(true).settings.core.data.data = [{name : "langlocale", value: langLocale},{name:"siteId", value : value}];
+            cmsCategoryTree.jstree(true).refresh();
+        }
+    });
+    // site filter
+    body.on('change',"#categorySelectLangFilter", function(){
+        var value = this.value;
+        var cmsCategoryTree = $(".melis-cms-category-select-tree");
+        var langLocale = $("#categorySelectLangFilter").val();
+        if (typeof(cmsCategoryTree.jstree(true).settings) !== "undefined" ) {
+            melisCoreTool.pending('#categorySelectSiteFilter');
+            melisCoreTool.pending('#clear-search');
+            melisCoreTool.pending('#expand-tree');
+            melisCoreTool.pending('#category-select-search-tree');
+            melisCoreTool.pending('#collapse-tree');
+            melisCoreTool.pending('#refresh-tree');
+            melisCoreTool.pending('#categorySelectSiteFilter');
+            melisCoreTool.pending(this);
+            cmsCategoryTree.jstree(true).settings.core.data.data = [{name : "langlocale", value: langLocale},{name:"siteId", value : value}];
+            cmsCategoryTree.jstree(true).refresh();
+        }
+    });
 });

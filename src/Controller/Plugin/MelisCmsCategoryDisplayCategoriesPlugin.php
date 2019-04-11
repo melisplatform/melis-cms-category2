@@ -144,12 +144,16 @@ class MelisCmsCategoryDisplayCategoriesPlugin extends MelisTemplatingPlugin
                 $parameters = $request->getQuery()->toArray();
 
                 if (!isset($parameters['validate'])) {
+                    $formData = $this->getFormData();
+                    if ( empty($formData['category_start'])) {
+                        $formData['category_start'] = 0;
+                    }
 
-                    $form->setData($this->getFormData());
+                    $form->setData($formData);
                     $viewModelTab = new ViewModel();
                     $viewModelTab->setTemplate($config['tab_form_layout']);
                     $viewModelTab->modalForm    = $form;
-                    $viewModelTab->formData     = $this->getFormData();
+                    $viewModelTab->formData     = $formData;
 
                     $viewModelTab->labels       = [
                         'noPropsMsg' => $tool->translate('tr_meliscms_comments_plugin_no_properties'),

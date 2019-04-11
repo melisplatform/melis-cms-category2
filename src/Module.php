@@ -86,6 +86,8 @@ class Module
             include __DIR__ . '/../config/app.interface.php',
             include __DIR__ . '/../config/app.tools.php',
             include __DIR__ . '/../config/app.forms.php',
+            //forms
+            include __DIR__ . '/../config/plugins/form/plugin.form.php',
             // Tests
             include __DIR__ . '/../config/diagnostic.config.php',
             // Templating plugins

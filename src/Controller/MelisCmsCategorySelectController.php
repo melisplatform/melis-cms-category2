@@ -39,10 +39,32 @@ class MelisCmsCategorySelectController extends AbstractActionController
         // get current locale
         $container = new Container('meliscore');
         $locale = $container['melis-lang-locale'];
+        //get locale data
+        $langTable = $this->getServiceLocator()->get('MelisEngineTableCmsLang');
+        $localeData = $langTable->getEntryByField('lang_cms_locale',$locale)->current();
+        $currentLangId = $localeData->lang_cms_id ?? null;
+        // get all available lang
+        $langData = $langTable->fetchAll()->toArray();
+        //get site filter form
+        $melisConfig = $this->getServiceLocator()->get('MelisConfig');
+        $siteFilterForm = $this->createForm($melisConfig->getItem('/meliscategory/forms/meliscategory_category_select_site_filter_form'));
+        $langFilter = $siteFilterForm->get('categorySelectLangFilter');
+        $tmpdata = [];
+        if (! empty($langData)) {
+            foreach ($langData as $idx => $val) {
+                $tmpdata[$val['lang_cms_locale']] = $val['lang_cms_name'];
+            }
+        }
+        // set a new value options for lang filter
+        $langFilter->setValueOptions($tmpdata);
+        // set lang filter to current BO lang
+        $langFilter->setValue($currentLangId);
+
         //return variable in view
         $view->melisKey = $melisKey;
         $view->id       = $id;
         $view->locale   = $locale;
+        $view->siteFilterForm = $siteFilterForm;
         return $view;
     }
     private function getQueryParams()
@@ -50,5 +72,13 @@ class MelisCmsCategorySelectController extends AbstractActionController
         $request = $this->getRequest();
         $params = $request->getQuery();
         return $params;
+    }
+    private function createForm($formConfig)
+    {
+        $factory        = new \Zend\Form\Factory();
+        $formElements   = $this->getServiceLocator()->get('FormElementManager');
+        $factory->setFormElementManager($formElements);
+        $form = $factory->createForm($formConfig);
+        return $form;
     }
 }
