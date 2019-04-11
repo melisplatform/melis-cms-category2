@@ -88,6 +88,7 @@ class MelisCmsCategoryDisplayCategoriesPlugin extends MelisTemplatingPlugin
         }
         // category data
         $categoryListData = $melisCmsCategorySvc->getCategoryTreeview($categoryStart,$langId,$siteId);
+
         // start only on what is set category_start
         if (! empty($data['category_start'])) {
             if (! empty($categoryListData)) {
@@ -103,9 +104,10 @@ class MelisCmsCategoryDisplayCategoriesPlugin extends MelisTemplatingPlugin
         if (! empty($siteId)) {
             if (! empty($categoryListData)) {
                 $categoryListData = $melisCmsCategorySvc->putCategoriesIndicatorAssocSite($categoryListData,$siteId);
-
             }
         }
+        // find available language text if ever there is no translation of the current language
+        $categoryListData = $this->getCategoryAvailableText($categoryListData,$langId);
 
         /*
          * Passing variables to the view phtml file
@@ -309,5 +311,30 @@ class MelisCmsCategoryDisplayCategoriesPlugin extends MelisTemplatingPlugin
 
 
         return $xmlValueFormatted;
+    }
+    private function getCategoryAvailableText($categoryData,$currentLangId = null)
+    {
+        $cmsCategory = $this->getServiceLocator()->get('MelisCmsCategory2TransTable');
+        if (! empty($categoryData)) {
+            foreach ($categoryData as $idx => $val) {
+                $categoryId = $val['cat2_id'];
+                $categoryText = $val['text'] ?? null;
+                // if empty we look for other translations on the other language
+                if (empty($categoryText)) {
+                    $categoryTranslationsData = $cmsCategory->getCategoryTranslationsByCatId($categoryId)->toArray();
+                    foreach ($categoryTranslationsData as $key => $value) {
+                        if (! empty($value['catt2_name'])) {
+                            $categoryData[$idx]['text'] = $value['catt2_name'] . " ( " . $value['lang_cms_name'] . ")";
+                        }
+                    }
+                }
+                // for children recursive
+                if (isset($val['children']) && ! empty($val['children'])) {
+                    $categoryData[$idx]['children'] = $this->getCategoryAvailableText($val['children'],$currentLangId);
+                }
+            }
+        }
+
+        return $categoryData;
     }
 }

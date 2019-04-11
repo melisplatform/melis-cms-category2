@@ -38,7 +38,7 @@ class RenderRecTreeHelper extends AbstractHelper
         if (! empty($categoryData) && is_array($categoryData)) {
             foreach ($categoryData as $idx => $category) {
                 $categoryText = $category['text'] ?? null;
-                if (! empty($categoryText)) {
+
                     $status = $category['cat2_status'];
                     $class = "text-danger";
                     if ($status) {
@@ -54,7 +54,7 @@ class RenderRecTreeHelper extends AbstractHelper
                     }
                     echo "<li>";
                     echo "<span class='$classLinkedToSite'>$statusIndicator $category[cat2_id] - $categoryText</span>";
-                }
+
 
                 if (! empty($category['children'])){
                     echo "<ul>";
