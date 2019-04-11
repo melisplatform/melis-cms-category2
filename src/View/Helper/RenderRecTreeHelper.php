@@ -33,7 +33,7 @@ class RenderRecTreeHelper extends AbstractHelper
      * @param $categoryData
      * @return null
      */
-    private function constructTree($categoryData)
+    private function constructTree($categoryData,$ctr = 0)
     {
         if (! empty($categoryData) && is_array($categoryData)) {
             foreach ($categoryData as $idx => $category) {
@@ -49,6 +49,8 @@ class RenderRecTreeHelper extends AbstractHelper
                     $classLinkedToSite = null;
                     if (isset($category['linked_to_site_bool']) && $category['linked_to_site_bool']) {
                         $classLinkedToSite = 'text-green';
+                        $ctr ++ ;
+                        $categoryData['number_of_linked_to_site'] = $ctr;
                     }
                     echo "<li>";
                     echo "<span class='$classLinkedToSite'>$statusIndicator $category[cat2_id] - $categoryText</span>";
@@ -56,7 +58,7 @@ class RenderRecTreeHelper extends AbstractHelper
 
                 if (! empty($category['children'])){
                     echo "<ul>";
-                    echo $this->constructTree($category['children']);
+                    echo $this->constructTree($category['children'],$ctr);
                     echo "</ul>";
                 } else {
                     if (! empty($categoryText)) {

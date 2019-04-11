@@ -1021,14 +1021,15 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
                 if (in_array($siteIdFilter,$val['sites'])) {
                     // put a key that indicates linked to the site
                     $categoryData[$idx]['linked_to_site_bool'] = true;
-                    // recursive strategy
-                    if (isset($val['children']) && ! empty($val['children'])) {
-                        $categoryData[$idx]['children'] = $this->putCategoriesIndicatorAssocSite($val['children'],$siteIdFilter);
-                    }
+                }
+                // recursive strategy
+                if (isset($val['children']) && ! empty($val['children'])) {
+                    $categoryData[$idx]['children'] = $this->putCategoriesIndicatorAssocSite($val['children'],$siteIdFilter);
                 }
             }
         }
         $results = $categoryData;
+
         //implementation end
         $arrayParameters['results'] = $results;
         //service event end

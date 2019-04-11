@@ -104,6 +104,7 @@ class MelisCmsCategoryDisplayCategoriesPlugin extends MelisTemplatingPlugin
         if (! empty($siteId)) {
             if (! empty($categoryListData)) {
                 $categoryListData = $melisCmsCategorySvc->putCategoriesIndicatorAssocSite($categoryListData,$siteId);
+
             }
         }
 
