@@ -429,10 +429,10 @@ $(function(){
     	
 		var zoneId = 'id_meliscategory_categories_category';
 		var melisKey = 'meliscategory_categories_category';
-		
-		$("#"+zoneId).removeClass("hidden");
-		if ($(zoneId).length > 0) {
+
+		if ($("#"+zoneId).length > 0) {
             melisHelper.zoneReload(zoneId, melisKey, {catId : catId , forEditing : true});
+            $("#"+zoneId).removeClass("hidden");
         }
 
 		// Highlighting the node
