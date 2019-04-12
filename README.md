@@ -8,7 +8,7 @@ These instructions will get you a copy of the project up and running on your mac
 
 ### Prerequisites
 
-The following modules need to be installed to have Melis newsletter module run:
+The following modules need to be installed to have Melis cms category2 module run:
 * Melis core
 * Melis engine
 * Melis CMS
