@@ -41,8 +41,6 @@ class MelisCmsCategorySelectController extends AbstractActionController
         $locale = $container['melis-lang-locale'];
         //get locale data
         $langTable = $this->getServiceLocator()->get('MelisEngineTableCmsLang');
-        $localeData = $langTable->getEntryByField('lang_cms_locale',$locale)->current();
-        $currentLangId = $localeData->lang_cms_id ?? null;
         // get all available lang
         $langData = $langTable->fetchAll()->toArray();
         //get site filter form
@@ -58,7 +56,7 @@ class MelisCmsCategorySelectController extends AbstractActionController
         // set a new value options for lang filter
         $langFilter->setValueOptions($tmpdata);
         // set lang filter to current BO lang
-        $langFilter->setValue($currentLangId);
+        $langFilter->setValue($locale);
 
         //return variable in view
         $view->melisKey = $melisKey;
