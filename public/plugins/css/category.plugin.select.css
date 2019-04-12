@@ -39,3 +39,8 @@
     padding-right: 10px;
     color: #fff !important;
 }
+.info-select-category-site-filter {
+    margin-top: 4px !important;
+    font-size: 12px;
+    display:none;
+}

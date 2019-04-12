@@ -810,74 +810,6 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
         
         return $arrayParameters['results'];
     }
-
-    /**
-     * This method is retrieving the father category of the category ID
-     *
-     * @param int $categoryId, Id of the category
-     * @param int $langId,langauge id
-     *
-     * @return array
-     */
-    public function getCategoryBreadCrumb($categoryId, $langId = null)
-    {
-        // Event parameters prepare
-        $arrayParameters = $this->makeArrayFromParameters(__METHOD__, func_get_args());
-        $results = array();
-        
-        // Sending service start event
-        $arrayParameters = $this->sendEvent('meliscommerce_service_category_get_father_category_start', $arrayParameters);
-        
-        // Service implementation start
-        
-        /**
-         * Retreiving Category data using Category service
-         */
-        $categoryTbl = $this->getServiceLocator()->get('MelisEcomCategoryTable');
-        $categoryRes = $categoryTbl->getFatherCategory($arrayParameters['categoryId'], $arrayParameters['langId']);
-        
-        if($categoryRes->count()){
-            $results = $categoryRes->current();
-        }
-        // Service implementation end
-        
-        // Adding results to parameters for events treatment if needed
-        $arrayParameters['results'] = $results;
-        // Sending service end event
-        $arrayParameters = $this->sendEvent('meliscommerce_service_category_get_father_category_end', $arrayParameters);
-        
-        return $arrayParameters['results'];
-    }
-
-    /**
-     * This will get all children of a category
-     *
-     * @param int $fatherId
-     * @param int $langId
-     * @param boolean $valid
-     * @return mixed
-     */
-    public function getChildrenByLangId($fatherId, $langId, $valid, $order = false)
-    {
-        //prepare events parameters
-        $arrayParameters = $this->makeArrayFromParameters(__METHOD__, func_get_args());
-
-        //service event start
-        $arrayParameters = $this->sendEvent('meliscommerce_service_category_get_valid_children_by_lang_id', $arrayParameters);
-
-        //implementation start
-        $categoryTable = $this->getServiceLocator()->get('MelisEcomCategoryTable');
-        $categories = $categoryTable->getChildrenByLangId($arrayParameters['fatherId'], $arrayParameters['langId'], $arrayParameters['valid'], $arrayParameters['order']);
-
-        $results = $categories;
-        //implementation end
-
-        $arrayParameters['results'] = $results;
-        //service event end
-        $arrayParameters = $this->sendEvent('meliscommerce_service_category_get_valid_children_by_lang_id_end', $arrayParameters);
-
-        return $arrayParameters['results'];
-    }
     public function getFirstLevelCategoriesPerSite($siteId, $langId = 1)
     {
         $arrayParameters = $this->makeArrayFromParameters(__METHOD__, func_get_args());
@@ -898,6 +830,13 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
 
         return $arrayParameters['results'];
     }
+
+    /**
+     * Get all the categories
+     * @param $siteId
+     * @param int $langId
+     * @return mixed
+     */
     public function getCategoriesPerSite($siteId, $langId = 1)
     {
         $arrayParameters = $this->makeArrayFromParameters(__METHOD__, func_get_args());

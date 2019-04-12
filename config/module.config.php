@@ -64,7 +64,6 @@ return array(
         'invokables' => array(
             'MelisCmsCategory2\Controller\MelisCmsCategoryList' => 'MelisCmsCategory2\Controller\MelisCmsCategoryListController',
             'MelisCmsCategory2\Controller\MelisCmsCategory'     => 'MelisCmsCategory2\Controller\MelisCmsCategoryController',
-            'MelisCmsCategory2\Controller\MelisCmsCategoryDocument'     => 'MelisCmsCategory2\Controller\MelisCmsCategoryDocumentController',
             'MelisCmsCategory2\Controller\MelisCmsCategoryMedia'     => 'MelisCmsCategory2\Controller\MelisCmsCategoryMediaController',
             'MelisCmsCategory2\Controller\MelisCmsCategorySelect'     => 'MelisCmsCategory2\Controller\MelisCmsCategorySelectController',
         ),
@@ -72,6 +71,7 @@ return array(
     ),
     'controller_plugins' => array(
         'invokables' => array(
+            // templating plugins
             'MelisCmsCategoryDisplayCategoriesPlugin' => 'MelisCmsCategory2\Controller\Plugin\MelisCmsCategoryDisplayCategoriesPlugin',
         )
     ),

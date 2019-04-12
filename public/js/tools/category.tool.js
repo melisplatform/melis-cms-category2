@@ -502,7 +502,7 @@ $(function(){
 			catId : data.catId
         },categoryv2ModalUrl, function(){
             $(".category-add-image").removeAttr('disabled ');
-            melisCoreTool.pending(element);
+            melisCoreTool.done(element);
 		});
 	});
 

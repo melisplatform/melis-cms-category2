@@ -62,10 +62,13 @@ $title = "Add category";
                                                 echo $this->form()->closeTag($form);
                                             ?>
                                         </div>
+                                        <script>
+                                            $("#categorySelectSiteFilter").after("<p class=\"info-select-category-site-filter\"><?= $this->translate('tr_melis_cms_categories_affected_to_site_message')?></p>")
+                                        </script>
                                     </div>
                                 </div>
-                                <div class="searchNoResult hidden"></div>
                             </div>
+                            <div class="alert alert-warning hidden" id="searchSelectNoResult">"<strong></strong>" <?php echo $this->translate('tr_meliscmscategory_search_not_found')?></div>
                             <label for="root-checkbox" class="root-option"><input id="root-checkbox" type="checkbox" value="0"/><span>root</span></label>
                             <div class="melis-cms-category-select-tree" data-langlocale="<?= $this->locale?>"></div>
                             <div class="buttons">

@@ -84,27 +84,27 @@ $(function(){
     });
     body.on("keydown", "#melis_cms_categories_category_select_modal_content #category-select-search-tree", function(e){
         var searchString = $(this).val().trim();
-        $('.melis-cms-category-select-tree').jstree('search', searchString);
-        // setTimeout(function(){
-        //     if($(searchResult).find('.jstree-search').length == 0 && searchString != ''){
-        //         $("#searchNoResult").removeClass('hidden');
-        //         $("#searchNoResult").find("strong").text(searchString);
-        //     }else{
-        //         $("#searchNoResult").addClass('hidden');
-        //     }
-        // }, 5);
+        var searchResult = $('.melis-cms-category-select-tree').jstree('search', searchString);
+        setTimeout(function(){
+            if($(searchResult).find('.jstree-search').length == 0 && searchString != ''){
+                $("#searchSelectNoResult").removeClass('hidden');
+                $("#searchSelectNoResult").find("strong").text(searchString);
+            }else{
+                $("#searchSelectNoResult").addClass('hidden');
+            }
+        }, 5);
     });
     body.on("keyup", "#melis_cms_categories_category_select_modal_content #category-select-search-tree", function(e){
         var searchString = $(this).val().trim();
-        $('.melis-cms-category-select-tree').jstree('search', searchString);
-        // setTimeout(function(){
-        //     if($(searchResult).find('.jstree-search').length == 0 && searchString != ''){
-        //         $("#searchNoResult").removeClass('hidden');
-        //         $("#searchNoResult").find("strong").text(searchString);
-        //     }else{
-        //         $("#searchNoResult").addClass('hidden');
-        //     }
-        // }, 5);
+        var searchResult = $('.melis-cms-category-select-tree').jstree('search', searchString);
+        setTimeout(function(){
+            if($(searchResult).find('.jstree-search').length == 0 && searchString != ''){
+                $("#searchSelectNoResult").removeClass('hidden');
+                $("#searchSelectNoResult").find("strong").text(searchString);
+            }else{
+                $("#searchSelectNoResult").addClass('hidden');
+            }
+        }, 5);
 
     });
     // Clear Input Search
@@ -147,6 +147,11 @@ $(function(){
             melisCoreTool.pending(this);
             cmsCategoryTree.jstree(true).settings.core.data.data = [{name : "langlocale", value: langLocale},{name:"siteId", value : value}];
             cmsCategoryTree.jstree(true).refresh();
+        }
+        if (value !== "") {
+            $(".info-select-category-site-filter").fadeIn('medium');
+        } else {
+            $(".info-select-category-site-filter").fadeOut('medium');
         }
     });
     // site filter
