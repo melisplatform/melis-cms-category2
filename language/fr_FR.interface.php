@@ -167,6 +167,10 @@ return [
     'tr_PluginSection_meliscmscategory2' => 'Melis Catégories',
     'tr_MelisCmsCategoryDisplayCategories_Description' => 'The category list plugin displays a list of the categories, based on the categories tool',
     'tr_melis_cms_categories_affected_to_site_message' => 'Les catégories affectées à ce site sont affichées en vert',
+    'tr_meliscms_category_select_lang_filter tooltip' => 'Filtrez les catégories par langage',
+    'tr_meliscmsnews_plugin_filter_category_start' => 'Catégorie début',
+    'tr_meliscmsnews_plugin_filter_category_start tooltip' => 'Select a starting category',
+
 
 
 ];

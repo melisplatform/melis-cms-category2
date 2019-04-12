@@ -69,8 +69,8 @@ return array(
                                             'name' => 'category_start',
                                             'type' => 'MelisCmsCategorySelect',
                                             'options' => array(
-                                                'label' => 'Category start',
-                                                'tooltip' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus',
+                                                'label' => 'tr_meliscmsnews_plugin_filter_category_start',
+                                                'tooltip' => 'tr_meliscmsnews_plugin_filter_category_start tooltip',
                                             ),
                                             'attributes' => array(
                                                 'id' => 'category_start',
@@ -84,7 +84,7 @@ return array(
                                             'type' => 'MelisCmsPluginSiteSelect',
                                             'options' => array(
                                                 'label' => 'tr_meliscmsnews_plugin_filter_site',
-                                                'tooltip' => 'tr_meliscmsnews_plugin_filter_site tooltip',
+                                                'tooltip' => 'tr_meiscms_categories_fitler_site tooltip',
                                                 'empty_option' => 'tr_melis_Plugins_Choose',
                                                 'disable_inarray_validator' => true,
                                             ),
@@ -153,11 +153,6 @@ return array(
                 ),
              ),
         ),
-        //put a jscallback on plugin modal renderer
-        'meliscms_plugin_modal' => [
-            'forward' => [
-                'jscallback' => 'initCategorySelectField();',
-            ],
-        ],
+
      ),
 );

@@ -19,7 +19,7 @@ return [
                                 'name' => 'categorySelectSiteFilter',
                                 'type' => 'MelisCmsPluginSiteSelect',
                                 'options' => [
-                                    'label' => 'Sites',
+                                    'label' => 'tr_meliscmsnews_plugin_filter_site',
                                     'tooltip' => 'tr_meiscms_categories_fitler_site tooltip',
                                     'empty_option' => 'tr_meliscms_categories_site_filter_all'
                                 ],
@@ -35,7 +35,7 @@ return [
                                 'type' => 'MelisCmsLanguageSelect',
                                 'options' => [
                                     'label' => 'tr_meliscms_page_languages',
-                                    'tooltip' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, ',
+                                    'tooltip' => 'tr_meliscms_category_select_lang_filter tooltip',
                                 ],
                                 'attributes' => [
                                     'id' => 'categorySelectLangFilter',

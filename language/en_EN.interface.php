@@ -158,5 +158,8 @@ return [
     'tr_PluginSection_meliscmscategory2' => 'Melis Categories',
     'tr_MelisCmsCategoryDisplayCategories_Description' => 'The latest news plugin displays a list of the latest news, based on the news tool.',
     'tr_melis_cms_categories_affected_to_site_message' => 'Categories affected to this site are displayed in green',
+    'tr_meliscms_category_select_lang_filter tooltip' => 'Filter the categories by language',
+    'tr_meliscmsnews_plugin_filter_category_start' => 'Category start',
+    'tr_meliscmsnews_plugin_filter_category_start tooltip' => 'Select a starting category',
 
 ];
