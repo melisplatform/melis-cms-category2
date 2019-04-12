@@ -66,8 +66,8 @@ class MelisCmsCategoryController extends AbstractActionController
             $melisTool = $this->getServiceLocator()->get('MelisCoreTool');
             $langId = $melisTool->getCurrentLocaleID();
             
-            $melisComCategoryService = $this->getServiceLocator()->get('MelisCmsCategory2Service');
-            $categoryData = $melisComCategoryService->getCategoryById($catId);
+            $melisCmsCategoryService = $this->getServiceLocator()->get('MelisCmsCategory2Service');
+            $categoryData = $melisCmsCategoryService->getCategoryById($catId);
             $category = $categoryData->getTranslations();
             $catname = '';
             foreach ($category As $val)
@@ -122,8 +122,8 @@ class MelisCmsCategoryController extends AbstractActionController
 
         if (!empty($catId)){
             // Getting category Data and set as Data Attribute of the Save Button
-            $melisComCategoryService = $this->getServiceLocator()->get('MelisCmsCategory2Service');
-            $categoryData = $melisComCategoryService->getCategoryById($catId);
+            $melisCmsCategoryService = $this->getServiceLocator()->get('MelisCmsCategory2Service');
+            $categoryData = $melisCmsCategoryService->getCategoryById($catId);
             $category = $categoryData->getCategory();
             $catFatherId = $category->cat2_father_cat_id;
         }
@@ -220,8 +220,8 @@ class MelisCmsCategoryController extends AbstractActionController
         $currentLocale = $this->getRequest()->getQuery('currentLocale');
         if (!empty($catId)){
             // Getting Category Translations
-            $melisComCategoryService = $this->getServiceLocator()->get('MelisCmsCategory2Service');
-            $categoryData = $melisComCategoryService->getCategoryById($catId);
+            $melisCmsCategoryService = $this->getServiceLocator()->get('MelisCmsCategory2Service');
+            $categoryData = $melisCmsCategoryService->getCategoryById($catId);
             $view->categoryTrans = $categoryData->getTranslations();
         }
 
@@ -274,8 +274,8 @@ class MelisCmsCategoryController extends AbstractActionController
         if (!empty($catId)){
             $melisTranslation = $this->getServiceLocator()->get('MelisCoreTranslation');
 
-            $melisComCategoryService = $this->getServiceLocator()->get('MelisCmsCategory2Service');
-            $categoryData = $melisComCategoryService->getCategoryById($catId);
+            $melisCmsCategoryService = $this->getServiceLocator()->get('MelisCmsCategory2Service');
+            $categoryData = $melisCmsCategoryService->getCategoryById($catId);
             $category = $categoryData->getCategory();
             $validFrom = $category->cat2_date_valid_start ?? null;
             $validTo = $category->cat2_date_valid_end ?? null;
@@ -355,8 +355,8 @@ class MelisCmsCategoryController extends AbstractActionController
         $melisKey = $this->params()->fromRoute('melisKey', '');
 
         if (!empty($catId)){
-            $melisComCategoryService = $this->getServiceLocator()->get('MelisCmsCategory2Service');
-            $categoryData = $melisComCategoryService->getCategoryById($catId);
+            $melisCmsCategoryService = $this->getServiceLocator()->get('MelisCmsCategory2Service');
+            $categoryData = $melisCmsCategoryService->getCategoryById($catId);
             $category = $categoryData->getCategory();
             $view->categorystatus = ($category->cat2_status) ? 'checked' : '';
         }

@@ -203,7 +203,7 @@ class MelisCmsCategoryMediaService  extends MelisCoreGeneralService
 
     /**
      * Upload a file on a directory
-     * @param $file
+     * @param $file must came from post
      * @param $dirToSave
      * @param $fileName
      */
