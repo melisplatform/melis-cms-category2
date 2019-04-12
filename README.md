@@ -38,7 +38,7 @@ In case of problems, SQL files are located here:
 * Category Service
 * Category display plugin
  
-### Categries tool
+### Categories tool
 Provides the user with the basic actions in managing categories such as:
 * Creation
     - user can create a category
