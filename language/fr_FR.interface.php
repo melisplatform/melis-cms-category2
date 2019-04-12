@@ -169,7 +169,7 @@ return [
     'tr_melis_cms_categories_affected_to_site_message' => 'Les catégories affectées à ce site sont affichées en vert',
     'tr_meliscms_category_select_lang_filter tooltip' => 'Filtrez les catégories par langage',
     'tr_meliscmsnews_plugin_filter_category_start' => 'Catégorie début',
-    'tr_meliscmsnews_plugin_filter_category_start tooltip' => 'Select a starting category',
+    'tr_meliscmsnews_plugin_filter_category_start tooltip' => 'Set a starting category',
 
 
 
