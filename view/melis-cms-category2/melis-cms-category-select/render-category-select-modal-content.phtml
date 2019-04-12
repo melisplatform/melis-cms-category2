@@ -69,7 +69,7 @@ $title = "Add category";
                                 </div>
                             </div>
                             <div class="alert alert-warning hidden" id="searchSelectNoResult">"<strong></strong>" <?php echo $this->translate('tr_meliscmscategory_search_not_found')?></div>
-                            <label for="root-checkbox" class="root-option"><input id="root-checkbox" type="checkbox" value="0"/><span>root</span></label>
+                            <label for="root-checkbox" class="root-option"><input id="root-checkbox" type="checkbox" value="0"/><span><?= $this->translate('tr_meliscms_tree_sites_duplication_use_root')?></span></label>
                             <div class="melis-cms-category-select-tree" data-langlocale="<?= $this->locale?>"></div>
                             <div class="buttons">
                                 <button data-dismiss="modal" id="close-category-select-modal" class="btn btn-danger pull-left"><i class="fa fa-times"></i> <?= $this->translate('tr_meliscms_plugins_modal_cancel')?></button>
