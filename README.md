@@ -1,6 +1,7 @@
 # melis-cms-category2
 
-//
+This module brings a full category system to use in your websites and to administrate on the platform with fully multi lingual and multi sites functionalities
+
 ## Getting started
 
 These instructions will get you a copy of the project up and running on your machine.
@@ -42,7 +43,7 @@ Provides the user with the basic actions in managing categories such as:
 * Creation
     - user can create a category
 * Edition
-    - user can manage the category titles, contents, dates of validity, or attach post-specific media(images, files).
+    - user can manage the category titles, contents, dates of validity, or attach media(images, files).
 * Deletion
     - user can delete a category
 
@@ -74,28 +75,28 @@ $categoryData = $cmsCategorySvc->getCategoryById($categoryId,$langId,$onlyValid)
 - For a more detailed information on the methods, please visit the file.
 
 ### Category display categories plugin
-* Use the plugin in a hardcoded way , controller :
+* Use the plugin in a hardcoded way , in your controller :
    
-
-    /**
-     * Generating category display using MelisCmsCategoryDisplayCategoriesPlugin Plugin
-     * (hardcoded)
-     */
-    $categoryDisplay = $this->MelisCmsCategoryDisplayCategoriesPlugin();
-    $categoryDisplayParameters = array(
-        'template_path' => array('MelisCmsCategory2/default'),
-        // Site id of News
-        'site_id' => 1,
-        'category_start' => 1,
-    );
-    // add generated view to children views for displaying it in the contact view
-    $this->view->addChild($categoryDisplay->render($categoryDisplayParameters), 'categoryDisplay');
- 
-* view file :
-        
-        
-     <?php echo $this->categoryDisplay; ?>
-
+```
+/**
+* Generating category display using MelisCmsCategoryDisplayCategoriesPlugin Plugin
+* (hardcoded)
+*/
+$categoryDisplay = $this->MelisCmsCategoryDisplayCategoriesPlugin();
+$categoryDisplayParameters = array(
+    'template_path' => array('MelisCmsCategory2/default'),
+    // Site id of News
+    'site_id' => 1,
+    'category_start' => 1,
+);
+// add generated view to children views for displaying it in the contact view
+$this->view->addChild($categoryDisplay->render($categoryDisplayParameters), 'categoryDisplay');
+```
+* In your view file :
+    
+````
+<?php echo $this->categoryDisplay; ?>
+````
 
 ## Authors
 
