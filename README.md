@@ -69,7 +69,6 @@ $categoryData = $cmsCategorySvc->getCategoryById($categoryId,$langId,$onlyValid)
 
 * Common methods this service is used for are as follows:
     - Category creation/edition: saveCategory(...)
-    - Get subscriber details: getSubscriberDetails(...)
     - Category site creation/edition: saveCategorySites(...)
     - Category translation creation/edition: saveCategoryTexts(...)
 - For a more detailed information on the methods, please visit the file.
