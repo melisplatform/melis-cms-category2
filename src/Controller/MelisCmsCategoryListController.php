@@ -269,24 +269,24 @@ class MelisCmsCategoryListController extends AbstractActionController
                 }
             }
 
-            $categoryName = null;
-            $categoryTranslationsData = $this->getCategoryAvailableText($val['cat2_id']);
-            foreach ($categoryTranslationsData as $i5dx => $val2) {
-                if ($langId == $val2['lang_cms_id']) {
-                    $categoryName = $val2['catt2_name'] ?? null;
-                }
-
-            }
-            // if no name to the current langId find some language that has name
-            if (empty($categoryList[$key]['text'])) {
-                foreach ($categoryTranslationsData as $i5dx => $val2) {
-                    if ($langId != $val2['lang_cms_id']) {
-                        if (! empty($val2['catt2_name'])) {
-                            $categoryName = $val2['catt2_name'] . " (" . $val2['lang_cms_name'] . ")";
-                        }
-                    }
-                }
-            }
+//            $categoryName = null;
+//            $categoryTranslationsData = $this->getCategoryAvailableText($val['cat2_id']);
+//            foreach ($categoryTranslationsData as $i5dx => $val2) {
+//                if ($langId == $val2['lang_cms_id']) {
+//                    $categoryName = $val2['catt2_name'] ?? null;
+//                }
+//
+//            }
+//            // if no name to the current langId find some language that has name
+//            if (empty($categoryList[$key]['text'])) {
+//                foreach ($categoryTranslationsData as $i5dx => $val2) {
+//                    if ($langId != $val2['lang_cms_id']) {
+//                        if (! empty($val2['catt2_name'])) {
+//                            $categoryName = $val2['catt2_name'] . " (" . $val2['lang_cms_name'] . ")";
+//                        }
+//                    }
+//                }
+//            }
             // Setting the Status of Category
             if ($val['cat2_status'])
             {
@@ -300,7 +300,7 @@ class MelisCmsCategoryListController extends AbstractActionController
 
             $itemIcon = '';
             $categoryList[$key]['type'] = 'category';
-            $categoryList[$key]['text'] = $val['cat2_id'].' - '. $categoryName;
+            $categoryList[$key]['text'] = $val['cat2_id'].' - '. $val['text'];
 
             if (! empty($siteId)) {
                 $sitesData = $val['sites'];

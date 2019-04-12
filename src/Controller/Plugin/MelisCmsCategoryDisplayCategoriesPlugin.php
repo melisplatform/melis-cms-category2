@@ -67,6 +67,7 @@ class MelisCmsCategoryDisplayCategoriesPlugin extends MelisTemplatingPlugin
     {
         $container = new Container('melisplugins');
         $langId = $container['melis-plugins-lang-id'];
+
         $data          = $this->getFormData();
         $pluginId      = $data['id'];
         $categoryStart = $data['category_start'] ?? null;
@@ -87,7 +88,7 @@ class MelisCmsCategoryDisplayCategoriesPlugin extends MelisTemplatingPlugin
             $categoryStart = $melisCmsCategorySvc->getCategoryDataById($categoryStart)->cat2_father_cat_id;
         }
         // category data
-        $categoryListData = $melisCmsCategorySvc->getCategoryTreeview($categoryStart,$langId,$siteId);
+        $categoryListData = $melisCmsCategorySvc->getCategoryTreeview($categoryStart,$langId,null,$siteId);
 
         // start only on what is set category_start
         if (! empty($data['category_start'])) {
