@@ -47,8 +47,10 @@ Provides the user with the basic actions in managing categories such as:
 * Deletion
     - user can delete a category
 
-### MelisCmsCategory2 service  
+### MelisCmsCategory2 Services  
 
+MelisCmsCategory2 provides two services to be used in other modules.
+Find them in the folder : /melis-cms-category2/src/Service
 ```
 File: /melis-cms-category2/src/Service/MelisCsmCategoryService.php
 ```
