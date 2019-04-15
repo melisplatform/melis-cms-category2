@@ -156,7 +156,7 @@ return [
     // plugins
     'tr_MelisCmsCategoryDisplayCategories_Name' => 'Category display',
     'tr_PluginSection_meliscmscategory2' => 'Melis Categories',
-    'tr_MelisCmsCategoryDisplayCategories_Description' => 'The latest news plugin displays a list of the latest news, based on the news tool.',
+    'tr_MelisCmsCategoryDisplayCategories_Description' => 'The category list plugin displays a list of the categories, based on the categories tool',
     'tr_melis_cms_categories_affected_to_site_message' => 'Categories affected to this site are displayed in green',
     'tr_meliscms_category_select_lang_filter tooltip' => 'Filter the categories by language',
     'tr_meliscmsnews_plugin_filter_category_start' => 'Category start',
