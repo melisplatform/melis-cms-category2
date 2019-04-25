@@ -6,7 +6,7 @@
     $data_melisKey = 'data-melisKey="'.$this->melisKey.'"';
 ?>
 <div class="col-xs-12 col-lg-12" <?php echo $id.' '.$data_melisKey; ?> style="margin-top:20px;">
-    <h4> Filter by site</h4>
+    <h4><?= $this->translate('tr_meiscms_categories_fitler_site_heading');?></h4>
 	<?php
     	$form = $this->meliscategory_site_filer_form;
     	$form->prepare();
@@ -14,19 +14,5 @@
     	echo $this->melisFieldCollection($form);
     	echo $this->form()->closeTag();
     ?>
-    <script>
-
-        $body.find("#categorySiteFilter").select2({
-            allowClear:true,
-            width: '100%',
-            disabled: false,
-            language : {
-                noResults:function() {
-                    return translations.tr_meliscms_categories_filter_area_empty_site;
-                }
-            },
-            placeholder: translations.tr_meliscms_form_common_Choose,
-        });
-        $body.find("#categorySiteFilter").select2("val"," ");
-    </script>
+    <p class="info-site-filter "><?= $this->translate('tr_melis_cms_categories_affected_to_site_message')?></p>
 </div> 

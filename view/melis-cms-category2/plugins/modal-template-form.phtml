@@ -1,0 +1,12 @@
+<?php
+$form = $this->modalForm;
+
+$form->prepare();
+echo $this->form()->openTag($form);
+echo $this->melisFieldCollection($form);
+echo $this->form()->closeTag();
+
+?>
+<script>
+    initCategorySelectField();
+</script>

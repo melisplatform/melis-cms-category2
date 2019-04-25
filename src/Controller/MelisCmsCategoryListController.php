@@ -17,15 +17,29 @@ use Zend\Session\Container;
 
 class MelisCmsCategoryListController extends AbstractActionController
 {
+    const TOOL_INDEX = 'melis_cms_category_v2_config';
+    const TOOL_KEY = 'melis_cms_categories_v2_list';
     /**
      * Render Categories page
      * 
      * @return \Zend\View\Model\ViewModel
      */
-    public function renderCategoriesPageAction(){
+    public function renderCategoriesPageAction()
+    {
         $melisKey = $this->params()->fromRoute('melisKey', '');
+        $noAccessPrompt = '';
+        // Checks wether the user has access to this tools or not
+        $melisCoreRights = $this->getServiceLocator()->get('MelisCoreRights');
+        $translator = $this->getServiceLocator()->get('translator');
+        $access = true;
+        $parentConfigKey = 'melis_cms_category_v2';
+        if(!$melisCoreRights->canAccess($parentConfigKey) ) {
+            $access = false;
+        }
+
         $view = new ViewModel();
         $view->melisKey = $melisKey;
+        $view->access = $access;
         return $view;
     }
     
@@ -33,8 +47,15 @@ class MelisCmsCategoryListController extends AbstractActionController
      * Render Category List
      * @return \Zend\View\Model\ViewModel
      */
-    public function renderCategoryListAction(){
+    public function renderCategoryListAction()
+    {
+
     	$melisKey = $this->params()->fromRoute('melisKey', '');
+        $melisCoreRights = $this->getServiceLocator()->get('MelisCoreRights');
+
+//        $melisTool = $this->getServiceLocator()->get('MelisCoreTool');
+//        $melisTool->setMelisToolKey(self::TOOL_INDEX, self::TOOL_KEY);
+
     	$view = new ViewModel();
     	$view->melisKey = $melisKey;
     	return $view;
@@ -61,6 +82,7 @@ class MelisCmsCategoryListController extends AbstractActionController
     public function renderCategoryListHeaderAction(){
         $melisKey = $this->params()->fromRoute('melisKey', '');
         $view = new ViewModel();
+
         $view->melisKey = $melisKey;
         return $view;
     }
@@ -187,8 +209,8 @@ class MelisCmsCategoryListController extends AbstractActionController
      * 
      * @return \Zend\View\Model\JsonModel
      */
-    public function getCategoryTreeViewAction(){
-        
+    public function getCategoryTreeViewAction()
+    {
         $langLocale = $this->params()->fromQuery('langlocale');
         $selected = $this->params()->fromQuery('selected');
         $openStateParent = $this->params()->fromQuery('openStateParent');
@@ -210,48 +232,11 @@ class MelisCmsCategoryListController extends AbstractActionController
         // Getting Category Tree View form the Category Service
 
         $melisCmsCategorySvc = $this->getServiceLocator()->get('MelisCmsCategory2Service');
-        if (empty($siteId)) {
-            $categoryListData = $melisCmsCategorySvc->getCategoryTreeview(null, $langId,$siteId = null);
-            // Category Tree View Preparation
-            $categoryList = $this->prepareCategoryDataForTreeView($categoryListData, $selected, $openStateParent, $idAndNameOnly, $categoriesChecked, $currentLang->lang_cms_id);
-        } else {
-            $categoryList = $melisCmsCategorySvc->getFirstLevelCategoriesPerSite($siteId, $langId);
-            $tmpData = [];
-            if (! empty($categoryList)) {
-                foreach ($categoryList as $idx => $val) {
-                    $textColor = 'text-success';
-                    if (!$val['cat2_status']) {
-                        $textColor = "text-danger";
-                    }
-                    $categoryName = null;
-                    if (! empty($val['catt2_name'])) {
-                        $categoryName = $val['catt2_name'];
-                    } else {
-                        $categoryName = "<i>( no title )</i>";
-                    }
 
-                    $tmpData[] = [
-                        'cat2_id' => $val['cat2_id'],
-                        'text'    => $val['cat2_id'] . ' - ' . $categoryName,
-                        'textLang'=> false,
-                        'id'      => $val['cat2_id'] . '_categoryid',
-                        'icon'    => 'fa fa-circle ' . $textColor,
-                        "type"    => 'category',
-                        'a_attr'  => [
-                            'data-textlang' => false,
-                            'data-fathericon' => "<i class='fa fa-book'></i>",
-                            'data-fathercateid' => '-1'
-                        ],
-                        'state'   => [
-                            'opened' => false,
-                            'selected' => false,
-                            'checked' => false
-                        ]
-                    ];
-                }
-            }
-            $categoryList = $tmpData;
-        }
+        $categoryListData = $melisCmsCategorySvc->getCategoryTreeview(null, $langId,null,$siteId);
+
+        // Category Tree View Preparation
+        $categoryList = $this->prepareCategoryDataForTreeView($categoryListData, $selected, $openStateParent, $idAndNameOnly, $categoriesChecked, $currentLang->lang_cms_id,$siteId);
 
         return new JsonModel($categoryList);
     }
@@ -266,22 +251,15 @@ class MelisCmsCategoryListController extends AbstractActionController
      * 
      * @return int Array[]
      */
-    public function prepareCategoryDataForTreeView($categoryList, $selected = false, $openedStateParent = array(), $idAndNameOnly = false, $categoryChecked = array(), $langId = null){
-
+    public function prepareCategoryDataForTreeView($categoryList, $selected = false, $openedStateParent = array(), $idAndNameOnly = false, $categoryChecked = array(), $langId = null,$siteId = null)
+    {
         $translator = $this->getServiceLocator()->get('translator');
-        
-#        $melisEcomProductCategoryTable = $this->getServiceLocator()->get('MelisEcomProductCategoryTable');
         $categorySvc = $this->getServiceLocator()->get('MelisCmsCategory2Service');
+
         foreach ($categoryList As $key => $val)
         {
-            
-            #$numProducts = ($idAndNameOnly) ? '' : ' <span title="'.$translator->translate('tr_meliscommerce_categories_list_tree_view_product_num').'">(%s)</span>';
-           # $numProducts = sprintf($numProducts, $melisEcomProductCategoryTable->getTotalData('pcat_cat_id', $val['cat2_id']));
-            
-            $numProds = null;#$melisEcomProductCategoryTable->getTotalData('pcat_cat_id', $val['cat2_id']);
-            
+            $numProds = null;
             $categoryList[$key]['id'] = $val['cat2_id'].'_categoryId';
-            
             $checked = false;
             if (!empty($categoryChecked))
             {
@@ -290,7 +268,25 @@ class MelisCmsCategoryListController extends AbstractActionController
                     $checked = true;
                 }
             }
-            
+
+//            $categoryName = null;
+//            $categoryTranslationsData = $this->getCategoryAvailableText($val['cat2_id']);
+//            foreach ($categoryTranslationsData as $i5dx => $val2) {
+//                if ($langId == $val2['lang_cms_id']) {
+//                    $categoryName = $val2['catt2_name'] ?? null;
+//                }
+//
+//            }
+//            // if no name to the current langId find some language that has name
+//            if (empty($categoryList[$key]['text'])) {
+//                foreach ($categoryTranslationsData as $i5dx => $val2) {
+//                    if ($langId != $val2['lang_cms_id']) {
+//                        if (! empty($val2['catt2_name'])) {
+//                            $categoryName = $val2['catt2_name'] . " (" . $val2['lang_cms_name'] . ")";
+//                        }
+//                    }
+//                }
+//            }
             // Setting the Status of Category
             if ($val['cat2_status'])
             {
@@ -304,26 +300,16 @@ class MelisCmsCategoryListController extends AbstractActionController
 
             $itemIcon = '';
             $categoryList[$key]['type'] = 'category';
-            $text = null;
-            if ($categoryList[$key]['text'] == ''){
-                $text = '<i>( no title )</i>';
-            } else {
-                $text = $categoryList[$key]['text'];
-            }
-            if ($val['cat2_father_cat_id'] == -1)
-            {
-                $itemIcon = '<i class="fa fa-book"></i>';
-                $categoryList[$key]['type'] = 'category';
+            $categoryList[$key]['text'] = $val['cat2_id'].' - '. $val['text'];
 
-                $categoryList[$key]['text'] = $val['cat2_id'].' - '. $text;
-            }
-            else
-            {
-                $categoryList[$key]['text'] = $val['cat2_id'].' - '. $text;
+            if (! empty($siteId)) {
+                $sitesData = $val['sites'];
+                if (in_array($siteId,$sitesData)) {
+                    $categoryList[$key]['li_attr'] = [ 'class' => 'site-filtered'];
+                }
             }
 
             $categoryList[$key]['a_attr'] = array(
-                'data-textlang' => $categoryList[$key]['textLang'] ?? 'no translation',
                 'data-fathericon' => $itemIcon,
                 'data-fathercateid' => $val['cat2_father_cat_id'],
             );
@@ -350,17 +336,19 @@ class MelisCmsCategoryListController extends AbstractActionController
                     }
                 }
             }
-            
+            if (! empty($siteId)) {
+                $openState = true;
+            }
             // Node State
             $categoryList[$key]['state'] = array(
-                'opened' => $openState,
+                'opened' => true,
                 'selected' =>  $selectedState,
                 'checked' =>  $checked,
             );
             
             if (!empty($val['children']))
             {
-                $categoryList[$key]['children'] = $this->prepareCategoryDataForTreeView($categoryList[$key]['children'], $selected, $openedStateParent, $idAndNameOnly, $categoryChecked, $langId);
+                $categoryList[$key]['children'] = $this->prepareCategoryDataForTreeView($categoryList[$key]['children'], $selected, $openedStateParent, $idAndNameOnly, $categoryChecked, $langId, $siteId);
                 
                 /**
                  * Checking if the node children has a Open, Checked, Selected state
@@ -441,13 +429,13 @@ class MelisCmsCategoryListController extends AbstractActionController
      */
     public function udpateCategoryTreeViewAction($categoryData, $fatherId, $newParent){
         $datas = $categoryData;
-        $melisEcomCategoryTable = $this->getServiceLocator()->get('MelisEcomCategoryTable');
-        $catData = $melisEcomCategoryTable->getChildrenCategoriesOrderedByOrder($fatherId);
+        $cmsCategory = $this->getServiceLocator()->get('MelisCmsCategory2Table');
+        $catData = $cmsCategory->getChildrenCategoriesOrderedByOrder($fatherId);
         $catDatas = $catData->toArray();
         
         if (empty($catDatas)){
             // Parent Category doesn't have yet Children
-            $melisEcomCategoryTable->save($datas,$datas['cat2_id']);
+            $cmsCategory->save($datas,$datas['cat2_id']);
         }else{
             // Parent Category has already Children
             
@@ -460,20 +448,29 @@ class MelisCmsCategoryListController extends AbstractActionController
                     }
                 }
                 // Adding to specific index of the result array
-                array_splice($catDatas, ($categoryData['cat_order'] - 1), 0, array($categoryData));
+                array_splice($catDatas, ($categoryData['cat2_order'] - 1), 0, array($categoryData));
             }
             
             // Re-ordering the Children of the Parent Category
             $ctr = 1;
             foreach ($catDatas As $key => $val){
-                $catDatas[$key]['cat_order'] = $ctr++;
+                $catDatas[$key]['cat2_order'] = $ctr++;
             }
             
             // Updating  Children of the Parent Category one by one
             foreach ($catDatas As $key => $val){
-                $melisEcomCategoryTable->save($catDatas[$key],$catDatas[$key]['cat2_id']);
+                $cmsCategory->save($catDatas[$key],$catDatas[$key]['cat2_id']);
             }
         }
     }
+
+    private function getCategoryAvailableText($categoryId)
+    {
+        $cmsCategory = $this->getServiceLocator()->get('MelisCmsCategory2TransTable');
+        $categoryTranslationsData = $cmsCategory->getCategoryTranslationsByCatId($categoryId)->toArray();
+
+        return $categoryTranslationsData;
+    }
+
 
 }

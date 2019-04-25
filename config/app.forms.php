@@ -49,13 +49,14 @@ return array(
                             array(
                                 'spec' => array(
                                     'name' => 'catt2_name',
-                                    'type' => 'MelisText',
+                                    'type' => 'text',
                                     'options' => array(
                                         'label' => 'tr_meliscategory_categories_category_information_form_cat_name',
                                         'tooltip' => 'tr_meliscategory_categories_category_information_form_cat_name tooltip',
                                     ),
                                     'attributes' => array(
                                         'id' => 'catt_name',
+                                        'class' => 'form-control',
                                         'required' => true,
                                     )
                                 )
@@ -70,7 +71,7 @@ return array(
                                     ),
                                     'attributes' => array(
                                         'id' => 'catt_description',
-                                        'class' => 'form-control',
+                                        'class' => 'form-control editme',
                                         'rows' => 10,
                                         'style' => 'resize: vertical;'
                                     )
@@ -98,7 +99,7 @@ return array(
                             ),
                             'catt2_name' => array(
                                 'name'     => 'catt2_name',
-                                'required' => true,
+                                'required' => false,
                                 'validators' => array(
                                     array(
                                         'name' => 'NotEmpty',
@@ -108,16 +109,16 @@ return array(
                                             ),
                                         ),
                                     ),
-                                    array(
-                                        'name' => 'regex', false,
-                                        'options' => array(
-                                            'pattern' => '/^[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*$/',
-                                            'messages' => array(
-                                                \Zend\Validator\Regex::NOT_MATCH => 'tr_meliscmscategory_invalid_name'
-                                            ),
-                                            'encoding' => 'UTF-8',
-                                        ),
-                                    ),
+//                                    array(
+//                                        'name' => 'regex', false,
+//                                        'options' => array(
+//                                            'pattern' => '/^[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*$/',
+//                                            'messages' => array(
+//                                                \Zend\Validator\Regex::NOT_MATCH => 'tr_meliscmscategory_invalid_name'
+//                                            ),
+//                                            'encoding' => 'UTF-8',
+//                                        ),
+//                                    ),
                                 ),
                                 'filters'  => array(
                                     array('name' => 'StripTags'),
@@ -128,21 +129,21 @@ return array(
                                 'name'     => 'catt2_description',
                                 'required' => false,
                                 'validators' => array(
-                                    array(
-                                        'name' => 'regex', false,
-                                        'options' => array(
-                                            'pattern' => '/^[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*$/',
-                                            'messages' => array(
-                                                \Zend\Validator\Regex::NOT_MATCH => 'tr_meliscmscategory_invalid_description'
-                                            ),
-                                            'encoding' => 'UTF-8',
-                                        ),
-                                    ),
+//                                    array(
+//                                        'name' => 'regex', false,
+//                                        'options' => array(
+//                                            'pattern' => '/^[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*$/',
+//                                            'messages' => array(
+//                                                \Zend\Validator\Regex::NOT_MATCH => 'tr_meliscmscategory_invalid_description'
+//                                            ),
+//                                            'encoding' => 'UTF-8',
+//                                        ),
+//                                    ),
                                 ),
-                                'filters'  => array(
-                                    array('name' => 'StripTags'),
-                                    array('name' => 'StringTrim'),
-                                )
+//                                'filters'  => array(
+//                                    array('name' => 'StripTags'),
+//                                    array('name' => 'StringTrim'),
+//                                )
                             )
                         )
                     ),
@@ -198,7 +199,8 @@ return array(
                                     'type' => 'MelisCmsPluginSiteSelect',
                                     'options' => [
                                         'label' => 'Sites',
-                                        'tooltip' => 'Filtering the tree by site'
+                                        'tooltip' => 'tr_meiscms_categories_fitler_site tooltip',
+                                        'empty_option' => 'tr_meliscms_categories_site_filter_all'
                                     ],
                                     'attributes' => [
                                         'id' => 'categorySiteFilter',
@@ -221,6 +223,10 @@ return array(
                                 'spec' => array(
                                     'name' => 'media_upload',
                                     'type' => 'file',
+                                    'attributes' => [
+                                        'data-classButton' => 'btn btn-primary',
+                                        'class' => 'upload-category-media-image'
+                                    ]
                                 )
                             ),
                         )

@@ -8,12 +8,12 @@ if( melisCore.screenSize >= 768){
 			if (position.top < ($(window).scrollTop() - 10)) {
 				$("#id_meliscategory_categories_category").addClass("fix-cat");
 				$("#categoryInfoPanel").css("padding-top","66px");
-				$("#saveCategory").css("margin-top","10px");
+				$("#cmsSaveCategory").css("margin-top","10px");
 				$("#id_meliscategory_categories_category_header").width($("#id_meliscategory_categories_list").width());
 			} else {
 				$("#id_meliscategory_categories_category").removeClass("fix-cat");
 				$("#categoryInfoPanel").css("padding-top","0");
-				$("#saveCategory").css("margin-top","0");
+				$("#cmsSaveCategory").css("margin-top","0");
 			}
 		}		
 	});
@@ -23,13 +23,16 @@ if( melisCore.screenSize >= 768){
 var categoryOpeningItemFlag = true;
 $(function(){
 	var categoryBody = $("body");
-	$("body").on("click", ".addCategory", function(e){ 
+	$("body").on("click", "#id_meliscms_categories_list_header_add_category", function(e){
 		$("#categoryTreeViewPanel").collapse("hide");
 		var zoneId = 'id_meliscategory_categories_category';
 		var melisKey = 'meliscategory_categories_category';
 		var catTree = $('#categoryTreeView').jstree(true);
 		var catSelected = catTree.get_selected();
 		var catFatherId = '';
+		var catSiteSelected = $("#categorySiteFilter").val();
+		var currentLocale = $(".category-list-lang-dropdown").data('locale');
+
 		if(catSelected.length >= 1){
 			/**
 			 * using parseInt this will get only the
@@ -40,24 +43,24 @@ $(function(){
             catFatherId = -1;
 		}
 		$("#"+zoneId).removeClass("hidden");
-		melisHelper.zoneReload(zoneId, melisKey, {catId : 0, catFatherId: catFatherId});
+
+		melisHelper.zoneReload(zoneId, melisKey, {
+			catId : 0,
+			catFatherId: catFatherId,
+			selectedSiteId : catSiteSelected,
+			currentLocale : currentLocale,
+            forAdding : true
+		});
 	});
 	
-	$("body").on("click", ".addCatalog", function(e){ 
-		$("#categoryTreeViewPanel").collapse("hide");
-		var zoneId = 'id_meliscategory_categories_category';
-		var melisKey = 'meliscategory_categories_category';
-		$("#"+zoneId).removeClass("hidden");
-		melisHelper.zoneReload(zoneId, melisKey, {catId : 0, catFatherId: -1});
-	});
-	
-	$("body").on("click", "#saveCategory", function(){
+	$("body").on("click", "#cmsSaveCategory", function(){
 		
 		$(this).button("loading");
 		var catId = $(this).data('catid');
 		var dataString = new Array;
 		// Serialize Forms of Category Panel
-		dataString = $("#id_meliscategory_categories_category form").not(".category_"+catId+"_seo_form, .cat_trans_form").serializeArray()
+
+			dataString = $("#id_meliscategory_categories_category form").not(".cat_trans_form").serializeArray();
 		// Category Id
 		dataString.push({
 			name : "cat_id",
@@ -84,6 +87,7 @@ $(function(){
         $("#id_meliscategory_category_tab_media_content_left").find('input').each(function(index){
             dataString.push({
                 name: "cat2_media_image["+ index + "]",
+				order : index,
                 value : $(this).val()
             });
         });
@@ -91,6 +95,7 @@ $(function(){
         $("#id_meliscategory_category_tab_media_content_right").find('input').each(function(index){
             dataString.push({
                 name: "cat2_media_file["+ index+"]",
+				order: index,
                 value : $(this).val()
             });
         });
@@ -124,7 +129,7 @@ $(function(){
 	        cache		: false,
 		}).done(function(data) {
 			
-			$("#saveCategory").button("reset");
+			$("#cmsSaveCategory").button("reset");
 			
 			if(data.success) {
 				$("#categoryTreeViewPanel").collapse("show");
@@ -199,20 +204,41 @@ $(function(){
 				
 	    		var zoneId = 'id_meliscategory_categories_category';
 	    		var melisKey = 'meliscategory_categories_category';
-	    		melisHelper.zoneReload(zoneId, melisKey, {catId : selectedNode});
+	    		melisHelper.zoneReload(zoneId, melisKey, {catId : data.id});
 	    		
 	    		// Highlighting the node
 	    		$("#categoryTreeView #"+selectedNode+" div").first().addClass("jstree-wholerow-clicked");
 			}else{
+				var customErrorSite = data.customError.site;
+				if (customErrorSite === 1) {
+                    $('.category-sites-heading').css('color',"#ff0000");
+				} else {
+                    $('.category-sites-heading').removeAttr('style')
+				}
+				var customErrorTrans = data.customError.trans;
+				if (customErrorTrans === 1) {
+                    $("form input[name='catt2_name']").prev().addClass('text-red');
+				} else {
+                    $("form input[name='catt2_name']").prev().removeClass('text-red');
+				}
+                var customErrorDates = data.customError.datesValidation;
+                if (customErrorDates === 1) {
+                    $("input[name='cat_date_valid_start']").parent().prev().addClass('text-red');
+                    $("input[name='cat_date_valid_end']").parent().prev().addClass('text-red');
+                } else {
+                    $("input[name='cat_date_valid_start']").parent().prev().removeClass('text-red');
+                    $("input[name='cat_date_valid_end']").parent().prev().removeClass('text-red');
+                }
+
 				melisHelper.melisKoNotification(data.textTitle, data.textMessage, data.errors );
-				melisCoreTool.highlightErrors(data.success, data.errors, "id_meliscategory_categories_category_form_transalations");
+                melisCoreTool.highlightErrors(data.success, data.errors, "id_meliscategory_categories_category_form_transalations");
 			}
 			
 			melisCore.flashMessenger();
 			
 		}).fail(function(){
 			
-			$("#saveCategory").button("reset");
+			$("#cmsSaveCategory").button("reset");
 			
 			alert( translations.tr_meliscore_error_message);
 		});
@@ -223,6 +249,7 @@ $(function(){
 		categoryOpeningItemFlag = false;
 		var langText = $(this).text();
 		var langLocale = $(this).data('locale');
+
 		$('.cat-tree-view-languages span.filter-key').text(langText);
         // disable buttons
         $("#categoryTreeViewSearchInput").attr("disabled","disabeld");
@@ -234,6 +261,8 @@ $(function(){
         $("#refreshCategoryTreeView").attr("disabled","disabeld");
         var categorySiteFilter = $("#categorySiteFilter");
         categorySiteFilter.attr("disabled","disabeld");
+		//put attribute on button add category
+		$(".category-list-lang-dropdown").attr('data-locale',langLocale);
 
 		$("#categoryTreeView").data('langlocale',langLocale);
 		$("#categoryTreeView").jstree(true).settings.core.data.data = [{name : "langlocale", value: langLocale}, {name:"siteId", value : categorySiteFilter.val()}];
@@ -254,7 +283,11 @@ $(function(){
             $("#collapseCategoryTreeViewBtn").attr("disabled","disabeld");
             $("#expandCategoryTreeViewBtn").attr("disabled","disabeld");
             $("#refreshCategoryTreeView").attr("disabled","disabeld");
-
+			if (value !== "") {
+				$(".info-site-filter").fadeIn('medium');
+			} else {
+                $(".info-site-filter").fadeOut('medium');
+			}
             cmsCategoryTree.jstree(true).settings.core.data.data = [{name : "langlocale", value: langLocale},{name:"siteId", value : value}];
             cmsCategoryTree.jstree(true).refresh();
 		}
@@ -274,9 +307,26 @@ $(function(){
 			}else{
 				$("#searchNoResult").addClass('hidden');
 			}
-		}, 1500);
+		}, 5);
 		
 	});
+
+    $("body").on("keydown", "#categoryTreeViewSearchInput", function(e){
+        categoryOpeningItemFlag = false;
+
+        var searchString = $(this).val().trim();
+        var searchResult = $('#categoryTreeView').jstree('search', searchString);
+
+        setTimeout(function(){
+            if($(searchResult).find('.jstree-search').length == 0 && searchString != ''){
+                $("#searchNoResult").removeClass('hidden');
+                $("#searchNoResult").find("strong").text(searchString);
+            }else{
+                $("#searchNoResult").addClass('hidden');
+            }
+        }, 5);
+
+    });
 	
 	$("body").on('keyup keypress', '#categoryTreeViewSearchForm', function(e) {
 		var keyCode = e.keyCode || e.which;
@@ -292,6 +342,7 @@ $(function(){
 		var catTree = $('#categoryTreeView').jstree(true);
 		$("#categoryTreeViewSearchInput").val("");
 		$('#categoryTreeView').jstree('search', '');
+        $("#searchNoResult").addClass('hidden');
 	});
 	
 	// Toggle Buttons for Category Tree View
@@ -312,6 +363,7 @@ $(function(){
 		catTree.refresh();
 		$("#categoryTreeViewSearchInput").val("");
 		$('#categoryTreeView').jstree('search', '');
+        $("#searchNoResult").addClass('hidden');
 	});
 	
 	// Category Information Form Countries Custom Checkboxes
@@ -361,7 +413,7 @@ $(function(){
 		evt.stopPropagation();
 		evt.preventDefault();
 	});
-	
+
 	// Category Information Form Status, Switch Plugin
 	$("body").on("switch-change", "#cat_status", function(event, state) {
 		if(state.value == true){
@@ -381,11 +433,12 @@ $(function(){
     	
 		var zoneId = 'id_meliscategory_categories_category';
 		var melisKey = 'meliscategory_categories_category';
-		
-		$("#"+zoneId).removeClass("hidden");
-		
-		melisHelper.zoneReload(zoneId, melisKey, {catId : catId});
-		
+
+		if ($("#"+zoneId).length > 0) {
+            melisHelper.zoneReload(zoneId, melisKey, {catId : catId , forEditing : true});
+            $("#"+zoneId).removeClass("hidden");
+        }
+
 		// Highlighting the node
 		$("#categoryTreeView #"+catId+" div").first().addClass("jstree-wholerow-clicked");
 
@@ -440,13 +493,17 @@ $(function(){
     	var catv2ImageMelisKey = "meliscategory_mini_media_library";
         var categoryv2ModalUrl = '/melis/MelisCmsCategory2/MelisCmsCategoryMedia/render-mini-media-modal-container';
         var data = $(this).data();
-        melisCoreTool.pending($(this));
-		mediaDirectory.browse(categoryv2ModalUrl,catv2ImageZoneId,catv2ImageMelisKey,{
-				fileType  : data.type,
-				targetDiv : ".category-image-list",
-				currentPosition : data.currentposition
-			}, ".category-image-list")
-        $(".parent-file-list .back-drop").fadeIn("fast")
+        var element = $(this);
+        melisCoreTool.pending(element);
+        melisHelper.createModal(catv2ImageZoneId,catv2ImageMelisKey,true,{
+            fileType  : data.type,
+            targetDiv : ".category-image-list",
+            currentPosition : data.currentposition,
+			catId : data.catId
+        },categoryv2ModalUrl, function(){
+            $(".category-add-image").removeAttr('disabled ');
+            melisCoreTool.done(element);
+		});
 	});
 
     categoryBody.on('click', ".category-add-file" , function(){
@@ -454,54 +511,123 @@ $(function(){
         var catv2ImageMelisKey = "meliscategory_mini_media_library";
         var categoryv2ModalUrl = '/melis/MelisCmsCategory2/MelisCmsCategoryMedia/render-mini-media-modal-container';
         var data = $(this).data();
-        melisCoreTool.pending($(this));
-        mediaDirectory.browse(categoryv2ModalUrl,catv2ImageZoneId,catv2ImageMelisKey,{
-        	fileType  : data.type,
-			targetDiv : ".category-file-list .list-group",
+        var element = $(this);
+        melisCoreTool.pending(element);
+        melisHelper.createModal(catv2ImageZoneId,catv2ImageMelisKey,true,{
+            fileType  : data.type,
+            targetDiv : ".category-file-list .list-group",
             currentPosition : data.currentposition
-		},".category-file-list")
-		$(".parent-image-list .back-drop").fadeIn("fast");
+        },categoryv2ModalUrl, function(){
+            $(".category-add-file").removeAttr('disabled ');
+            melisCoreTool.pending(element);
+        });
+
     });
+    categoryBody.on('click', '#cmsSaveCategoryMedia', function(){
+    	$("#id_meliscategory_media_upload_form").trigger('submit');
+    	melisCoreTool.pending(this);
+	});
+    categoryBody.on('change','.upload-category-media-image', function(){
+        var input = this;
+        if (input.files && input.files[0]) {
+			var reader = new FileReader();
+			reader.onload = function (e) {
+				$('.categoryImgDocThumbnail').attr('src', e.target.result);
+			};
+			reader.readAsDataURL(input.files[0]);
+        }
+	});
+
     categoryBody.on('submit',"#id_meliscategory_media_upload_form",function(e) {
         e.preventDefault();
         var formData = new FormData(this);
-        melisCoreTool.pending(this);
-        var dataElem = $(".category-add-image").data() ;
+        var fileUploadValue = $("#id_meliscategory_media_upload_form input[type='file']").val();
+        var saveCategoryBtn = $("#cmsSaveCategoryMedia");
+        var fileType = saveCategoryBtn.data('fileType');
+        var categoryId = $(".category-add-image").data('catId');
+        // append categoryId
+        formData.append('catId',categoryId);
+        // append file Type
+        formData.append('fileType',fileType);
 
-        $.ajax({
-            type: 'POST',
-            url: 'melis/MelisCmsCategory2/MelisCmsCategoryMedia/uploadMedia',
-            data: formData,
-            dataType: 'json',
-            processData: false,
-            cache: false,
-            contentType: false,
-            encode: true
-        }).success(function(data) {
-        	if (data.success === true) {
-        		melisHelper.zoneReload("id_meliscategory_mini_media_library","meliscategory_mini_media_library",{fileType:dataElem.type});
-			}
-		});
+        if (fileUploadValue !== "") {
+            $.ajax({
+                type: 'POST',
+                url: '/melis/MelisCmsCategory2/MelisCmsCategoryMedia/uploadMedia',
+                data: formData,
+                dataType: 'json',
+                processData: false,
+                cache: false,
+                contentType: false,
+                encode: true
+            }).success(function(data) {
+                if (data.success === true) {
+                    $("#closeMedialibrary").trigger('click');
+                    var tmpZoneId 	= 'id_meliscategory_category_tab_media_content_right_file';
+                    var tmpMeliskey = 'meliscategory_category_tab_media_content_right_file';
+					if (fileType === 'image') {
+						tmpZoneId   = 'id_meliscategory_category_tab_media_content_left_image_list';
+						tmpMeliskey = 'meliscategory_category_tab_media_content_left_image_list';
+					}
+                    melisHelper.zoneReload(tmpZoneId, tmpMeliskey,{ catId:data.id });
+
+                    if (data.tmpUpload === false) {
+                        melisHelper.melisOkNotification(data.textTitle, data.textMessage);
+                        melisCore.flashMessenger();
+                    }
+                } else {
+                    melisHelper.melisKoNotification(data.textTitle, data.textMessage, data.errors);
+                    saveCategoryBtn.removeAttr('disabled');
+				}
+
+            }).fail(function(){
+                saveCategoryBtn.removeAttr('disabled');
+			})
+		} else {
+            saveCategoryBtn.removeAttr('disabled');
+			var message = "Please upload a file";
+			var heading = translations.tr_melis_cms_category_v2;
+			melisHelper.melisKoNotification(heading,message);
+		}
     });
 
-    categoryBody.on('click', ".category-image-list .removeImage", function(){
-    	var parentDiv = $(this).parent().parent();
-        parentDiv.remove();
-	});
-    categoryBody.on('click', ".category-file .remove-file", function(){
-        var parentDiv = $(this).parent();
-        parentDiv.remove();
-    });
 	categoryBody.on('click','#closeMedialibrary', function(){
-		console.log($(this).data());
-
 		var parentDiv = $(this).data('targetRemoveBackdrop');
 		$(parentDiv + " .back-drop").fadeOut('fast');
+		$("body").css("overflow", "auto");
 	});
-});
 
+	categoryBody.on('click', '#categoryScrollToTop' , function(){
+        $("html, body").animate({scrollTop : 10}, 500);
+	});
+    //Hook up ajax call
+    $.ajaxPrefilter("json script", function( options , originalOptions ,jqXHR ) {
+        //specifiy which ajax you want to call
+        if(options.url === '/melis/MelisCore/ToolUser/updateUser'){
+            jqXHR.done(function(){
+            	var categoryInterface = $("#id_melis_cms_categories_v2").length;
+            	if (categoryInterface > 0){
+                    // reload the category interface whenever the user update his/her info or rights
+                    melisHelper.zoneReload('id_melis_cms_categories_v2','melis_cms_categories_v2');
+				}
+            });
+        }
+    });
+	categoryBody.on('click', '#id_meliscms_catergories_list_categories_tree' , function(){
+        $('#categoryTreeView').jstree("deselect_all");
+	});
+
+});
+window.initButtonScrollToTop = function(){
+    var heightContent = $("#id_meliscategory_category_tab_media").height();
+    if (heightContent < 628) {
+        $("#categoryScrollToTop").fadeOut();
+    } else {
+        $("#categoryScrollToTop").fadeIn();
+    }
+};
 window.enableDisableAddCategoryBtn = function(action){
-	var addCategory = $('.addCategory');
+	var addCategory = $('#id_meliscms_categories_list_header_add_category');
 	if(action == 'enable'){
 		addCategory.attr('disabled', false);
 		addCategory.attr('title', null);
@@ -509,8 +635,16 @@ window.enableDisableAddCategoryBtn = function(action){
 		addCategory.attr('disabled', true);
 		addCategory.attr('title', translations.tr_meliscategory_categories_category_no_selected_catalog_category);
 	}
-}
-
+};
+window.boldCategoryParents = function(){
+    var temp = $('ul.jstree-container-ul > li > a');
+    // temp.each(function(){
+    //     var father = $(this);
+    //     var fatherIcon = father.data('fathericon');
+    //     var temp = father.find('i');
+    //     father.html(temp.get(0).outerHTML + '<strong>' + fatherIcon +' ' + father.text() + '</strong>');
+    // });
+};
 window.initCmsCategoryTreeView = function(){
 	
 	$("body").on("click", "#categoryTreeView", function(evt){
@@ -537,7 +671,7 @@ window.initCmsCategoryTreeView = function(){
 				var father = $(this);
 				var fatherIcon = father.data('fathericon');
 				var temp = father.find('i');
-				father.html(temp.get(0).outerHTML + '<b>' + fatherIcon +' ' + father.text() + '</b>');
+				father.html(temp.get(0).outerHTML + fatherIcon +' ' + father.text() );
 			})
 
 		})
@@ -547,16 +681,22 @@ window.initCmsCategoryTreeView = function(){
 				var father = $(this);
 				var fatherIcon = father.data('fathericon');
 				var temp = father.find('i');
-				father.html(temp.get(0).outerHTML + '<b>' + fatherIcon +' ' + father.text() + '</b>');
+				father.html(temp.get(0).outerHTML  + fatherIcon +' ' + father.text() );
 			});
             $("#categorySiteFilter").removeAttr('disabled');
             $("#categoryTreeViewSearchInput").removeAttr('disabled');
             $(".category-list-lang-dropdown").removeAttr('disabled');
-            $(".category-list-lang-dropdown").css("cursor","default	");
+            $(".category-list-lang-dropdown").css("cursor","pointer");
             $("#clearSearchInputBtn").removeAttr('disabled');
             $("#collapseCategoryTreeViewBtn").removeAttr('disabled');
             $("#expandCategoryTreeViewBtn").removeAttr('disabled');
             $("#refreshCategoryTreeView").removeAttr('disabled');
+            if ($(".jstree-container-ul").children("li").length ===  0) {
+                $("#noResultData").fadeIn("fast").css("display","inline-block");
+			} else {
+                $("#noResultData").fadeOut("fast");
+			}
+            $("#categoryTreeViewSearchInput").trigger('keydown');
 
 		})
 		.on('ready.jstree', function (e, data) {
@@ -590,20 +730,20 @@ window.initCmsCategoryTreeView = function(){
 				
 				var textlang = $('#'+v+'_anchor').data('textlang');
 				var products = $('#'+v+'_anchor').data('numprods');
-			//	var spanHtml = '<span title="' + translations.tr_meliscategory_categories_list_tree_view_product_num + '">('+ products +')</span>';
+				var spanHtml = null;
 			// 	var seoId = $('#'+v+'_anchor').data('seopage');
 			// 	if(seoId){
 			// 		spanHtml = spanHtml + ' - <span class="fa fa-file-o"></span> ' +  seoId ;
 			// 	}
 				//
-				// if(textlang){
-				// 	spanHtml = ' ' + textlang + spanHtml;
-				// }
+				if(textlang){
+					spanHtml = ' ' + textlang ;
+				}
 				
-				// if(!$('#'+v+'_anchor').hasClass('updatedText')){
-				// 	$('#'+v+'_anchor').append(spanHtml);
-				// 	$('#'+v+'_anchor').addClass('updatedText');
-				// }
+				if(!$('#'+v+'_anchor').hasClass('updatedText')){
+					$('#'+v+'_anchor').append(spanHtml);
+					$('#'+v+'_anchor').addClass('updatedText');
+				}
 				
 			});
 		 })
@@ -624,17 +764,17 @@ window.initCmsCategoryTreeView = function(){
 	        var dataString = new Array();
 			// get data from input
 	        dataString.push({
-				name: "cat_id",
+				name: "cat2_id",
 				value: parseInt(categoryId, 10)
 			});
 			// get date data from param
 			dataString.push({
-				name: "cat_father_cat_id",
+				name: "cat2_father_cat_id",
 				value: parseInt(newParentId, 10)
 			});
 			// get date data from param
 			dataString.push({
-				name: "cat_order",
+				name: "cat2_order",
 				value: categoryNewPosition
 			});
 			// get date data from param
@@ -644,7 +784,8 @@ window.initCmsCategoryTreeView = function(){
 			});
 			
 			dataString = $.param(dataString);
-			
+			// make parents font weight to bold
+            boldCategoryParents();
 	        $.ajax({
 		        type        : "POST", 
 		        url         : "/melis/MelisCmsCategory2/MelisCmsCategoryList/saveCategoryTreeView",
@@ -654,10 +795,10 @@ window.initCmsCategoryTreeView = function(){
 			}).done(function(data) {
 				
 				if(data.success) {
-					$currentCategoryId = $("#saveCategory").data("catid");
+					$currentCategoryId = $("#cmsSaveCategory").data("catid");
 					
 					if($currentCategoryId == categoryId){
-						$("#saveCategory").data("catfatherid", newParentId);
+						$("#cmsSaveCategory").data("catfatherid", newParentId);
 					}
 				}else{
 					alert( translations.tr_meliscore_error_message );
@@ -675,77 +816,74 @@ window.initCmsCategoryTreeView = function(){
 		                "label" : translations.tr_meliscategory_categories_common_btn_add,
 		                "icon"  : "fa fa-plus",
 		                "action" : function (obj) {
-		                	
+
 		                	var parentId = parseInt(node.id);
 		                	var position = node.children.length + 1;
-		                	
+
 		                	$("#categoryTreeViewPanel").collapse("hide");
-		                	
+
 		                	var zoneId = "id_meliscategory_categories_category";
 		                	var melisKey = "meliscategory_categories_category";
-		                	
-		            		melisHelper.zoneReload(zoneId, melisKey,{catId:0, catFatherId:parentId, catOrder:position});
-		                	
+                            var catSiteSelected = $("#categorySiteFilter").val();
+                            $("#"+zoneId).removeClass("hidden");
+		            		melisHelper.zoneReload(zoneId, melisKey,{catId:0, catFatherId:parentId, catOrder:position, forAdding : true,selectedSiteId : catSiteSelected});
+
 		                }
 		            },
 		            "Update" : {
 		                "label" : translations.tr_meliscategory_categories_common_btn_update,
 		                "icon"  : "fa fa-edit",
 		                "action" : function (obj) {
-		                	
+
 		            		var catId = parseInt(node.id , 10);
-		                	
+
 		            		var zoneId = 'id_meliscategory_categories_category';
 		            		var melisKey = 'meliscategory_categories_category';
-		            		
-		            		melisHelper.zoneReload(zoneId, melisKey, {catId : catId});
-		            		
+                            $("#"+zoneId).removeClass("hidden");
+		            		melisHelper.zoneReload(zoneId, melisKey, {catId : catId, forEditing : true});
+
 		            		$("#categoryTreeViewPanel").collapse("hide");
-		                	
+
 		                }
 		            },
 		            "Delete" : {
-		                "label" : translations.tr_meliscategory_categories_common_btn_delete,
+		                "label" : translations.tr_meliscore_common_delete,
 		                "icon"  : "fa fa-trash-o",
 		                "action" : function (obj) {
-		                		
+
 		                	var dataString = new Array();
-		                	
+
 		                	// New category Parent ID
 		        	        // if value is '#', the Category is on the root of the list
 		        	        var parentId = (node.parent=='#') ? '-1' : parseInt(node.parent, 10);
-		        	        
+		        	        var originalParentId = "";
 		        	        dataString.push({
 		        				name: "cat_father_cat_id",
 		        				value: parentId
 		        			});
-		                	
+
 		                	var cattId = parseInt(node.id);
-		                	
+
 		                	dataString.push({
 		        				name: "cat_id",
 		        				value: cattId
 		        			});
-		                	
+
 		                	dataString = $.param(dataString);
-		                	
-		                	var deleteTitle = translations.tr_meliscategory_categories_category_delete;
-		                	var deleteMessage = translations.tr_meliscategory_categories_category_delete_confirm_msg;
-		                	if(parentId == '-1'){
-		                		deleteTitle = translations.tr_meliscategory_categories_catalog_delete;
-			                	deleteMessage = translations.tr_meliscategory_categories_catalog_delete_confirm_msg;
-		                	}
-		                	
+
+		                	var deleteTitle = translations.tr_meliscore_common_delete;
+		                	var deleteMessage = translations.tr_meliscms_categories_delete_category_msg;
+
 		                	// deletion confirmation
 		            		melisCoreTool.confirm(
-		            		translations.tr_meliscategory_categories_common_label_yes,
-		            		translations.tr_meliscategory_categories_common_label_no,
-		            		deleteTitle, 
-		            		deleteMessage, 
+		            		translations.tr_meliscore_common_yes,
+		            		translations.tr_meliscore_common_no,
+		            		deleteTitle,
+		            		deleteMessage,
 		            		function() {
 		            			$.ajax({
-			        		        type        : "POST", 
-			        		        url         : "/melis/MelisCommerce/MelisComCategory/deleteCategory",
+			        		        type        : "POST",
+			        		        url         : "/melis/MelisCmsCategory2/MelisCmsCategory/deleteCategory",
 			        		        data		: dataString,
 			        		        dataType    : "json",
 			        		        encode		: true
@@ -753,16 +891,17 @@ window.initCmsCategoryTreeView = function(){
 			        				if(data.success) {
 			        					var catTree = $('#categoryTreeView').jstree(true);
 			        					catTree.delete_node(cattId+'_categoryId_anchor');
-			        	            	
-			        	            	if($("#saveCategory").data("catid")==cattId){
+
+			        	            	if($("#cmsSaveCategory").data("catid")==cattId){
 			        	            		var zoneId = "id_meliscategory_categories_category";
 			    		                	var melisKey = "meliscategory_categories_category";
-			    		                	
+
 			    		            		melisHelper.zoneReload(zoneId, melisKey);
 			        	            	}
-			        	            	
+
 			        	            	melisCore.flashMessenger();
 			        					melisHelper.melisOkNotification(data.textTitle, data.textMessage);
+                                        boldCategoryParents();
 			        				}else{
 			        					melisHelper.melisKoNotification(data.textTitle, data.textMessage, data.errors);
 			        				}
@@ -791,7 +930,7 @@ window.initCmsCategoryTreeView = function(){
 	    },
 	    "types" : {
             "#" : {
-                "valid_children" : ["catalog"]
+                "valid_children" : ["category"]
             },
             "catalog" : {
                 "valid_children" : ["category"]
@@ -821,66 +960,8 @@ window.initCategoryStatus = function(){
 	$('#cat_status').bootstrapSwitch();
 }
 
-window.initCategoryProducts = function(data, tblSettings) {
-	
-	// get Category Id from table data
-	var catId = $("#" + tblSettings.sTableId ).data("catid");
-	
-	// Add DataTable Data catId and assign value of CategoryId
-	data.catId = catId;
-	
-	var catLangLocale = $("#categoryTreeView").data('langlocale');
-	
-	// Add DataTable Data catLangLocale and assign value of catLangLocale
-	data.catLangLocale = catLangLocale;
-	
-	$('#categoryProductListTbl').on( 'row-reorder.dt', function ( e, diff, edit ) {
-	    var result = 'Reorder started on row: '+edit.triggerRow.data()[1]+'<br>';
+window.disableSaveButtons = function(){
 
-	    for ( var i=0, ien=diff.length ; i<ien ; i++ ) {
-	        var rowData = $categoryProductListTbl.row( diff[i].node ).data();
-	         result += rowData[1]+' updated to be in position '+ diff[i].newData+' (was '+diff[i].oldData+')<br>';
-	    }
-		
-	    if(!$.isEmptyObject(diff)){
-	        
-	        var dataString = new Array;
-	        var prdNodes = new Array;
-	        
-	        $.each(diff, function(){
-	        	prdNodes.push(this.node.id+'-'+this.newPosition);
-	        });
-	        
-	        dataString.push({
-				name : "catPrdOrderData",
-				value: prdNodes.join()
-			});
-			
-	        dataString = $.param(dataString);
-			
-		    $.ajax({
-			     type        : "POST", 
-			     url         : "/melis/MelisCommerce/MelisComCategory/reOrderCategoryProducts",
-			     data		: dataString,
-			     dataType    : "json",
-			     encode		: true
-			}).done(function(data) {
-				if(!data.success) {
-					alert( translations.tr_meliscore_error_message );
-				}
-			}).fail(function(){
-				alert( translations.tr_meliscore_error_message );
-			});
-		}
-	});
-}
-
-window.initCategoryProductsImgs = function(){
-	// Lightbox Plugin Initialization
-    lightbox.option({
-	    'resizeDuration': 200,
-	    'wrapAround': true
-    })
-}
+};
 
 

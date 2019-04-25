@@ -18,12 +18,14 @@
 .cms-category-checkbox input{
     display : none;
 }
-
+#categorySiteFilter {
+    cursor: pointer;
+}
 /** 
 * Category Tree View Container
 */
 .cat-div {
-    width: 100%;
+    width: auto;
     overflow-y: auto !important;
 }
 
@@ -31,6 +33,13 @@
     /* padding-bottom: 30px; */
 }
 
+#id_meliscms_catergories_list_categories_tree .jstree-proton .jstree-search {
+    background: rgb(247, 230, 230);
+    box-shadow: inset 0 0 1px rgba(169, 68, 66, 0.38);
+    border-radius: 0px;
+    font-weight: normal;
+    padding-right: 10px;
+}
 /** 
 * Category Tree View Language Dropdown
 */
@@ -74,6 +83,15 @@
         display: none;
     }
 }
+@media (max-width: 768px){
+    #id_melis_cms_categories_v2_list{
+        margin-top:48px;
+    }
+    #categoryTreeViewPanel {
+        margin-bottom:30px;
+    }
+}
+
 
 /*** JSTree ***/
 
@@ -88,20 +106,33 @@
     font-size: 12px;
 }
 /*Node Selected/Highlight*/
-.jstree-proton .jstree-clicked {
-    background: #932e2a;
-    box-shadow: inset 0 0 1px #932e2a;
+#id_meliscms_catergories_list_categories_tree .jstree-proton .jstree-clicked,
+#melis_cms_categories_category_select_modal_content .jstree-proton .jstree-clicked {
+    background: #e61c23;
+    box-shadow: inset 0 0 1px #e61c23;
+    border-radius: 0px;
+    padding-right: 10px;
+    color:#fff !important;
+}
+#id_meliscms_catergories_list_categories_tree .jstree-proton .jstree-hovered,
+#melis_cms_categories_category_select_modal_content .jstree-proton .jstree-hovered{
+    background: rgba(249, 124, 119, 0.42);
+    box-shadow: inset 0 0 1px rgba(169, 68, 66, 0.38);
+    color: #525151 !important;
     border-radius: 0px;
     padding-right: 10px;
 }
-.jstree-proton .jstree-hovered {
+
+#id_meliscms_catergories_list_categories_tree {
+    min-height:202px;
+}
+.custom-search .jstree-hovered {
     background: rgba(249, 124, 119, 0.42);
     box-shadow: inset 0 0 1px rgba(169, 68, 66, 0.38);
     color: #525151;
     border-radius: 0px;
     padding-right: 10px;
 }
-
 /**
 * Category Header Panel Buttons Styles
 **/
@@ -294,6 +325,7 @@
     cursor:pointer;
     color:#fff;
     line-height:50px;
+    left:0;
 }
 .mini-media-library .image-area:hover .add-wrapper,
 .mini-media-library .file-area:hover .add-wrapper{
@@ -313,17 +345,18 @@
 .category-image-list {
     padding-top:10px;
     position:relative;
+    min-height:63px;
 }
 .category-image-option {
     position:absolute;
     height:100%;
     width:98%;
     top:0;
-    opacity:0.7;
-    background:#000;
+    background-color:rgba(0,0,0,0.5);
     text-align:center;
 }
-.category-image-option a {
+.category-image-option a,
+.category-image-option span {
     background:#fff;
     border-radius:100%;
     width:50px;
@@ -438,8 +471,115 @@
     position: absolute;
     height:100%;
     width:100%;
+    background: rgba(0,0,0,0.5);
+    display: block;
+    z-index:1999;
+    padding-top:47px;
+    cursor:pointer;
     top:0;
-    background: #000;
-    opacity:0.8;
+    min-height: 1027px;
+}
+.preview-image {
+    text-align: center;
+    position: relative;
+}
+.preview-image span {
+    position: relative;
+}
+.preview-nav {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    z-index: 99999999;
+    display: block;
+}
+.preview-image .close-images {
+    position: absolute;
+    font-size: 30px;
+    cursor: pointer;
+    color: #fff;
+    right: 0;
+    background: url('/MelisCmsCategory2/img/close.png');
+    height: 29px;
+    margin-top: 5px;
+    width: 27px;
+}
+
+.preview-image  img{
+    border:6px solid #fff;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    max-width:93%;
+    display: none;
+}
+.preview-image .active {
+    display:inline-block;
+}
+.media-upload-loader {
+    background: #e61c23;
+    position: absolute;
+    color: #fff;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: none;
+    z-index: 99;
+}
+.border-green {
+    border : 2px solid #69b344;
+}
+.text-green {
+    color:#72af46 !important;
+}
+#categoryScrollToTop {
+    float: right;
+    width: 50px;
+    text-align: center;
+    line-height: 56px;
+    cursor: pointer;
+    font-size: 28px;
+    border-radius: 3px;
+    border: 2px solid #e61c23;
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out ;
+    -ms-transition: all 0.3s ase-in-out ;
+    -o-transition: all 0.3s ease-in-out ;
+    transition: all 0.3s ease-in-out ;
+}
+#categoryScrollToTop:hover {
+    background:#e61c23;
+    color:#fff !important;
+}
+#noResultData {
+    display:none;
+}
+.no-image {
+    margin-left:8px;
+}
+.no-file {
+    margin-left:8px;
+}
+
+#fakeBackdrop {
+    opacity:1;
+    background-color:rgba(0,0,0,0.5);
+}
+.fakeLoader {
+    left:32%;
+    top:2%;
+    width:620px;
+    height:47px;
+}
+.text-red {
+    color:#ff0000 !important;
+}
+.site-filtered  > .jstree-anchor{
+    color:#72af46;
+}
+#meliscms_categories_site_filter .info-site-filter {
+    font-size:12px;
     display: none;
 }

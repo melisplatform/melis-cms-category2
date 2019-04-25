@@ -4,6 +4,7 @@
         $id = 'id="'.$this->zoneconfig['conf']['id'] .'"';
     }
     $data_melisKey = 'data-melisKey="'.$this->melisKey.'"';
+    $languageToSelect = $this->currentLocale;
 ?>
 <div <?php echo $id. ' '.$data_melisKey?> >
 	<div class="row">
@@ -17,19 +18,12 @@
 		<div class="col-xs-12 col-md-5 col-lg-4">
     		<div class="product-text-tab-container">
             	<ul class="nav-tabs product-text-tab">
-            		<?php foreach ($this->ecomLang as $key => $val){?>
+            		<?php foreach ($this->ecomLang as $key => $val){;?>
                 		<li class="">
                 			<a class="clearfix" data-toggle="tab" href="#<?php echo $val['lang_cms_name'].'_categoryInfo' ?>" aria-expanded="false">
 								<?php
-								    $langLocale = $val['lang_cms_local'] ?? null;
-                                    if(!empty($imageData))
-                                    {
-                                        echo '<span class="pull-right"><img src="/MelisCms/images/lang-flags/' . $langLocale .'.png" class="imgDisplay pull-right"/></span>';
-                                    }
-                                    else
-                                    {
-                                        echo '<i class="fa fa-globe"></i>';
-                                    }								
+								    $langLocale = $val['lang_cms_locale'] ?? null;
+                                    echo '<span class="pull-right"><img src="/MelisCms/images/lang-flags/' . $langLocale .'.png" class="imgDisplay pull-right"/></span>';
                                 ?>
                 				<span><?php echo $val['lang_cms_name']?></span>
                 			</a>
@@ -52,8 +46,8 @@
                             	$form->setAttribute('class','cat_trans_form');
                             	$form->setAttribute('data-langid', $val['lang_cms_id']);
                             	$form->get('catt2_lang_id')->setValue($val['lang_cms_id']);
-                            	
-                            	if (!empty($this->categoryTrans)) 
+
+                            	if (!empty($this->categoryTrans))
                             	{
                             	    foreach ($this->categoryTrans As $cVal)
                             	    {
@@ -65,9 +59,9 @@
                             	    }
                             	}
                             	$form->prepare();
-                            	echo $this->form()->openTag($form); 
+                            	echo $this->form()->openTag($form);
                             	echo $this->melisFieldCollection($form);
-                            	echo $this->form()->closeTag(); 
+                            	echo $this->form()->closeTag();
                             ?>
                         </div>
                     </div>
@@ -85,8 +79,8 @@
                 'insertdatetime media table contextmenu paste template',
                 'textcolor',
             ],
-            toolbar : 'undo redo | styleselect | bold italic | link image |  alignleft aligncenter alignright alignjustify | forecolor backcolor | code',
-        }
-        melisTinyMCE.createTinyMCE("tool", ".editme", option);
+            toolbar : 'undo redo | styleselect | bold italic |  alignleft aligncenter alignright alignjustify | forecolor backcolor | code',
+        };
+        melisTinyMCE.createTinyMCE("toolTranslate", ".editme", option);
     </script>
 </div>

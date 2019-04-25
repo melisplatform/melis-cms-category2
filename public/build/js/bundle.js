@@ -63,6 +63,7 @@ $(function(){
 		var catId = $(this).data('catid');
 		var dataString = new Array;
 		// Serialize Forms of Category Panel
+
 		dataString = $("#id_meliscategory_categories_category form").not(".category_"+catId+"_seo_form, .cat_trans_form").serializeArray()
 		// Category Id
 		dataString.push({
@@ -90,6 +91,7 @@ $(function(){
         $("#id_meliscategory_category_tab_media_content_left").find('input').each(function(index){
             dataString.push({
                 name: "cat2_media_image["+ index + "]",
+				order : index,
                 value : $(this).val()
             });
         });
@@ -97,6 +99,7 @@ $(function(){
         $("#id_meliscategory_category_tab_media_content_right").find('input').each(function(index){
             dataString.push({
                 name: "cat2_media_file["+ index+"]",
+				order: index,
                 value : $(this).val()
             });
         });
@@ -452,7 +455,9 @@ $(function(){
 				targetDiv : ".category-image-list",
 				currentPosition : data.currentposition
 			}, ".category-image-list")
-        $(".parent-file-list .back-drop").fadeIn("fast")
+   //     $(".parent-file-list .back-drop").fadeIn("fast");
+        $("#categoryTreeViewPanel").collapse("hide");
+        // disable buttons
 	});
 
     categoryBody.on('click', ".category-add-file" , function(){
@@ -465,47 +470,87 @@ $(function(){
         	fileType  : data.type,
 			targetDiv : ".category-file-list .list-group",
             currentPosition : data.currentposition
-		},".category-file-list")
-		$(".parent-image-list .back-drop").fadeIn("fast");
+		},".category-file-list");
+	//	$(".parent-image-list .back-drop").fadeIn("fast");
+        $("#categoryTreeViewPanel").collapse("hide");
+
     });
     categoryBody.on('submit',"#id_meliscategory_media_upload_form",function(e) {
         e.preventDefault();
         var formData = new FormData(this);
         melisCoreTool.pending(this);
         var dataElem = $(".category-add-image").data() ;
-
-        $.ajax({
-            type: 'POST',
-            url: 'melis/MelisCmsCategory2/MelisCmsCategoryMedia/uploadMedia',
-            data: formData,
-            dataType: 'json',
-            processData: false,
-            cache: false,
-            contentType: false,
-            encode: true
-        }).success(function(data) {
-        	if (data.success === true) {
-        		melisHelper.zoneReload("id_meliscategory_mini_media_library","meliscategory_mini_media_library",{fileType:dataElem.type});
-			}
-		});
+        var fileUploadValue = $("#id_meliscategory_media_upload_form input[type='file']").val();
+        if (fileUploadValue !== "") {
+            $(".media-upload-loader").fadeIn('medium');
+            var mediaType = $("#category-upload-media").data('type');
+            var targetArea = $("#category-upload-media").data('targetArea');
+            $.ajax({
+                type: 'POST',
+                url: 'melis/MelisCmsCategory2/MelisCmsCategoryMedia/uploadMedia',
+                data: formData,
+                dataType: 'json',
+                processData: false,
+                cache: false,
+                contentType: false,
+                encode: true
+            }).success(function(data) {
+                $(".media-upload-loader").fadeOut('medium');
+                if (data.success === true) {
+                    melisHelper.zoneReload("id_meliscategory_mini_media_library","meliscategory_mini_media_library",{fileType:mediaType,targetDiv : targetArea});
+                }
+            });
+		} else {
+			var message = "Please upload a file";
+			var heading = translations.tr_melis_cms_category_v2;
+			melisHelper.melisKoNotification(heading,message);
+		}
     });
 
     categoryBody.on('click', ".category-image-list .removeImage", function(){
-    	var parentDiv = $(this).parent().parent();
-        parentDiv.remove();
+        var countImage = $(".category-image-list").children('.category-image').length;
+        if (countImage > 0) {
+            var parentDiv = $(this).parent().parent();
+            parentDiv.fadeOut('fast', function(){
+                parentDiv.remove();
+			});
+        }
+        if (countImage === 1) {
+            $(".no-image").fadeIn('fast');
+		}
+        initButtonScrollToTop();
 	});
     categoryBody.on('click', ".category-file .remove-file", function(){
-        var parentDiv = $(this).parent();
-        parentDiv.remove();
+        var countImage = $(".category-file-list .list-group").children('span').length;
+        if (countImage > 0) {
+            var parentDiv = $(this).parent();
+            parentDiv.fadeOut('fast',function(){
+                parentDiv.remove();
+			});
+        }
+        if (countImage === 1) {
+            $(".no-file").fadeIn('fast');
+		}
+        initButtonScrollToTop();
     });
 	categoryBody.on('click','#closeMedialibrary', function(){
-		console.log($(this).data());
-
 		var parentDiv = $(this).data('targetRemoveBackdrop');
 		$(parentDiv + " .back-drop").fadeOut('fast');
+		$("body").css("overflow", "auto");
+	});
+
+	categoryBody.on('click', '#categoryScrollToTop' , function(){
+        $("html, body").animate({scrollTop : 10}, 500);
 	});
 });
-
+window.initButtonScrollToTop = function(){
+    var heightContent = $("#id_meliscategory_category_tab_media").height();
+    if (heightContent < 628) {
+        $("#categoryScrollToTop").fadeOut();
+    } else {
+        $("#categoryScrollToTop").fadeIn();
+    }
+};
 window.enableDisableAddCategoryBtn = function(action){
 	var addCategory = $('.addCategory');
 	if(action == 'enable'){
@@ -558,11 +603,16 @@ window.initCmsCategoryTreeView = function(){
             $("#categorySiteFilter").removeAttr('disabled');
             $("#categoryTreeViewSearchInput").removeAttr('disabled');
             $(".category-list-lang-dropdown").removeAttr('disabled');
-            $(".category-list-lang-dropdown").css("cursor","default	");
+            $(".category-list-lang-dropdown").css("cursor","pointer");
             $("#clearSearchInputBtn").removeAttr('disabled');
             $("#collapseCategoryTreeViewBtn").removeAttr('disabled');
             $("#expandCategoryTreeViewBtn").removeAttr('disabled');
             $("#refreshCategoryTreeView").removeAttr('disabled');
+            if ($(".jstree-container-ul").children("li").length ===  0) {
+                $("#noResultData").fadeIn("fast").css("display","inline-block");
+			} else {
+                $("#noResultData").fadeOut("fast");
+			}
 
 		})
 		.on('ready.jstree', function (e, data) {
@@ -630,17 +680,17 @@ window.initCmsCategoryTreeView = function(){
 	        var dataString = new Array();
 			// get data from input
 	        dataString.push({
-				name: "cat_id",
+				name: "cat2_id",
 				value: parseInt(categoryId, 10)
 			});
 			// get date data from param
 			dataString.push({
-				name: "cat_father_cat_id",
+				name: "cat2_father_cat_id",
 				value: parseInt(newParentId, 10)
 			});
 			// get date data from param
 			dataString.push({
-				name: "cat_order",
+				name: "cat2_order",
 				value: categoryNewPosition
 			});
 			// get date data from param
@@ -689,7 +739,7 @@ window.initCmsCategoryTreeView = function(){
 		                	
 		                	var zoneId = "id_meliscategory_categories_category";
 		                	var melisKey = "meliscategory_categories_category";
-		                	
+                            $("#"+zoneId).removeClass("hidden");
 		            		melisHelper.zoneReload(zoneId, melisKey,{catId:0, catFatherId:parentId, catOrder:position});
 		                	
 		                }
@@ -703,7 +753,7 @@ window.initCmsCategoryTreeView = function(){
 		                	
 		            		var zoneId = 'id_meliscategory_categories_category';
 		            		var melisKey = 'meliscategory_categories_category';
-		            		
+                            $("#"+zoneId).removeClass("hidden");
 		            		melisHelper.zoneReload(zoneId, melisKey, {catId : catId});
 		            		
 		            		$("#categoryTreeViewPanel").collapse("hide");
@@ -711,7 +761,7 @@ window.initCmsCategoryTreeView = function(){
 		                }
 		            },
 		            "Delete" : {
-		                "label" : translations.tr_meliscategory_categories_common_btn_delete,
+		                "label" : translations.tr_meliscore_common_delete,
 		                "icon"  : "fa fa-trash-o",
 		                "action" : function (obj) {
 		                		
@@ -735,23 +785,19 @@ window.initCmsCategoryTreeView = function(){
 		                	
 		                	dataString = $.param(dataString);
 		                	
-		                	var deleteTitle = translations.tr_meliscategory_categories_category_delete;
-		                	var deleteMessage = translations.tr_meliscategory_categories_category_delete_confirm_msg;
-		                	if(parentId == '-1'){
-		                		deleteTitle = translations.tr_meliscategory_categories_catalog_delete;
-			                	deleteMessage = translations.tr_meliscategory_categories_catalog_delete_confirm_msg;
-		                	}
-		                	
+		                	var deleteTitle = translations.tr_meliscore_common_delete;
+		                	var deleteMessage = translations.tr_meliscms_categories_delete_category_msg;
+
 		                	// deletion confirmation
 		            		melisCoreTool.confirm(
-		            		translations.tr_meliscategory_categories_common_label_yes,
-		            		translations.tr_meliscategory_categories_common_label_no,
+		            		translations.tr_meliscore_common_yes,
+		            		translations.tr_meliscore_common_no,
 		            		deleteTitle, 
 		            		deleteMessage, 
 		            		function() {
 		            			$.ajax({
 			        		        type        : "POST", 
-			        		        url         : "/melis/MelisCommerce/MelisComCategory/deleteCategory",
+			        		        url         : "/melis/MelisCmsCategory2/MelisCmsCategory/deleteCategory",
 			        		        data		: dataString,
 			        		        dataType    : "json",
 			        		        encode		: true
@@ -797,7 +843,7 @@ window.initCmsCategoryTreeView = function(){
 	    },
 	    "types" : {
             "#" : {
-                "valid_children" : ["catalog"]
+                "valid_children" : ["category"]
             },
             "catalog" : {
                 "valid_children" : ["category"]
@@ -887,7 +933,10 @@ window.initCategoryProductsImgs = function(){
 	    'resizeDuration': 200,
 	    'wrapAround': true
     })
-}
+};
+window.disableSaveButtons = function(){
+
+};
 
 
 
@@ -1737,9 +1786,15 @@ window.imagePreview = function(id, fileInput) {
 
 var mediaDirectory = {
     browse: function(modalUrl,zoneId,melisKey,params, targetDiv){
+        //fake backdrop
         melisHelper.createModal(zoneId,melisKey,false,params,modalUrl, function(){
             $(".category-add-image").removeAttr('disabled ');
             $(".category-add-file").removeAttr('disabled ');
+
+            $('.modal-dialog').draggable({
+                handle: ".widget-head"
+            });
+
 
             if ($(targetDiv).length > 0) {
                 var categoryAddImage = $(".category-add-image");
@@ -1756,54 +1811,52 @@ var mediaDirectory = {
                     targetDiv = data.targetDiv;
 
                     if (data.fileType === 'image') {
+                        // this is for selecting image
+                        // get the current position for locating the added image when selecting
                         currentPosition = currentPosition + 1 + "image";
+                        // construct element for saving the image
                         html  = "<div id='"+ currentPosition  +"' class='col-md-12 margin-b-10 category-image'>" +
-                            "<img src='" + data.imageUrl + "' class='img-responsive' />" +
+                            "<img src='" + data.imageUrl + "' class='img-responsive border-green' />" +
                             "<input type='hidden' value='" + data.imageUrl + "' data-order='" + order + "'/>" +
                             "<div class='category-image-option'>" +
-                            " <a class='viewImage' target='_blank' href='"+data.imageUrl+"'> <i class='fa fa-eye' title='View image'></i></a>" +
-                            " <a class='removeImage' data-url='"+data.imageUrl+"' > <i class='fa fa-times' title='Delete image'></i></a>" +
+                            " <a class='viewImage' target='_blank' href='"+data.imageUrl+"'> <i class='fa fa-eye' ></i></a>" +
+                            " <a class='removeImage' data-url='"+data.imageUrl+"' > <i class='fa fa-times' ></i></a>" +
                             "</div>" +
                             "</div>";
 
                         //update button attribute current position
                         $(".category-add-image").attr('currentposition', currentPosition);
                         $(targetDiv).append(html);
-                        $("html, body").animate({ scrollTop: $("#" + currentPosition).offset().top }, 1000);
+                        if ($("#" + currentPosition).length > 0) {
+                            $("html, body").animate({ scrollTop: $("#" + currentPosition).position().top }, 100 );
+                        }
+                        $(".no-image").hide();
                     } else {
-                        html = "<div class='col-md-3'>" +
-                                "<div class=\"file-area\">" +
-                                " <span class=\"fa fa-file file-icon\"></span>" +
-                                " <span class=\"description\">colipano1.docx</span>" +
-                                " </div>" +
-                                "<input type='hidden' value='" + data.imageUrl + "' data-order='" + order + "'/>" +
-                                "<div class='category-image-option'>" +
-                                "<a class='viewImage' target='_blank' href='"+data.imageUrl+"'> <i class='fa fa-eye' title='View file'></i></a>" +
-                                "<a class='removeImage' data-url='"+data.imageUrl+"' > <i class='fa fa-times' title='Delete file'></i></a>" +
-                                "</div>" +
-                               "</div>";
-
+                        // this for selecting files
+                        // get the current position for locating the added file when selecting
                         currentPositionFile = currentPositionFile + 1 + "file";
-                        html = '<span id='+ currentPositionFile +'>\n' +
-                                ' <a href="#" class="list-group-item list-group-item-action">' + data.imageUrl + '</a>\n' +
+                        // construct element for saving the file
+                        html = '<span id='+ currentPositionFile +' >\n' +
+                                ' <a href="#" class="list-group-item list-group-item-action text-green">' + data.imageUrl + '</a>\n' +
                                 ' <i class="fa fa-times-circle remove-file"></i>\n' +
                                 ' <input type="hidden" value="' + data.imageUrl +'">'+
                                 ' </span>\n'
-
+                        // set the current position of the file for the next select
                         $(".category-add-file").attr('currentposition', currentPositionFile);
+                        // add the file in the target div
                         $(targetDiv).append(html);
-                        $("html, body").animate({ scrollTop: $("#" + currentPositionFile).position().top }, 1000);
+                        // scrolling to the current added file
+                        if ($("#" + currentPositionFile).length > 0) {
+                            $("html, body").animate({ scrollTop: $("#" + currentPositionFile).position().top }, 100);
+                        }
+                        // hide no file label
+                        $(".no-file").hide();
                     }
-
-
-                    // remove no image
-                    $(".no-image").hide();
-
-                    //scroll to added element
-
+                    // show/not show the button to scroll upward
+                    initButtonScrollToTop();
                 });
             }
-        }, 'static');
+        });
         melisCoreTool.pending($(this));
     }
 };

@@ -99,7 +99,7 @@ class MelisCmsCategory2Table extends MelisGenericTable
         $cacheKey = 'category-' . $categoryId . '_getCategoryTranslationBylangId_' . $categoryId . '_' . $langId;
         $cacheConfig = 'commerce_memory_services';
         $melisEngineCacheSystem = $this->getServiceLocator()->get('MelisEngineCacheSystem');
-        $results = $melisEngineCacheSystem->getCacheByKey($cacheKey, $cacheConfig);
+        $results = null;#$melisEngineCacheSystem->getCacheByKey($cacheKey, $cacheConfig);
 
         if (!empty($results)) {
             return $results;
@@ -121,7 +121,7 @@ class MelisCmsCategory2Table extends MelisGenericTable
         $dataCategory = $this->tableGateway->selectWith($select);
 
         if ($this->cacheResults) {
-            $melisEngineCacheSystem->setCacheByKey($cacheKey, $cacheConfig, $dataCategory);
+            #$melisEngineCacheSystem->setCacheByKey($cacheKey, $cacheConfig, $dataCategory);
         }
 
         return $dataCategory;
@@ -178,7 +178,7 @@ class MelisCmsCategory2Table extends MelisGenericTable
      * @param boolean $onlyValid
      * @return MelisEcomCategory Object
      */
-    public function getCategoryByFatherId($fatherId = 0, $onlyValid = false){
+    public function getCategoryByFatherId($fatherId = 0, $onlyValid = false, $siteId = null){
         $select = $this->tableGateway->getSql()->select();
 
         $select->columns(array('cat2_id', 'cat2_status', 'cat2_father_cat_id'));
@@ -192,7 +192,6 @@ class MelisCmsCategory2Table extends MelisGenericTable
         if(is_bool($onlyValid) && $onlyValid){
             $select->where('cat2_status = 1');
         }
-
         $select->order('cat2_order ASC');
 
         $dataCategory = $this->tableGateway->selectWith($select);
@@ -324,39 +323,6 @@ class MelisCmsCategory2Table extends MelisGenericTable
         return $resultSet;
     }
 
-//     public function getCategoriesByIds($categoryIds, $onlyValid = false, $langId = null)
-//     {
-//         $select = $this->tableGateway->getSql()->select();
-
-//         if (!is_null($langId))
-//             $join = new Expression('melis_cms_category2_trans.catt2_category_id = melis_cms_category2.'.$this->idField.' AND catt2_lang_id ='.$langId);
-//         else
-//             $join = new Expression('melis_cms_category2_trans.catt2_category_id = melis_cms_category2.'.$this->idField.' AND catt2_name IS NOT NULL');
-
-//         $select->join('melis_cms_category2_trans', $join, array('*'), $select::JOIN_LEFT);
-
-//         $select->join('melis_ecom_country_category', 'melis_ecom_country_category.ccat_category_id = melis_cms_category2.'.$this->idField, array(), $select::JOIN_LEFT);
-
-//         if (!empty($categoryIds) && is_array($categoryIds))
-//             $select->where->in('cat2_id', $categoryIds);
-//         elseif (!is_null($categoryIds))
-//             $select->where->equalTo('cat2_id', $categoryIds);
-
-//         if (is_bool($onlyValid) && $onlyValid){
-//             $select->where('cat2_status = 1');
-//             $select->where->NEST->literal('cat2_date_valid_start <= "'. date('Y-m-d').'"')
-//                 ->or->literal('cat2_date_valid_start IS NULL');
-//             $select->where->NEST->literal('cat2_date_valid_end >= "'. date('Y-m-d').'"')
-//                 ->or->literal('cat2_date_valid_end IS NULL');
-//         }
-
-//         $select->group($this->idField);
-
-//         $resultSet = $this->tableGateway->selectWith($select);
-
-//         return $resultSet;
-//     }
-
     public function getCategoriesByIds($categoryIds, $onlyValid = false, $langId = null, $column = 'cat2_id', $order = 'ASC')
     {
         $select = $this->tableGateway->getSql()->select();
@@ -431,29 +397,6 @@ class MelisCmsCategory2Table extends MelisGenericTable
         return $resultSet;
     }
 
-//    public function getProductCategoriesWithFinalTransalations($productId, $langId = null)
-//    {
-//        $select = $this->tableGateway->getSql()->select();
-//
-//        $select->join('melis_ecom_product_category', 'melis_ecom_product_category.pcat_cat_id = melis_cms_category2.'.$this->idField, array(), $select::JOIN_LEFT);
-//
-//        if (!is_null($langId))
-//            $join = new Expression('melis_cms_category2_trans.catt2_category_id = melis_cms_category2.'.$this->idField.' AND catt2_lang_id ='.$langId);
-//        else
-//            $join = new Expression('melis_cms_category2_trans.catt2_category_id = melis_cms_category2.'.$this->idField.' AND catt2_name IS NOT NULL');
-//
-//        $select->join('melis_cms_category2_trans', $join, array('*'), $select::JOIN_LEFT);
-//
-//        $select->join('melis_ecom_country_category', 'melis_ecom_country_category.ccat_category_id = melis_cms_category2.'.$this->idField, array(), $select::JOIN_LEFT);
-//
-//        $select->where->equalTo('pcat_prd_id', $productId);
-//
-//        $select->group($this->idField);
-//
-//        $resultSet = $this->tableGateway->selectWith($select);
-//
-//        return $resultSet;
-   // }
 
     public function getChildrenByLangId($fatherId, $langId, $valid, $order = false)
     {
@@ -485,17 +428,64 @@ class MelisCmsCategory2Table extends MelisGenericTable
         return $resultSet;
     }
 
-    public function getAvailableOrder($categoryId)
+    public function getAvailableOrder($categoryIdParentId)
     {
         $select = $this->tableGateway->getSql()->select();
         $select->columns(['maxOrder' => new Sql\Expression('MAX(cat2_order)')]);
-        $select->where('cat2_id = ' . $categoryId );
+        $select->where('cat2_father_cat_id = ' . $categoryIdParentId );
         $resultSet = $this->tableGateway->selectWith($select);
 
         return $resultSet;
     }
 
+    /**
+     * Return categories under a certain site with siteId and languageId
+     * this will return only associated with the root only
+     * @param $siteId
+     * @param $langId
+     * @return mixed
+     */
     public function getFirstLevelCategoriesPerSite($siteId, $langId)
+    {
+        $select = $this->tableGateway->getSql()->select();
+        $select->columns(array('*'));
+        # join melis_cms_category2_sites
+        $tblToJoin   = "melis_cms_category2_sites";
+        $relation    = "melis_cms_category2_sites.cats2_cat2_id = melis_cms_category2.cat2_id ";
+        $joinColumns = ['*'];
+        $joinType    = $select::JOIN_LEFT;
+        $select->join($tblToJoin,$relation,$joinColumns,$joinType);
+        # join melis_cms_category2_trans
+        $tblToJoin   = "melis_cms_category2_trans";
+        $relation    = "melis_cms_category2_trans.catt2_category_id = melis_cms_category2.cat2_id ";
+        $joinColumns = ['catt2_lang_id','catt2_name', 'catt2_description'];
+        $joinType    = $select::JOIN_LEFT;
+        $select->join($tblToJoin,$relation,$joinColumns,$joinType);
+        # join melis_cms_lang
+        $tblToJoin   = "melis_cms_lang";
+        $relation    = "melis_cms_lang.lang_cms_id = melis_cms_category2_trans.catt2_lang_id ";
+        $joinColumns = ['*'];
+        $joinType    = $select::JOIN_LEFT;
+        $select->join($tblToJoin,$relation,$joinColumns,$joinType);
+        //site id
+        $select->where->equalTo('melis_cms_category2_sites.cats2_site_id',$siteId);
+        // lang id
+        $select->where->equalTo('melis_cms_category2_trans.catt2_lang_id',$langId);
+
+
+        $resultSet = $this->tableGateway->selectWith($select);
+        
+        return $resultSet;
+    }
+
+    /**
+     * Return all categories under a certain site
+     *
+     * @param $siteId
+     * @param $langId
+     * @return mixed
+     */
+    public function getCategoriesPerSite($siteId, $langId)
     {
         $select = $this->tableGateway->getSql()->select();
         $select->columns(array('*'));
@@ -515,9 +505,31 @@ class MelisCmsCategory2Table extends MelisGenericTable
         $select->where->equalTo('melis_cms_category2_sites.cats2_site_id',$siteId);
         // lang id
         $select->where->equalTo('melis_cms_category2_trans.catt2_lang_id',$langId);
+
         $resultSet = $this->tableGateway->selectWith($select);
 
         return $resultSet;
     }
 
+    public function getLastId()
+    {
+        $select = $this->tableGateway->getSql()->select();
+        $select->columns(['maxId' => new Sql\Expression('MAX(cat2_id)')]);
+        $resultSet = $this->tableGateway->selectWith($select);
+
+        return $resultSet;
+    }
+
+    public function getCategoryOrders($parentId,$currentOrder)
+    {
+        $select = $this->tableGateway->getSql()->select();
+        $select->columns(['*']);
+
+        $select->where->equalTo('cat2_father_cat_id',$parentId);
+        $select->where("cat2_order > $currentOrder");
+
+        $resultSet = $this->tableGateway->selectWith($select);
+
+        return $resultSet;
+    }
 }

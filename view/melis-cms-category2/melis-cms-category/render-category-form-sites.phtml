@@ -6,23 +6,34 @@
     $data_melisKey = 'data-melisKey="'.$this->melisKey.'"';
     $categorySites = $this->cartegorySites;
     $siteData      = $this->siteData;
+    $siteSelectedId = $this->siteSelectedId;
 ?>
 <div <?php echo $id. ' '.$data_melisKey?> >
 	<div class="form-group">
     	<div class="row">
     		<div class="col-xs-12">
     			<div class="pdc-heading clearfix">
-                    <h4>
-                    	<i class="fa fa-globe"></i> <?php echo $this->translate('tr_meliscategory_categories_category_countries')?>
+                    <h4 class="category-sites-heading">
+                    	<i class="fa fa-book"></i> <?php echo $this->translate('tr_meliscategory_categories_category_countries')?> *
+                        <i class="fa fa-info-circle fa-sm pull-right tip-info" data-toggle="tooltip" data-placement="left" title="" data-original-title="<?= $this->translate('tr_meliscms_categories_site_selection tooltip');?>"></i>
                     </h4>
                 </div>
     		</div>
     		<form>
         		<?php
         		    $checked = '';
-        		    if (count($siteData) == count($categorySites) || count($categorySites) == 1){
-        		        $checked = 'check';
+                    $tmp = $categorySites[0] ?? null;
+
+        		    if ((count($siteData) == count($categorySites))){
+                        $checked = 'check';
         		    }
+                    if ($siteSelectedId == 0 || empty($siteSelectedId)) {
+        		        if ($this->catId == 0) {
+                            $checked = 'check';
+                        }
+                    } else {
+                        $checked = '';
+                    }
         		?>
         		<div class="col-xs-4">
                 	<label class="cms-category-checkbox">
@@ -38,6 +49,14 @@
         			            $checked = 'check';
         			        }
         			    }
+                        if (! empty($siteSelectedId)) {
+                            if ($siteSelectedId == $val['site_id'] || empty($siteSelectedId)) {
+                                $checked = 'check';
+
+                            } else {
+                                $checked = '';
+                            }
+                        }
         			?>
         			<div class="col-xs-4">
                     	<label class="cms-category-checkbox">
@@ -45,7 +64,7 @@
                                 $siteName = $val['site_label'] ?? $val['site_name'];
                             ?>
                     		<i class="fa fa-<?php echo ($checked) ? $checked.'-' : '' ?>square-o fa-lg"></i> <?php echo $val['site_id'] . " - " . $siteName;?>
-                    		<input type="checkbox" name="cat_sites[]" value="<?php echo $val['site_id']?>" <?php echo ($checked && !in_array('-1', $categorySites)) ? $checked.'ed' : '' ?>>
+                    		<input type="checkbox" name="cat_sites[]" value="<?php echo $val['site_id']?>" <?= $checked . "ed"?>>
                     	</label>
             		</div>
         		<?php endforeach;?>

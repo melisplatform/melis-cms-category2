@@ -5,10 +5,10 @@
     }
     $data_melisKey = 'data-melisKey="'.$this->melisKey.'"';
 ?>
-<div class="panel-heading" style="height: initial;" <?php echo $id.' '.$data_melisKey; ?>>
+<div class="panel-heading" style="height: initial;padding:0;border-bottom:1px solid #eee;" <?php echo $id.' '.$data_melisKey; ?> >
 	<div class="panel-title" style="margin-top: inherit;">
-		<div class="panel-heading-buttons pull-right" align="right">
-			<?php 
+		<div class="panel-heading-buttons pull-right" align="right" >
+			<?php
             	if(!empty($this->zoneconfig['interface'])) {
             	    foreach($this->zoneconfig['interface'] as $keyConfig => $menuConfig) {
             	        echo $this->$keyConfig;

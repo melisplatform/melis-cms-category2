@@ -55,33 +55,33 @@ return array(
             'MelisCmsCategory2TransTable' => 'MelisCmsCategory2\Model\Tables\Factory\MelisCmsCategory2TransTableFactory',
             'MelisCmsCategory2SitesTable' => 'MelisCmsCategory2\Model\Tables\Factory\MelisCmsCategory2SitesTableFactory',
             'MelisCmsCategory2MediaTable' => 'MelisCmsCategory2\Model\Tables\Factory\MelisCmsCategory2MediaTableFactory',
-
             //Service
-            'MelisCmsCategory2Service' => 'MelisCmsCategory2\Service\Factory\MelisCmsCategoryServiceFactory'
+            'MelisCmsCategory2Service' => 'MelisCmsCategory2\Service\Factory\MelisCmsCategoryServiceFactory',
+            'MelisCmsCategory2MediaService' => 'MelisCmsCategory2\Service\Factory\MelisCmsCategoryMediaServiceFactory',
         )
     ),
     'controllers' => array(
         'invokables' => array(
             'MelisCmsCategory2\Controller\MelisCmsCategoryList' => 'MelisCmsCategory2\Controller\MelisCmsCategoryListController',
             'MelisCmsCategory2\Controller\MelisCmsCategory'     => 'MelisCmsCategory2\Controller\MelisCmsCategoryController',
-            'MelisCmsCategory2\Controller\MelisCmsCategoryDocument'     => 'MelisCmsCategory2\Controller\MelisCmsCategoryDocumentController',
             'MelisCmsCategory2\Controller\MelisCmsCategoryMedia'     => 'MelisCmsCategory2\Controller\MelisCmsCategoryMediaController',
+            'MelisCmsCategory2\Controller\MelisCmsCategorySelect'     => 'MelisCmsCategory2\Controller\MelisCmsCategorySelectController',
         ),
+
     ),
     'controller_plugins' => array(
         'invokables' => array(
-
+            // templating plugins
+            'MelisCmsCategoryDisplayCategoriesPlugin' => 'MelisCmsCategory2\Controller\Plugin\MelisCmsCategoryDisplayCategoriesPlugin',
         )
     ),
     'form_elements' => array(
         'factories' => array(
+            'MelisCmsCategorySelect' => 'MelisCmsCategory2\Form\Factory\MelisCmsCategorySelectFactory',
 
         )
     ),
     'view_helpers' => array(
-        'invokables' => array(
-            //'renderTreeRec' => 'MelisCmsCategory2\View\Helper\Factory\RenderRecTreeHelperFactory',
-        ),
         'factories' => array(
             'renderTreeRec' => 'MelisCmsCategory2\View\Helper\Factory\RenderRecTreeHelperFactory',
         ),
@@ -91,7 +91,8 @@ return array(
         'display_exceptions'       => true,
         'doctype'                  => 'HTML5',
         'template_map' => array(
-
+            'MelisCmsCategory2/default' => __DIR__ . '/../view/melis-cms-category2/plugins/default.phtml',
+            'MelisCmsCategory2/plugin/modal/modal-template-form'     => __DIR__ . '/../view/melis-cms-category2/plugins/modal-template-form.phtml',
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view',
@@ -99,5 +100,9 @@ return array(
         'strategies' => array(
             'ViewJsonStrategy',
         ),
+    ),
+    // Config Files
+    'tinyMCE' => array(
+        'toolTranslate' => 'MelisCmsCategory2/public/js/tinyMCE/toolTranslate.php',
     ),
 );

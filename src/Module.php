@@ -9,12 +9,12 @@
 
 namespace MelisCmsCategory2;
 
+use MelisCmsCategory2\Listener\MelisCmsCategory2FlashMessengerListener;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\ModuleManager\ModuleManager;
 use Zend\Stdlib\ArrayUtils;
 use Zend\Session\Container;
-use MelisCmsCategory2\Listener\AddCategoryListener;
 
 class Module
 {
@@ -23,13 +23,18 @@ class Module
         $eventManager        = $e->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
-        $this->createTranslations($e);
+        $sm = $e->getApplication()->getServiceManager();
+        $routeMatch = $sm->get('router')->match($sm->get('request'));
+
+        if (!empty($routeMatch)) {
+            $this->createTranslations($e, $routeMatch);
+        }
 
         $renderType = $this->getRenderType($e);
         # attach listener to back-office to avoid conflict in front
         if ($renderType == 'back') {
             # attach listener
-            $eventManager->attach(new AddCategoryListener());
+            $eventManager->attach(new MelisCmsCategory2FlashMessengerListener());
         }
     }
 
@@ -81,8 +86,12 @@ class Module
             include __DIR__ . '/../config/app.interface.php',
             include __DIR__ . '/../config/app.tools.php',
             include __DIR__ . '/../config/app.forms.php',
+            //forms
+            include __DIR__ . '/../config/plugins/form/plugin.form.php',
             // Tests
             include __DIR__ . '/../config/diagnostic.config.php',
+            // Templating plugins
+            include __DIR__ . '/../config/plugins/MelisCmsCategoryDisplayCategoriesPlugin.config.php',
         );
 
         foreach ($configFiles as $file) {
@@ -111,19 +120,19 @@ class Module
      * Creating the translations of the platform
      * @param $e
      */
-    public function createTranslations($e)
+    public function createTranslations($e, $routeMatch)
     {
         $sm = $e->getApplication()->getServiceManager();
         $translator = $sm->get('translator');
         $locale = null;
-        //get render type
-        $renderType = $this->getRenderType($e);
-        if ($renderType == 'front') {
-            $container = new Container('melisplugins');
-            $locale    = $container['melis-plugins-lang-locale'];
-        } else {
+        // Checking if the Request is from Melis-BackOffice or Front
+        $renderMode = (isset($param['renderMode'])) ? $param['renderMode'] : 'melis';
+        if ($renderMode == 'melis') {
             $container = new Container('meliscore');
-            $locale    = $container['melis-lang-locale'];
+            $locale = $container['melis-lang-locale'];
+        } else {
+            $container = new Container('melisplugins');
+            $locale = $container['melis-plugins-lang-locale'];
         }
 
         if (!empty($locale)){

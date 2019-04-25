@@ -1,0 +1,85 @@
+<?php
+$id = '';
+if (!empty($this->zoneconfig['conf']['name']))
+    $name = $this->zoneconfig['conf']['name'];
+if (!empty($this->zoneconfig['conf']['id']))
+    $id = $this->zoneconfig['conf']['id'];
+
+$data_melisKey = $this->melisKey;
+$title = "Add category";
+?>
+<div class="modal-content" id="<?= $id; ?>"  data-melisKey="<?= $data_melisKey; ?>" style="position: relative;">
+    <div class="modal-body padding-none">
+        <div class="wizard">
+            <div class="widget widget-tabs widget-tabs-double widget-tabs-responsive margin-none border-none">
+                <div class="widget-head">
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a href="#<?php echo $this->zoneconfig['conf']['id'] ?>" class="f-awesome" data-toggle="tab" aria-expanded="true" ><i></i><?php echo $this->translate('tr_melis_cms_category_v2_header_title') ?><i class="fa fa-sitemap"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="widget-body innerAll inner-2x">
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="<?php echo $id ?>">
+                            <div class="filter-area">
+                                <input type="text" class="form-control" id="category-select-search-tree" placeholder="<?= $this->translate('tr_meliscategory_categories_list_tree_view_search_input')?>">
+                                <div class="row filter-buttons">
+                                    <div class="col-xs-6 col-md-6 col-lg-3">
+                                        <button class="btn btn-success btn-block margin-bottom-10" id="clear-search" title="<?php echo $this->translate('tr_meliscommerce_categories_list_tree_view_clear')?>">
+                                            <i class="fa fa-eraser"></i>
+                                            <span><?php echo $this->translate('tr_meliscommerce_categories_list_tree_view_clear')?></span>
+                                        </button>
+                                    </div>
+                                    <div class="col-xs-6 col-md-6 col-lg-3 margin-bottom-10">
+                                        <button class="btn btn-success btn-block" id="collapse-tree" title="<?php echo $this->translate('tr_meliscommerce_categories_list_tree_view_collapse_all')?>">
+                                            <i class="fa fa-compress fa-flip-horizontal"></i>
+                                            <span><?php echo $this->translate('tr_meliscommerce_categories_list_tree_view_collapse_all')?></span>
+                                        </button>
+                                    </div>
+                                    <div class="col-xs-6 col-md-6 col-lg-3">
+                                        <button class="btn btn-success btn-block margin-bottom-10" id="expand-tree" title="<?php echo $this->translate('tr_meliscommerce_categories_list_tree_view_expand_all')?>">
+                                            <i class="fa fa-expand fa-flip-horizontal"></i>
+                                            <span><?php echo $this->translate('tr_meliscommerce_categories_list_tree_view_expand_all')?></span>
+                                        </button>
+                                    </div>
+                                    <div class="col-xs-6 col-md-6 col-lg-3">
+                                        <button class="btn btn-success btn-block margin-bottom-10" id="refresh-tree" title="<?php echo $this->translate('tr_meliscommerce_categories_list_tree_view_refresh')?>">
+                                            <i class="fa fa-refresh"></i>
+                                            <span><?php echo $this->translate('tr_meliscommerce_categories_list_tree_view_refresh')?></span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="category-select-site-filter">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <?php
+                                                $form = $this->siteFilterForm;
+                                                $form->prepare();
+                                                echo $this->form()->openTag($form);
+                                                echo $this->melisFieldCollection($form);
+                                                echo $this->form()->closeTag($form);
+                                            ?>
+                                        </div>
+                                        <script>
+                                            $("#categorySelectSiteFilter").after("<p class=\"info-select-category-site-filter\"><?= $this->translate('tr_melis_cms_categories_affected_to_site_message')?></p>")
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="alert alert-warning hidden" id="searchSelectNoResult">"<strong></strong>" <?php echo $this->translate('tr_meliscmscategory_search_not_found')?></div>
+                            <label for="root-checkbox" class="root-option"><input id="root-checkbox" type="checkbox" value="0"/><span><?= $this->translate('tr_meliscms_tree_sites_duplication_use_root')?></span></label>
+                            <div class="melis-cms-category-select-tree" data-langlocale="<?= $this->locale?>"></div>
+                            <div class="buttons">
+                                <button data-dismiss="modal" id="close-category-select-modal" class="btn btn-danger pull-left"><i class="fa fa-times"></i> <?= $this->translate('tr_meliscms_plugins_modal_cancel')?></button>
+                                <button data-dismiss="modal" id="add-selected-category" class="btn btn-success pull-right" ><i class="fa fa-plus"> </i> <?= $this->translate('tr_meliscms_form_btn_select')?></button>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -14,8 +14,8 @@ class MelisCategory
 	protected $id;
 	protected $category;
 	protected $translations;
-	protected $seo;
-	protected $countries;
+	protected $media;
+	protected $sites;
 	protected $children;
 
 	public function getId()
@@ -48,24 +48,24 @@ class MelisCategory
 	    $this->translations = $translations;
 	}
 	
-	public function getSeo()
+	public function getMedia()
 	{
-	    return $this->seo;
+	    return $this->media;
 	}
 	
-	public function setSeo($seo)
+	public function setMedia($media)
 	{
-	    $this->seo = $seo;
+	    $this->media = $media;
 	}
 	
-	public function getCountries()
+	public function getSites()
 	{
-	    return $this->countries;
+	    return $this->sites;
 	}
 	
-	public function setCountries($countries)
+	public function setSites($sites)
 	{
-	    $this->countries = $countries;
+	    $this->sites = $sites;
 	}
 	
 	public function getChildren()

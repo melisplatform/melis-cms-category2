@@ -1,0 +1,24 @@
+<?php
+    $pluginData = $this->pluginData ?? null;
+    $categoryData = $this->cmsCategoryTreeData ?? null;
+    $renderMode = $pluginData['renderMode'];
+    $previewMode = $pluginData['previewMode'];
+    $siteId = $pluginData['site_id'];
+
+?>
+<?php if ($renderMode == 'front' || $previewMode == true) { ?>
+<div class="<?php echo "$this->widthDesktop $this->widthTablet $this->widthMobile" ?>" >
+    <?php } else { ?>
+<div>
+    <?php } ?>
+    <div class="melis-cms-categories-display" id="melis-cms-categories-display-<?=$pluginData['id']?>>" data-plugin-id="<?=$pluginData['id']?>">
+        <?php if (! empty($categoryData)) {?>
+                <ul>
+                    <?= $this->renderTreeRec($categoryData); ?>
+                </ul>
+        <?php } else {?>
+                <p><?= $this->translate('tr_meliscms_page_lang_no_result_opt');?></p>
+        <?php }?>
+
+    </div>
+</div>
