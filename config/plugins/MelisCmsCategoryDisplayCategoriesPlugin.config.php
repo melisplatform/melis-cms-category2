@@ -121,6 +121,7 @@ return array(
                                                 'options' => array(
                                                     'messages' => array(
                                                         \Zend\Validator\Digits::NOT_DIGITS => 'tr_front_common_input_not_digit',
+                                                        \Zend\Validator\Digits::STRING_EMPTY => '',
                                                     ),
                                                 ),
                                             ),
