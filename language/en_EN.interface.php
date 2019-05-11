@@ -161,5 +161,7 @@ return [
     'tr_meliscms_category_select_lang_filter tooltip' => 'Filter the categories by language',
     'tr_meliscmsnews_plugin_filter_category_start' => 'Category start',
     'tr_meliscmsnews_plugin_filter_category_start tooltip' => 'Set a starting category',
+    // plugin setting error messages
+    'tr_melis_cms_categories_plugin_category_start_empty' => 'Value is required and can\'t be empty'
 
 ];
