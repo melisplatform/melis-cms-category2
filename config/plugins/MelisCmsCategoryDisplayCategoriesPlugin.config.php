@@ -24,7 +24,7 @@ return array(
                     ),
                     'melis' => array(
                         'name' => 'tr_MelisCmsCategoryDisplayCategories_Name',
-                        'thumbnail' => '/MelisCmsCategory2/plugins/images/category-display-plugin.jpg',
+                        'thumbnail' => '/MelisCmsCategory2/plugins/images/category-display-plugin_1.jpg',
                         'description' => 'tr_MelisCmsCategoryDisplayCategories_Description',
                         'files' => array(
                             'css' => array(
