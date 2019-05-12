@@ -12,13 +12,13 @@
 <div>
     <?php } ?>
     <div class="melis-cms-categories-display" id="melis-cms-categories-display-<?=$pluginData['id']?>>" data-plugin-id="<?=$pluginData['id']?>">
-        <?php if (! empty($siteId)) {?>
-<!--            <div class="alert alert-info">-->
-<!--            </div>-->
-        <?php } ?>
-        <ul>
-            <?= $this->renderTreeRec($categoryData); ?>
-        </ul>
+        <?php if (! empty($categoryData)) {?>
+                <ul>
+                    <?= $this->renderTreeRec($categoryData); ?>
+                </ul>
+        <?php } else {?>
+                <p>No results</p>
+        <?php }?>
 
     </div>
 </div>

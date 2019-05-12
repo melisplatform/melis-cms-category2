@@ -35,19 +35,13 @@ class RenderRecTreeHelper extends AbstractHelper
      */
     private function constructTree($categoryData,$ctr = 0)
     {
+
         if (! empty($categoryData) && is_array($categoryData)) {
             foreach ($categoryData as $idx => $category) {
                 $categoryText = $category['text'] ?? null;
                     // check if the category is linked to a site
-                    $classLinkedToSite = null;
-                    if (isset($category['linked_to_site_bool']) && $category['linked_to_site_bool']) {
-                        $ctr ++ ;
-                        $categoryData['number_of_linked_to_site'] = $ctr;
-                    }
                     echo "<li>";
                     echo "<span>$category[cat2_id] - $categoryText</span>";
-
-
                 if (! empty($category['children'])){
                     echo "<ul>";
                     echo $this->constructTree($category['children'],$ctr);

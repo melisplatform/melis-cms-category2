@@ -27,7 +27,11 @@
     -o-transition: all 0.2s ease-in-out;
     transition: all 0.2s ease-in-out;
 }
-
+.melis-cms-categories-display ul li span:hover {
+    background: rgba(249, 124, 119, 0.42);
+    box-shadow: inset 0 0 1px rgba(169, 68, 66, 0.38);
+    color: #525151;
+}
 .melis-cms-categories-display ul li span i {
     padding: 0 3px 0 4px;
 }

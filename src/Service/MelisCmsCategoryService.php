@@ -517,16 +517,11 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
             $catData[$key]['children'] = $this->getCategoryTreeview($fatherId, $langId, $onlyValid, $siteId);
 
         }
-
-        // put key to indicate that the category is linked to given siteId
-        if (! empty($siteId)) {
-            $catData = $this->putCategoriesIndicatorAssocSite($catData,$siteId);
-        }
         // find available text just to double check
         if (! empty($langId)) {
             $catData = $this->getCategoryAvailableText($catData,$langId);
         }
-
+        // return results
         $results = $catData;
 
         // Service implementation end
@@ -728,5 +723,23 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
         }
 
         return $categoryData;
+    }
+
+    public function returnCategoryBasedFromSiteId($categoryListData, $siteId)
+    {
+        if (! empty($categoryListData)) {
+            foreach ($categoryListData as $idx => $val) {
+                // check category if it is linked to the siteId
+                if (!in_array($siteId,$val['sites'])) {
+                    unset($categoryListData[$idx]);
+                }
+                // recursive strategy form children
+                if (isset($val['children']) && ! empty($val['children'])) {
+                    $this->returnCategoryBasedFromSiteId($val['children'],$siteId);
+                }
+            }
+        }
+
+        return $categoryListData;
     }
 }

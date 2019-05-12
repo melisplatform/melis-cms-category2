@@ -89,7 +89,6 @@ class MelisCmsCategoryDisplayCategoriesPlugin extends MelisTemplatingPlugin
         }
         // category data
         $categoryListData = $melisCmsCategorySvc->getCategoryTreeview($categoryStart,$langId,null,$siteId);
-
         // start only on what is set category_start
         if (! empty($data['category_start'])) {
             if (! empty($categoryListData)) {
@@ -101,7 +100,12 @@ class MelisCmsCategoryDisplayCategoriesPlugin extends MelisTemplatingPlugin
                 }
             }
         }
-
+        // reset array indexes
+        $categoryListData = array_values($categoryListData);
+        // return category only based from siteId selected
+        if (! empty($siteId)) {
+            $categoryListData = $melisCmsCategorySvc->returnCategoryBasedFromSiteId($categoryListData,$siteId);
+        }
         /*
          * Passing variables to the view phtml file
          */
