@@ -48,12 +48,11 @@ class RenderRecTreeHelper extends AbstractHelper
                     // check if the category is linked to a site
                     $classLinkedToSite = null;
                     if (isset($category['linked_to_site_bool']) && $category['linked_to_site_bool']) {
-                        $classLinkedToSite = 'text-green';
                         $ctr ++ ;
                         $categoryData['number_of_linked_to_site'] = $ctr;
                     }
                     echo "<li>";
-                    echo "<span class='$classLinkedToSite'>$statusIndicator $category[cat2_id] - $categoryText</span>";
+                    echo "<span>$statusIndicator $category[cat2_id] - $categoryText</span>";
 
 
                 if (! empty($category['children'])){
