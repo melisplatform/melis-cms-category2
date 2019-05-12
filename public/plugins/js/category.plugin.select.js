@@ -158,7 +158,7 @@ $(function(){
     body.on('change',"#categorySelectLangFilter", function(){
         var value = this.value;
         var cmsCategoryTree = $(".melis-cms-category-select-tree");
-        var langLocale = $("#categorySelectLangFilter").val();
+        var siteId = $("#categorySelectSiteFilter").val();
         if (typeof(cmsCategoryTree.jstree(true).settings) !== "undefined" ) {
             melisCoreTool.pending('#categorySelectSiteFilter');
             melisCoreTool.pending('#clear-search');
@@ -168,7 +168,7 @@ $(function(){
             melisCoreTool.pending('#refresh-tree');
             melisCoreTool.pending('#categorySelectSiteFilter');
             melisCoreTool.pending(this);
-            cmsCategoryTree.jstree(true).settings.core.data.data = [{name : "langlocale", value: langLocale},{name:"siteId", value : value}];
+            cmsCategoryTree.jstree(true).settings.core.data.data = [{name : "langlocale", value: value},{name:"siteId", value : siteId}];
             cmsCategoryTree.jstree(true).refresh();
         }
     });
