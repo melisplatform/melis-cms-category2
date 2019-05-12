@@ -41,6 +41,9 @@
 .melis-cms-categories-display ul li span i.text-danger {
     color:#a94442;
 }
+.melis-cms-categories-display ul li ul {
+    margin-left: 30px;
+}
 .text-green {
     color:#72af46 !important;
 }
