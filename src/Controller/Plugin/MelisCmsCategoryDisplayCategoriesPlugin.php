@@ -88,7 +88,7 @@ class MelisCmsCategoryDisplayCategoriesPlugin extends MelisTemplatingPlugin
             $categoryStart = $melisCmsCategorySvc->getCategoryDataById($categoryStart)->cat2_father_cat_id;
         }
         // category data
-        $categoryListData = $melisCmsCategorySvc->getCategoryTreeview($categoryStart,$langId,null,$siteId);
+        $categoryListData = $melisCmsCategorySvc->getCategoryTreeview($categoryStart,$langId,true,$siteId);
         // start only on what is set category_start
         if (! empty($data['category_start'])) {
             if (! empty($categoryListData)) {
@@ -106,7 +106,7 @@ class MelisCmsCategoryDisplayCategoriesPlugin extends MelisTemplatingPlugin
         if (! empty($siteId)) {
             $categoryListData = array_values($melisCmsCategorySvc->returnCategoryBasedFromSiteId($categoryListData,$siteId));
         }
-       
+
         /*
          * Passing variables to the view phtml file
          */
