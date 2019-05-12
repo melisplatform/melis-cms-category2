@@ -735,7 +735,9 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
                 }
                 // recursive strategy form children
                 if (isset($val['children']) && ! empty($val['children'])) {
-                    $categoryListData[$idx]['children'] = $this->returnCategoryBasedFromSiteId($val['children'],$siteId);
+                    if (isset($categoryListData[$idx])) {
+                        $categoryListData[$idx]['children'] = $this->returnCategoryBasedFromSiteId($val['children'],$siteId);
+                    }
                 }
             }
         }
