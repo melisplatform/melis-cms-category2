@@ -22,9 +22,9 @@
     "ext-openssl": "*",
     "ext-json": "*",
     "ext-pdo_mysql": "*",
-    "melisplatform/melis-core": "2.3 - 3",
-    "melisplatform/melis-cms": "2.3 - 3",
-    "justinrainbow/json-schema": "5.2.1"
+    "justinrainbow/json-schema": "5.2.1",
+    "melisplatform/melis-core": "*",
+    "melisplatform/melis-cms": "*"
   },
   "autoload": {
     "psr-4": {
