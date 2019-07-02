@@ -23,6 +23,18 @@ return array(
                         ),
                     ),
                     'melis' => array(
+                        /*
+                       * if set this plugin will belong to a specific marketplace section,
+                       * if not it will go directly to ( Others ) section
+                       *  - available section for templating plugins as of 2019-05-16
+                       *    - MelisCms
+                       *    - MelisMarketing
+                       *    - MelisSite
+                       *    - MelisCommerce
+                       *    - Others
+                       *    - CustomProjects
+                       */
+                        'section' => 'MelisCms',
                         'name' => 'tr_MelisCmsCategoryDisplayCategories_Name',
                         'thumbnail' => '/MelisCmsCategory2/plugins/images/category-display-plugin_1.jpg',
                         'description' => 'tr_MelisCmsCategoryDisplayCategories_Description',
