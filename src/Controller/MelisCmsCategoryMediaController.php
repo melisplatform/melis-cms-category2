@@ -358,7 +358,10 @@ class MelisCmsCategoryMediaController extends AbstractActionController
 
                     // make folder for temporary
                     if (! file_exists($categoryPath)) {
+                        // make dir
                         mkdir($categoryPath, 0777);
+                        // make sure path is writable
+                        chmod($categoryPath,0777);
                     } else {
                         $message = 'Permission denied';
                     }
