@@ -74,12 +74,12 @@ $(function(){
 		});
 		// Category Status
 		var catStatus = 0;
-		if($('input[name="cat_status"]').is(':checked')){
+		if($('input[name="cms_cat_status"]').is(':checked')){
 			catStatus = 1;
 		}
 		
 		dataString.push({
-			name : "cat_status",
+			name : "cms_cat_status",
 			value: catStatus
 		});
 		// save media
@@ -415,7 +415,7 @@ $(function(){
 	});
 
 	// Category Information Form Status, Switch Plugin
-	$("body").on("switch-change", "#cat_status", function(event, state) {
+	$("body").on("switch-change", "#cms_cat_status", function(event, state) {
 		if(state.value == true){
 			$(this).find('input[type="checkbox"]').attr('checked','checked');
 		}else{
@@ -957,7 +957,7 @@ window.initCmsCategoryTreeView = function(){
 
 // Category Information Status Switch Initialization
 window.initCategoryStatus = function(){
-	$('#cat_status').bootstrapSwitch();
+	$('#cms_cat_status').bootstrapSwitch();
 }
 
 window.disableSaveButtons = function(){

@@ -498,7 +498,7 @@ class MelisCmsCategoryController extends AbstractActionController
             // this means property form name field is filled
             if (! empty($formValid)) {
                 $parentId       = $postValues['cat_father_cat_id'] ?? null;
-                $status         = $postValues['cat_status'] ?? null;
+                $status         = $postValues['cms_cat_status'] ?? null;
                 // validate Dates
                 $dateValidation = null;
                 $dateValidStart = null;
@@ -802,7 +802,7 @@ class MelisCmsCategoryController extends AbstractActionController
 
             $catData = array(
                 'cat_father_cat_id' => $postValues['cat_father_cat_id'],
-                'cat_status' => $postValues['cat_status'],
+                'cat_status' => $postValues['cms_cat_status'],
                 'cat_date_valid_start' => ($validFrom) ? date('Y-m-d H:i:s', strtotime($validFrom)) : null,
                 'cat_date_valid_end' => ($validTo) ? date('Y-m-d H:i:s', strtotime($validTo)) : null,
                 'cat_date_edit' => date('Y-m-d H:i:s'),
