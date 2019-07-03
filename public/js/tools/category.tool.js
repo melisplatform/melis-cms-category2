@@ -956,7 +956,7 @@ window.initCmsCategoryTreeView = function(){
 }
 
 // Category Information Status Switch Initialization
-window.initCategoryStatus = function(){
+window.initCmsCategoryStatus = function(){
 	$('#cms_cat_status').bootstrapSwitch();
 }
 

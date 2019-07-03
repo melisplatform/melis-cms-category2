@@ -291,7 +291,7 @@ return array(
                                                                         'module' => 'MelisCmsCategory2',
                                                                         'controller' => 'MelisCmsCategory',
                                                                         'action' => 'render-category-form-status',
-                                                                        'jscallback' => 'initCategoryStatus();'
+                                                                        'jscallback' => 'initCmsCategoryStatus();'
                                                                     )
                                                                 )
                                                             )
