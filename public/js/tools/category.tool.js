@@ -24,10 +24,10 @@ var categoryOpeningItemFlag = true;
 $(function(){
 	var categoryBody = $("body");
 	$("body").on("click", "#id_meliscms_categories_list_header_add_category", function(e){
-		$("#categoryTreeViewPanel").collapse("hide");
+		$("#cmsCategoryTreeViewPanel").collapse("hide");
 		var zoneId = 'id_meliscategory_categories_category';
 		var melisKey = 'meliscategory_categories_category';
-		var catTree = $('#categoryTreeView').jstree(true);
+		var catTree = $('#cmsCategoryTreeView').jstree(true);
 		var catSelected = catTree.get_selected();
 		var catFatherId = '';
 		var catSiteSelected = $("#categorySiteFilter").val();
@@ -132,7 +132,7 @@ $(function(){
 			$("#cmsSaveCategory").button("reset");
 			
 			if(data.success) {
-				$("#categoryTreeViewPanel").collapse("show");
+				$("#cmsCategoryTreeViewPanel").collapse("show");
 				
 				$("body").animate({
 			        scrollTop: 0
@@ -141,7 +141,7 @@ $(function(){
 				melisCore.flashMessenger();
 				melisHelper.melisOkNotification(data.textTitle, data.textMessage);
 				
-				var catTree = $('#categoryTreeView').jstree(true);
+				var catTree = $('#cmsCategoryTreeView').jstree(true);
 				// Get Current Url of the category Tree view
 				var realUrl = catTree.settings.core.data.url;
 				
@@ -196,7 +196,7 @@ $(function(){
 				// Deselect selected node
 				catTree.deselect_all();
 				// Remove Node Highllight
-				$("#categoryTreeView ul li div").removeClass("jstree-wholerow-clicked");
+				$("#cmsCategoryTreeView ul li div").removeClass("jstree-wholerow-clicked");
 				//refresh Category view
 				catTree.refresh();
 				// Rollback the real/default url
@@ -207,7 +207,7 @@ $(function(){
 	    		melisHelper.zoneReload(zoneId, melisKey, {catId : data.id});
 	    		
 	    		// Highlighting the node
-	    		$("#categoryTreeView #"+selectedNode+" div").first().addClass("jstree-wholerow-clicked");
+	    		$("#cmsCategoryTreeView #"+selectedNode+" div").first().addClass("jstree-wholerow-clicked");
 			}else{
 				var customErrorSite = data.customError.site;
 				if (customErrorSite === 1) {
@@ -252,7 +252,7 @@ $(function(){
 
 		$('.cat-tree-view-languages span.filter-key').text(langText);
         // disable buttons
-        $("#categoryTreeViewSearchInput").attr("disabled","disabeld");
+        $("#cmsCategoryTreeViewSearchInput").attr("disabled","disabeld");
         $(".category-list-lang-dropdown").attr("disabled","disabeld");
         $(".category-list-lang-dropdown").css("cursor","not-allowed");
         $("#clearSearchInputBtn").attr("disabled","disabeld");
@@ -264,19 +264,19 @@ $(function(){
 		//put attribute on button add category
 		$(".category-list-lang-dropdown").attr('data-locale',langLocale);
 
-		$("#categoryTreeView").data('langlocale',langLocale);
-		$("#categoryTreeView").jstree(true).settings.core.data.data = [{name : "langlocale", value: langLocale}, {name:"siteId", value : categorySiteFilter.val()}];
-		$("#categoryTreeView").jstree(true).refresh();
+		$("#cmsCategoryTreeView").data('langlocale',langLocale);
+		$("#cmsCategoryTreeView").jstree(true).settings.core.data.data = [{name : "langlocale", value: langLocale}, {name:"siteId", value : categorySiteFilter.val()}];
+		$("#cmsCategoryTreeView").jstree(true).refresh();
 	});
 
 	$("body").on('change',"#categorySiteFilter", function(){
 		var value = this.value;
-		var cmsCategoryTree = $("#categoryTreeView");
+		var cmsCategoryTree = $("#cmsCategoryTreeView");
 		var langLocale = cmsCategoryTree.data('langlocale');
 		if (typeof(cmsCategoryTree.jstree(true).settings) !== "undefined" ) {
             $(this).attr("disabled","disabeld");
             // disable buttons
-            $("#categoryTreeViewSearchInput").attr("disabled","disabeld");
+            $("#cmsCategoryTreeViewSearchInput").attr("disabled","disabeld");
             $(".category-list-lang-dropdown").attr("disabled","disabeld");
             $(".category-list-lang-dropdown").css("cursor","not-allowed");
             $("#clearSearchInputBtn").attr("disabled","disabeld");
@@ -294,11 +294,11 @@ $(function(){
 	});
 
 	// Search Input
-	$("body").on("keyup", "#categoryTreeViewSearchInput", function(e){ 
+	$("body").on("keyup", "#cmsCategoryTreeViewSearchInput", function(e){ 
 		categoryOpeningItemFlag = false;
 		
 		var searchString = $(this).val().trim();
-		var searchResult = $('#categoryTreeView').jstree('search', searchString);
+		var searchResult = $('#cmsCategoryTreeView').jstree('search', searchString);
 		
 		setTimeout(function(){ 
 			if($(searchResult).find('.jstree-search').length == 0 && searchString != ''){
@@ -311,11 +311,11 @@ $(function(){
 		
 	});
 
-    $("body").on("keydown", "#categoryTreeViewSearchInput", function(e){
+    $("body").on("keydown", "#cmsCategoryTreeViewSearchInput", function(e){
         categoryOpeningItemFlag = false;
 
         var searchString = $(this).val().trim();
-        var searchResult = $('#categoryTreeView').jstree('search', searchString);
+        var searchResult = $('#cmsCategoryTreeView').jstree('search', searchString);
 
         setTimeout(function(){
             if($(searchResult).find('.jstree-search').length == 0 && searchString != ''){
@@ -328,7 +328,7 @@ $(function(){
 
     });
 	
-	$("body").on('keyup keypress', '#categoryTreeViewSearchForm', function(e) {
+	$("body").on('keyup keypress', '#cmsCategoryTreeViewSearchForm', function(e) {
 		var keyCode = e.keyCode || e.which;
 		if (keyCode === 13) { 
 		    e.preventDefault();
@@ -339,30 +339,30 @@ $(function(){
 	// Clear Input Search
 	$("body").on("click", "#clearSearchInputBtn", function(e){ 
 		categoryOpeningItemFlag = false;
-		var catTree = $('#categoryTreeView').jstree(true);
-		$("#categoryTreeViewSearchInput").val("");
-		$('#categoryTreeView').jstree('search', '');
+		var catTree = $('#cmsCategoryTreeView').jstree(true);
+		$("#cmsCategoryTreeViewSearchInput").val("");
+		$('#cmsCategoryTreeView').jstree('search', '');
         $("#searchNoResult").addClass('hidden');
 	});
 	
 	// Toggle Buttons for Category Tree View
 	$("body").on("click", "#expandCategoryTreeViewBtn", function(e){ 
 		categoryOpeningItemFlag = false;
-		$("#categoryTreeView").jstree("open_all");
+		$("#cmsCategoryTreeView").jstree("open_all");
 	});
 	$("body").on("click", "#collapseCategoryTreeViewBtn", function(e){ 
 		categoryOpeningItemFlag = false;
-		$("#categoryTreeView").jstree("close_all");
+		$("#cmsCategoryTreeView").jstree("close_all");
 	});
 	
 	// Refrech Category Tree View
 	$("body").on("click", "#refreshCategoryTreeView", function(e){ 
 		categoryOpeningItemFlag = false;
-		var catTree = $('#categoryTreeView').jstree(true);
+		var catTree = $('#cmsCategoryTreeView').jstree(true);
 		catTree.deselect_all();
 		catTree.refresh();
-		$("#categoryTreeViewSearchInput").val("");
-		$('#categoryTreeView').jstree('search', '');
+		$("#cmsCategoryTreeViewSearchInput").val("");
+		$('#cmsCategoryTreeView').jstree('search', '');
         $("#searchNoResult").addClass('hidden');
 	});
 	
@@ -427,7 +427,7 @@ $(function(){
 	// Category Tree Double Click Item Action
 	$("body").on("dblclick", ".jstree-node", function(evt){
 		
-		$("#categoryTreeViewPanel").collapse("hide");
+		$("#cmsCategoryTreeViewPanel").collapse("hide");
 		
 		var catId = parseInt($(this).attr("id"), 10);
     	
@@ -440,7 +440,7 @@ $(function(){
         }
 
 		// Highlighting the node
-		$("#categoryTreeView #"+catId+" div").first().addClass("jstree-wholerow-clicked");
+		$("#cmsCategoryTreeView #"+catId+" div").first().addClass("jstree-wholerow-clicked");
 
 		evt.stopPropagation();
 		evt.preventDefault();
@@ -614,7 +614,7 @@ $(function(){
         }
     });
 	categoryBody.on('click', '#id_meliscms_catergories_list_categories_tree' , function(){
-        $('#categoryTreeView').jstree("deselect_all");
+        $('#cmsCategoryTreeView').jstree("deselect_all");
 	});
 
 });
@@ -647,13 +647,13 @@ window.boldCategoryParents = function(){
 };
 window.initCmsCategoryTreeView = function(){
 	
-	$("body").on("click", "#categoryTreeView", function(evt){
-		$("#categoryTreeView ul li div").removeClass("jstree-wholerow-clicked");
+	$("body").on("click", "#cmsCategoryTreeView", function(evt){
+		$("#cmsCategoryTreeView ul li div").removeClass("jstree-wholerow-clicked");
 		evt.stopPropagation();
 		evt.preventDefault();
 	});
 	
-	$('#categoryTreeView')
+	$('#cmsCategoryTreeView')
 		.on('changed.jstree', function (e, data) {
 			//enableDisableAddCategoryBtn('enable');
 		})
@@ -661,7 +661,7 @@ window.initCmsCategoryTreeView = function(){
 			//enableDisableAddCategoryBtn('disable');
 		})
 		.on('loading.jstree', function (e, data) {
-			melisCoreTool.pending("categoryTreeViewSearchInput");
+			melisCoreTool.pending("cmsCategoryTreeViewSearchInput");
 			melisCoreTool.pending("categorySiteFilter");
 		})
 		.on('loaded.jstree', function (e, data) {
@@ -684,7 +684,7 @@ window.initCmsCategoryTreeView = function(){
 				father.html(temp.get(0).outerHTML  + fatherIcon +' ' + father.text() );
 			});
             $("#categorySiteFilter").removeAttr('disabled');
-            $("#categoryTreeViewSearchInput").removeAttr('disabled');
+            $("#cmsCategoryTreeViewSearchInput").removeAttr('disabled');
             $(".category-list-lang-dropdown").removeAttr('disabled');
             $(".category-list-lang-dropdown").css("cursor","pointer");
             $("#clearSearchInputBtn").removeAttr('disabled');
@@ -696,7 +696,7 @@ window.initCmsCategoryTreeView = function(){
 			} else {
                 $("#noResultData").fadeOut("fast");
 			}
-            $("#categoryTreeViewSearchInput").trigger('keydown');
+            $("#cmsCategoryTreeViewSearchInput").trigger('keydown');
 
 		})
 		.on('ready.jstree', function (e, data) {
@@ -820,7 +820,7 @@ window.initCmsCategoryTreeView = function(){
 		                	var parentId = parseInt(node.id);
 		                	var position = node.children.length + 1;
 
-		                	$("#categoryTreeViewPanel").collapse("hide");
+		                	$("#cmsCategoryTreeViewPanel").collapse("hide");
 
 		                	var zoneId = "id_meliscategory_categories_category";
 		                	var melisKey = "meliscategory_categories_category";
@@ -842,7 +842,7 @@ window.initCmsCategoryTreeView = function(){
                             $("#"+zoneId).removeClass("hidden");
 		            		melisHelper.zoneReload(zoneId, melisKey, {catId : catId, forEditing : true});
 
-		            		$("#categoryTreeViewPanel").collapse("hide");
+		            		$("#cmsCategoryTreeViewPanel").collapse("hide");
 
 		                }
 		            },
@@ -889,7 +889,7 @@ window.initCmsCategoryTreeView = function(){
 			        		        encode		: true
 			        			}).done(function(data) {
 			        				if(data.success) {
-			        					var catTree = $('#categoryTreeView').jstree(true);
+			        					var catTree = $('#cmsCategoryTreeView').jstree(true);
 			        					catTree.delete_node(cattId+'_categoryId_anchor');
 
 			        	            	if($("#cmsSaveCategory").data("catid")==cattId){
@@ -925,7 +925,7 @@ window.initCmsCategoryTreeView = function(){
             "dblclick_toggle" : false,
 	        "data" : {
 	        	"cache" : false,
-	            "url" : "/melis/MelisCmsCategory2/MelisCmsCategoryList/getCategoryTreeView?langlocale="+$("#categoryTreeView").data('langlocale'),
+	            "url" : "/melis/MelisCmsCategory2/MelisCmsCategoryList/getCategoryTreeView?langlocale="+$("#cmsCategoryTreeView").data('langlocale'),
 	        },
 	    },
 	    "types" : {

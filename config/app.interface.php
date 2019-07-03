@@ -44,7 +44,6 @@ return array(
                 'js' => [
                     '/MelisCmsCategory2/assets/jstree/dist/jstree.min.js',
                     '/MelisCmsCategory2/js/tools/category.tool.js',
-                    '/MelisCmsCategory2/js/tools/documents.tool.js',
                     '/MelisCmsCategory2/js/tools/category.media.tool.js',
                     // for selecting a category in a tree
                     '/MelisCmsCategory2/plugins/js/category.plugin.select.js',

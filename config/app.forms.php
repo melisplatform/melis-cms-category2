@@ -10,7 +10,7 @@ return array(
                     'meliscategory_categories_search_input' => array(
                         'attributes' => array(
                             'name' => '',
-                            'id' => 'categoryTreeViewSearchForm',
+                            'id' => 'cmsCategoryTreeViewSearchForm',
                             'method' => '',
                             'action' => '',
                         ),
@@ -18,13 +18,13 @@ return array(
                         'elements' => array(
                             array(
                                 'spec' => array(
-                                    'name' => 'categoryTreeViewSearchInput',
+                                    'name' => 'cmsCategoryTreeViewSearchInput',
                                     'type' => 'MelisText',
                                     'options' => array(
                                         'label' => '',
                                     ),
                                     'attributes' => array(
-                                        'id' => 'categoryTreeViewSearchInput',
+                                        'id' => 'cmsCategoryTreeViewSearchInput',
                                         'placeholder' => 'tr_meliscategory_categories_list_tree_view_search_input',
                                     )
                                 )
