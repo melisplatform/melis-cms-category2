@@ -354,7 +354,7 @@ class MelisCmsCategoryMediaController extends AbstractActionController
                     } else {
                         $message = 'Permission denied';
                     }
-                    $categoryPath = $path ."$categoryId/";
+                    $categoryPath = $path ."$categoryId";
 
                     // make folder for temporary
                     if (! file_exists($categoryPath)) {
@@ -367,7 +367,7 @@ class MelisCmsCategoryMediaController extends AbstractActionController
                     }
 
                     if (!$imageError) {
-                        $path = $path . "$categoryId/";
+                        $path = $path . "$categoryId";
                         // move the file
                         $tmpFileName = $path.$fileName;
                         // check first if file exists
