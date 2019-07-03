@@ -343,8 +343,6 @@ class MelisCmsCategoryMediaController extends AbstractActionController
                     }
                 }
                 $path = $_SERVER['DOCUMENT_ROOT'] . "/media";
-                // make sure media directory is writable
-                chmod($path,0777);
                 // check first if media directory is writable
                 if (is_writable($path)) {
                     // create categories folder if not created
