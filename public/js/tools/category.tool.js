@@ -426,7 +426,7 @@ $(function(){
 	
 	// Category Tree Double Click Item Action
 	$("body").on("dblclick", "#id_meliscms_catergories_list_categories_tree .jstree-node", function(evt){
-		
+        evt.stopPropagation();
 		$("#cmsCategoryTreeViewPanel").collapse("hide");
 		
 		var catId = parseInt($(this).attr("id"), 10);
@@ -441,7 +441,6 @@ $(function(){
 
 		// Highlighting the node
 		$("#cmsCategoryTreeView #"+catId+" div").first().addClass("jstree-wholerow-clicked");
-
 		evt.stopImmediatePropagation();
 		evt.preventDefault();
 	});
