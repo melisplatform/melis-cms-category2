@@ -425,7 +425,7 @@ $(function(){
 
 	
 	// Category Tree Double Click Item Action
-	$("body").on("dblclick", ".jstree-node", function(evt){
+	$("body").on("dblclick", "#id_meliscms_catergories_list_categories_tree .jstree-node", function(evt){
 		
 		$("#cmsCategoryTreeViewPanel").collapse("hide");
 		
