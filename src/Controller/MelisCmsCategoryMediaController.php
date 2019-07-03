@@ -352,20 +352,17 @@ class MelisCmsCategoryMediaController extends AbstractActionController
                     } else {
                         $message = 'Permission denied';
                     }
-                    $categoryPath = $path ."$categoryId";
+                    $categoryPath = $path ."$categoryId/";
 
                     // make folder for temporary
                     if (! file_exists($categoryPath)) {
-                        // make dir
                         mkdir($categoryPath, 0777);
-                        // make sure path is writable
-                        chmod($categoryPath,0777);
                     } else {
                         $message = 'Permission denied';
                     }
 
                     if (!$imageError) {
-                        $path = $path . "$categoryId";
+                        $path = $path . "$categoryId/";
                         // move the file
                         $tmpFileName = $path.$fileName;
                         // check first if file exists
@@ -373,6 +370,7 @@ class MelisCmsCategoryMediaController extends AbstractActionController
                         if (file_exists($tmpFileName)) {
                             $fileName = $categoryMediaSvc->renameFileRec($tmpFileName);
                         }
+
                         // upload to specified folder
                         $success = $categoryMediaSvc->uploadFile($file,$path,$fileName);
                         if ($success === true) {
