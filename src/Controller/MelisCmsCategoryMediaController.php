@@ -173,7 +173,8 @@ class MelisCmsCategoryMediaController extends AbstractActionController
             $mediaPath = $_SERVER['DOCUMENT_ROOT'] . "/media/categories/tmp/";
             $extensionPattern = "*.{png,jpeg,jpg,svg}";
            // $files = $categoryMediaSvc->getFilesInDir($mediaPath,$extensionPattern, true);
-
+//            print_r($category2Session->getArrayCopy());
+//            die;
             $files = $category2Session['images'] ?? null;
             if (! empty($files)) {
                 foreach ($files as $idx => $val) {
@@ -184,8 +185,6 @@ class MelisCmsCategoryMediaController extends AbstractActionController
                 }
             }
         }
-
-
         $view->melisKey = $this->getMelisKey();
         $view->mediaData = $categoryMediaData;
         $view->categoryId = $categoryId;
@@ -468,7 +467,7 @@ class MelisCmsCategoryMediaController extends AbstractActionController
             if (! empty($imageName) && ! empty($categoryId)) {
                 // delete category in db and delete files in the directory
                 $fullPath = $_SERVER['DOCUMENT_ROOT'] . "/../public/media/categories/$categoryId/";
-                $status = $categoryMediaSvc->deleteFile($fullPath,$imageName);
+                $status = $categoryMediaSvc->deleteFile($fullPath,$imageName,$fileType);
                 // default
                 $message = "tr_meliscms_categories_confirm_delete_file_success";
                 if ($fileType == 'image') {
