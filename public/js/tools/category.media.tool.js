@@ -88,7 +88,7 @@ $(document).ready(function(){
         var parent = $(this).parent();
         var currentImageValue = parent.parent().find('input').val();
         var images = "";
-        var panelHeight = $('#categoryInfoPanel .panel-body').height() + 290;
+        var panelHeight = $('#cmsCategoryInfoPanel .panel-body').height() + 290;
         $('.viewImage').parent().parent().find('input').each(function(i,val){
             var tmpVal = $(val).val();
             if (currentImageValue === tmpVal) {
