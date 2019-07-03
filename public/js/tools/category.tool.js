@@ -627,13 +627,13 @@ window.initButtonScrollToTop = function(){
     }
 };
 window.enableDisableAddCategoryBtn = function(action){
-	var addCategory = $('#id_meliscms_categories_list_header_add_category');
+	var addCmsCategory = $('#id_meliscms_categories_list_header_add_category');
 	if(action == 'enable'){
-		addCategory.attr('disabled', false);
-		addCategory.attr('title', null);
+		addCmsCategory.attr('disabled', false);
+		addCmsCategory.attr('title', null);
 	}else if (action == 'disable'){
-		addCategory.attr('disabled', true);
-		addCategory.attr('title', translations.tr_meliscategory_categories_category_no_selected_catalog_category);
+		addCmsCategory.attr('disabled', true);
+		addCmsCategory.attr('title', translations.tr_meliscategory_categories_category_no_selected_catalog_category);
 	}
 };
 window.boldCategoryParents = function(){
