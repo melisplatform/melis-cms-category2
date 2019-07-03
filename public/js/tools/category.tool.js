@@ -442,7 +442,7 @@ $(function(){
 		// Highlighting the node
 		$("#cmsCategoryTreeView #"+catId+" div").first().addClass("jstree-wholerow-clicked");
 
-		evt.stopPropagation();
+		evt.stopImmediatePropagation();
 		evt.preventDefault();
 	});
 	
