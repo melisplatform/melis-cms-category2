@@ -654,17 +654,17 @@ window.initCmsCategoryTreeView = function(){
 	});
 	
 	$('#cmsCategoryTreeView')
-		.on('changed.jstree', function (e, data) {
+		.on(this + ' changed.jstree', function (e, data) {
 			//enableDisableAddCategoryBtn('enable');
 		})
-		.on('refresh.jstree', function (e, data) {
+		.on(this + ' refresh.jstree', function (e, data) {
 			//enableDisableAddCategoryBtn('disable');
 		})
-		.on('loading.jstree', function (e, data) {
+		.on(this + ' loading.jstree', function (e, data) {
 			melisCoreTool.pending("cmsCategoryTreeViewSearchInput");
 			melisCoreTool.pending("categorySiteFilter");
 		})
-		.on('loaded.jstree', function (e, data) {
+		.on(this + ' loaded.jstree', function (e, data) {
             melisCoreTool.pending("meliscategory_categories_list_search_input");
 			var temp = $('ul.jstree-container-ul > li > a');
 			temp.each(function(){
@@ -675,8 +675,8 @@ window.initCmsCategoryTreeView = function(){
 			})
 
 		})
-		.on('refresh.jstree', function (e, data) {
-			var temp = $('ul.jstree-container-ul > li > a');
+		.on(this + ' refresh.jstree', function (e, data) {
+			var temp = $(this + ' ul.jstree-container-ul > li > a');
 			temp.each(function(){
 				var father = $(this);
 				var fatherIcon = father.data('fathericon');
@@ -705,7 +705,7 @@ window.initCmsCategoryTreeView = function(){
 		.on('load_node.jstree', function (e, data) {
 			/*console.log(data);*/
 		})
-		.on('open_node.jstree', function (e, data) {
+		.on(this + ' open_node.jstree', function (e, data) {
 			
 			if(categoryOpeningItemFlag == true){
 				if($(".cat-div").length){
@@ -724,7 +724,7 @@ window.initCmsCategoryTreeView = function(){
 				}
 			}
 		})
-		.on('after_open.jstree', function (e, data) {
+		.on(this + ' after_open.jstree', function (e, data) {
 			
 			$.each(data.node.children_d, function(k, v){
 				
@@ -747,7 +747,7 @@ window.initCmsCategoryTreeView = function(){
 				
 			});
 		 })
-		.on("move_node.jstree", function (e, data) {
+		.on(this + " move_node.jstree", function (e, data) {
 	        // Category Id
 	        var categoryId = data.node.id;
 	        // New category Parent ID
@@ -947,13 +947,7 @@ window.initCmsCategoryTreeView = function(){
 	        "types", // Plugins for Customizing the Nodes
         ]
     });
-	
-	$("body").on("click", ".categoryProductsExport", function() {
-		if(!melisCoreTool.isTableEmpty("categoryProductListTbl")) {
-			melisCoreTool.exportData('/melis/MelisCommerce/MelisComCategory/productsExportToCsv?catId='+$(this).data('catid'));
-		}
-	});
-}
+};
 
 // Category Information Status Switch Initialization
 window.initCmsCategoryStatus = function(){
