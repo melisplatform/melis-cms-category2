@@ -666,7 +666,7 @@ window.initCmsCategoryTreeView = function(){
 		})
 		.on(this + ' loaded.jstree', function (e, data) {
             melisCoreTool.pending("meliscategory_categories_list_search_input");
-			var temp = $('ul.jstree-container-ul > li > a');
+			var temp = $(this + ' ul.jstree-container-ul > li > a');
 			temp.each(function(){
 				var father = $(this);
 				var fatherIcon = father.data('fathericon');
@@ -710,12 +710,12 @@ window.initCmsCategoryTreeView = function(){
 			if(categoryOpeningItemFlag == true){
 				if($(".cat-div").length){
 					// if Node open sub nodes and not visible to the parent container, this will scroll down to show the sub nodes
-					if($(".cat-div #"+data.node.id).offset().top + $(".cat-div #"+data.node.id).height() > $(".cat-div").offset().top + $(".cat-div").height() ){
+					if($(this + " .cat-div #"+data.node.id).offset().top + $(this + " .cat-div #"+data.node.id).height() > $(this + " .cat-div").offset().top + $(this + " .cat-div").height() ){
 						// exucute scroll after the opening animation of the node
 						$timeOut = setTimeout(function(){ 
-							var catContainer = $('.cat-div').scrollTop();
+							var catContainer = $(this + ' .cat-div').scrollTop();
 							var catItemHeight = $(".cat-div #"+data.node.id).innerHeight()
-							$('.cat-div').animate({
+							$(this + ' .cat-div').animate({
 								scrollTop: catContainer + catItemHeight
 							}, 'slow');
 							
@@ -728,8 +728,8 @@ window.initCmsCategoryTreeView = function(){
 			
 			$.each(data.node.children_d, function(k, v){
 				
-				var textlang = $('#'+v+'_anchor').data('textlang');
-				var products = $('#'+v+'_anchor').data('numprods');
+				var textlang = $(this + ' #'+v+'_anchor').data('textlang');
+				var products = $(this + ' #'+v+'_anchor').data('numprods');
 				var spanHtml = null;
 			// 	var seoId = $('#'+v+'_anchor').data('seopage');
 			// 	if(seoId){
@@ -740,9 +740,9 @@ window.initCmsCategoryTreeView = function(){
 					spanHtml = ' ' + textlang ;
 				}
 				
-				if(!$('#'+v+'_anchor').hasClass('updatedText')){
-					$('#'+v+'_anchor').append(spanHtml);
-					$('#'+v+'_anchor').addClass('updatedText');
+				if(!$(this + ' #'+v+'_anchor').hasClass('updatedText')){
+					$(this + ' #'+v+'_anchor').append(spanHtml);
+					$(this + ' #'+v+'_anchor').addClass('updatedText');
 				}
 				
 			});
