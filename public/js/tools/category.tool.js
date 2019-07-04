@@ -102,7 +102,7 @@ $(function(){
 
 
 		// Category Transalations
-		$("form.cat_trans_form").each(function(){
+		$("#id_meliscategory_categories_category_form_transalations form.cat_trans_form").each(function(){
 			langLocale = $(this).data("locale");
 			langId = $(this).data("langid");
 			
