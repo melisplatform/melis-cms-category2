@@ -636,15 +636,6 @@ window.enableDisableAddCategoryBtn = function(action){
 		addCmsCategory.attr('title', translations.tr_meliscategory_categories_category_no_selected_catalog_category);
 	}
 };
-window.boldCategoryParents = function(){
-    var temp = $('ul.jstree-container-ul > li > a');
-    // temp.each(function(){
-    //     var father = $(this);
-    //     var fatherIcon = father.data('fathericon');
-    //     var temp = father.find('i');
-    //     father.html(temp.get(0).outerHTML + '<strong>' + fatherIcon +' ' + father.text() + '</strong>');
-    // });
-};
 window.initCmsCategoryTreeView = function(){
 	
 	$("body").on("click", "#cmsCategoryTreeView", function(evt){
@@ -654,19 +645,19 @@ window.initCmsCategoryTreeView = function(){
 	});
 	
 	$('#cmsCategoryTreeView')
-		.on(this + ' changed.jstree', function (e, data) {
+		.on('#cmsCategoryTreeView changed.jstree', function (e, data) {
 			//enableDisableAddCategoryBtn('enable');
 		})
-		.on(this + ' refresh.jstree', function (e, data) {
+		.on('#cmsCategoryTreeView refresh.jstree', function (e, data) {
 			//enableDisableAddCategoryBtn('disable');
 		})
-		.on(this + ' loading.jstree', function (e, data) {
+		.on('#cmsCategoryTreeView loading.jstree', function (e, data) {
 			melisCoreTool.pending("cmsCategoryTreeViewSearchInput");
 			melisCoreTool.pending("categorySiteFilter");
 		})
-		.on(this + ' loaded.jstree', function (e, data) {
+		.on('#cmsCategoryTreeView loaded.jstree', function (e, data) {
             melisCoreTool.pending("meliscategory_categories_list_search_input");
-			var temp = $(this + ' ul.jstree-container-ul > li > a');
+			var temp = $('#cmsCategoryTreeView ul.jstree-container-ul > li > a');
 			temp.each(function(){
 				var father = $(this);
 				var fatherIcon = father.data('fathericon');
@@ -675,8 +666,8 @@ window.initCmsCategoryTreeView = function(){
 			})
 
 		})
-		.on(this + ' refresh.jstree', function (e, data) {
-			var temp = $(this + ' ul.jstree-container-ul > li > a');
+		.on('#cmsCategoryTreeView refresh.jstree', function (e, data) {
+			var temp = $('#cmsCategoryTreeView ul.jstree-container-ul > li > a');
 			temp.each(function(){
 				var father = $(this);
 				var fatherIcon = father.data('fathericon');
@@ -705,17 +696,17 @@ window.initCmsCategoryTreeView = function(){
 		.on('load_node.jstree', function (e, data) {
 			/*console.log(data);*/
 		})
-		.on(this + ' open_node.jstree', function (e, data) {
+		.on('#cmsCategoryTreeView open_node.jstree', function (e, data) {
 			
 			if(categoryOpeningItemFlag == true){
 				if($(".cat-div").length){
 					// if Node open sub nodes and not visible to the parent container, this will scroll down to show the sub nodes
-					if($(this + " .cat-div #"+data.node.id).offset().top + $(this + " .cat-div #"+data.node.id).height() > $(this + " .cat-div").offset().top + $(this + " .cat-div").height() ){
+					if($("#cmsCategoryTreeView .cat-div #"+data.node.id).offset().top + $("#cmsCategoryTreeView .cat-div #"+data.node.id).height() > $("#cmsCategoryTreeView .cat-div").offset().top + $("#cmsCategoryTreeView .cat-div").height() ){
 						// exucute scroll after the opening animation of the node
 						$timeOut = setTimeout(function(){ 
-							var catContainer = $(this + ' .cat-div').scrollTop();
+							var catContainer = $('#cmsCategoryTreeView .cat-div').scrollTop();
 							var catItemHeight = $(".cat-div #"+data.node.id).innerHeight()
-							$(this + ' .cat-div').animate({
+							$('#cmsCategoryTreeView .cat-div').animate({
 								scrollTop: catContainer + catItemHeight
 							}, 'slow');
 							
@@ -724,12 +715,12 @@ window.initCmsCategoryTreeView = function(){
 				}
 			}
 		})
-		.on(this + ' after_open.jstree', function (e, data) {
+		.on('#cmsCategoryTreeView after_open.jstree', function (e, data) {
 			
 			$.each(data.node.children_d, function(k, v){
 				
-				var textlang = $(this + ' #'+v+'_anchor').data('textlang');
-				var products = $(this + ' #'+v+'_anchor').data('numprods');
+				var textlang = $('#cmsCategoryTreeView #'+v+'_anchor').data('textlang');
+				var products = $('#cmsCategoryTreeView #'+v+'_anchor').data('numprods');
 				var spanHtml = null;
 			// 	var seoId = $('#'+v+'_anchor').data('seopage');
 			// 	if(seoId){
@@ -740,14 +731,14 @@ window.initCmsCategoryTreeView = function(){
 					spanHtml = ' ' + textlang ;
 				}
 				
-				if(!$(this + ' #'+v+'_anchor').hasClass('updatedText')){
-					$(this + ' #'+v+'_anchor').append(spanHtml);
-					$(this + ' #'+v+'_anchor').addClass('updatedText');
+				if(!$('#cmsCategoryTreeView #'+v+'_anchor').hasClass('updatedText')){
+					$('#cmsCategoryTreeView #'+v+'_anchor').append(spanHtml);
+					$('#cmsCategoryTreeView #'+v+'_anchor').addClass('updatedText');
 				}
 				
 			});
 		 })
-		.on(this + " move_node.jstree", function (e, data) {
+		.on("#cmsCategoryTreeView move_node.jstree", function (e, data) {
 	        // Category Id
 	        var categoryId = data.node.id;
 	        // New category Parent ID
@@ -784,8 +775,6 @@ window.initCmsCategoryTreeView = function(){
 			});
 			
 			dataString = $.param(dataString);
-			// make parents font weight to bold
-            boldCategoryParents();
 	        $.ajax({
 		        type        : "POST", 
 		        url         : "/melis/MelisCmsCategory2/MelisCmsCategoryList/saveCategoryTreeView",
@@ -901,7 +890,6 @@ window.initCmsCategoryTreeView = function(){
 
 			        	            	melisCore.flashMessenger();
 			        					melisHelper.melisOkNotification(data.textTitle, data.textMessage);
-                                        boldCategoryParents();
 			        				}else{
 			        					melisHelper.melisKoNotification(data.textTitle, data.textMessage, data.errors);
 			        				}
