@@ -425,8 +425,7 @@ $(function(){
 
 	
 	// Category Tree Double Click Item Action
-	$("body").on("dblclick", "#id_meliscms_catergories_list_categories_tree .jstree-node", function(evt){
-        evt.stopPropagation();
+	$("body").on("dblclick", ".cms-tree-node", function(evt){
 		$("#cmsCategoryTreeViewPanel").collapse("hide");
 		
 		var catId = parseInt($(this).attr("id"), 10);
@@ -441,8 +440,10 @@ $(function(){
 
 		// Highlighting the node
 		$("#cmsCategoryTreeView #"+catId+" div").first().addClass("jstree-wholerow-clicked");
-		evt.stopImmediatePropagation();
-		evt.preventDefault();
+        // evt.stopImmediatePropagation();
+        evt.stopPropagation();
+        evt.preventDefault();
+        // $(this).off('dblclick');
 	});
 	
 	// Open Single Node in JSTree

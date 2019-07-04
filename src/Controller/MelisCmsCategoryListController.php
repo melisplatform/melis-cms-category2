@@ -288,12 +288,10 @@ class MelisCmsCategoryListController extends AbstractActionController
 //                }
 //            }
             // Setting the Status of Category
-            if ($val['cat2_status'])
-            {
+            if ($val['cat2_status']) {
                 $categoryList[$key]['icon'] = 'fa fa-circle text-success';
             }
-            else
-            {
+            else {
                 $categoryList[$key]['icon'] = 'fa fa-circle text-danger';
             }
             unset($categoryList[$key]['cat2_status']);
@@ -309,6 +307,9 @@ class MelisCmsCategoryListController extends AbstractActionController
                 }
             }
 
+            $categoryList[$key]['li_attr'] = [
+                'class' => 'cms-tree-node'
+            ];
             $categoryList[$key]['a_attr'] = array(
                 'data-fathericon' => $itemIcon,
                 'data-fathercateid' => $val['cat2_father_cat_id'],
