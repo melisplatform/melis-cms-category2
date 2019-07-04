@@ -636,15 +636,6 @@ window.enableDisableAddCategoryBtn = function(action){
 		addCmsCategory.attr('title', translations.tr_meliscategory_categories_category_no_selected_catalog_category);
 	}
 };
-window.boldCategoryParents = function(){
-    var temp = $('ul.jstree-container-ul > li > a');
-    // temp.each(function(){
-    //     var father = $(this);
-    //     var fatherIcon = father.data('fathericon');
-    //     var temp = father.find('i');
-    //     father.html(temp.get(0).outerHTML + '<strong>' + fatherIcon +' ' + father.text() + '</strong>');
-    // });
-};
 window.initCmsCategoryTreeView = function(){
 	
 	$("body").on("click", "#cmsCategoryTreeView", function(evt){
@@ -784,8 +775,6 @@ window.initCmsCategoryTreeView = function(){
 			});
 			
 			dataString = $.param(dataString);
-			// make parents font weight to bold
-            boldCategoryParents();
 	        $.ajax({
 		        type        : "POST", 
 		        url         : "/melis/MelisCmsCategory2/MelisCmsCategoryList/saveCategoryTreeView",
@@ -901,7 +890,6 @@ window.initCmsCategoryTreeView = function(){
 
 			        	            	melisCore.flashMessenger();
 			        					melisHelper.melisOkNotification(data.textTitle, data.textMessage);
-                                        boldCategoryParents();
 			        				}else{
 			        					melisHelper.melisKoNotification(data.textTitle, data.textMessage, data.errors);
 			        				}
