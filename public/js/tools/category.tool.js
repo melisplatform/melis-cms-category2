@@ -258,7 +258,7 @@ $(function(){
         $("#clearSearchInputBtn").attr("disabled","disabeld");
         $("#collapseCategoryTreeViewBtn").attr("disabled","disabeld");
         $("#expandCategoryTreeViewBtn").attr("disabled","disabeld");
-        $("#refreshCategoryTreeView").attr("disabled","disabeld");
+        $("#refreshCmsCategoryTreeView").attr("disabled","disabeld");
         var categorySiteFilter = $("#categorySiteFilter");
         categorySiteFilter.attr("disabled","disabeld");
 		//put attribute on button add category
@@ -282,7 +282,7 @@ $(function(){
             $("#clearSearchInputBtn").attr("disabled","disabeld");
             $("#collapseCategoryTreeViewBtn").attr("disabled","disabeld");
             $("#expandCategoryTreeViewBtn").attr("disabled","disabeld");
-            $("#refreshCategoryTreeView").attr("disabled","disabeld");
+            $("#refreshCmsCategoryTreeView").attr("disabled","disabeld");
 			if (value !== "") {
 				$(".info-site-filter").fadeIn('medium');
 			} else {
@@ -356,7 +356,7 @@ $(function(){
 	});
 	
 	// Refrech Category Tree View
-	$("body").on("click", "#refreshCategoryTreeView", function(e){ 
+	$("body").on("click", "#refreshCmsCategoryTreeView", function(e){ 
 		categoryOpeningItemFlag = false;
 		var catTree = $('#cmsCategoryTreeView').jstree(true);
 		catTree.deselect_all();
@@ -690,7 +690,7 @@ window.initCmsCategoryTreeView = function(){
             $("#clearSearchInputBtn").removeAttr('disabled');
             $("#collapseCategoryTreeViewBtn").removeAttr('disabled');
             $("#expandCategoryTreeViewBtn").removeAttr('disabled');
-            $("#refreshCategoryTreeView").removeAttr('disabled');
+            $("#refreshCmsCategoryTreeView").removeAttr('disabled');
             if ($(".jstree-container-ul").children("li").length ===  0) {
                 $("#noResultData").fadeIn("fast").css("display","inline-block");
 			} else {
