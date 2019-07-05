@@ -305,11 +305,13 @@ class MelisCmsCategoryListController extends AbstractActionController
                 if (in_array($siteId,$sitesData)) {
                     $categoryList[$key]['li_attr'] = [ 'class' => 'site-filtered'];
                 }
+            } else {
+                $categoryList[$key]['li_attr'] = [
+                    'class' => 'cms-tree-node'
+                ];
             }
 
-            $categoryList[$key]['li_attr'] = [
-                'class' => 'cms-tree-node'
-            ];
+
             $categoryList[$key]['a_attr'] = array(
                 'data-fathericon' => $itemIcon,
                 'data-fathercateid' => $val['cat2_father_cat_id'],
