@@ -375,6 +375,12 @@ class MelisCmsCategoryMediaController extends AbstractActionController
                         if ($success === true) {
                             // if success then we will save the img on db
                             $tmpData = $categoryTable->getEntryById($categoryId)->current();
+
+                            $message = "tr_meliscms_categories_upload_file_success";
+                            if ($fileType == 'image') {
+                                $logTypeCode = 'CMS_CATEGORY2_IMAGE_ADD';
+                                $message = 'tr_meliscms_categories_upload_image_success';
+                            }
                             if (! empty($tmpData)) {
                                 // if data is not empty it means category is on the db
                                 // then we will save the image on db
@@ -385,12 +391,6 @@ class MelisCmsCategoryMediaController extends AbstractActionController
                                 ];
                                 $catMediaTbl = $this->getServiceLocator()->get('MelisCmsCategory2MediaTable');
                                 $catMediaTbl->save($data);
-
-                                $message = "tr_meliscms_categories_upload_file_success";
-                                if ($fileType == 'image') {
-                                    $logTypeCode = 'CMS_CATEGORY2_IMAGE_ADD';
-                                    $message = 'tr_meliscms_categories_upload_image_success';
-                                }
                             } else {
                                 $files = [];
                                 if ($fileType == 'image') {
@@ -436,7 +436,9 @@ class MelisCmsCategoryMediaController extends AbstractActionController
             // flash messenger
             $this->getEventManager()->trigger('meliscms_category2_save_end', $this, array_merge($response, array('typeCode' => $logTypeCode, 'itemId' => $categoryId)));
         }
-        $response['textMessage'] =  sprintf($translator->translate($response['textMessage']),$maxFileSizeUpload);
+        if (! is_null($maxFileSizeUpload)) {
+            $response['textMessage'] =  sprintf($translator->translate($response['textMessage']),$maxFileSizeUpload);
+        }
 
 
         return new JsonModel($response);
