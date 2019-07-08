@@ -68,18 +68,18 @@
 /**
 * JSTree Search Buttons
 */
-#categoryTreeViewPanel .btn span{
+#cmsCategoryTreeViewPanel .btn span{
     font-size: 12px;
 }
 
 @media (min-width: 1753px) and (max-width: 1850px){
-    #categoryTreeViewPanel .btn{
+    #cmsCategoryTreeViewPanel .btn{
         font-size: 10px;
     }
 }
 
 @media (min-width: 1200px) and (max-width: 1752px) {
-    #categoryTreeViewPanel .btn span{
+    #cmsCategoryTreeViewPanel .btn span{
         display: none;
     }
 }
@@ -87,7 +87,7 @@
     #id_melis_cms_categories_v2_list{
         margin-top:48px;
     }
-    #categoryTreeViewPanel {
+    #cmsCategoryTreeViewPanel {
         margin-bottom:30px;
     }
 }
@@ -169,7 +169,7 @@
 /**
  * Category Switch
  */
-.commerce-switch{
+.cms-category-switch{
     width: 210px
 }
 

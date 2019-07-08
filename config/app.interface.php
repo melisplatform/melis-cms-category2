@@ -44,7 +44,6 @@ return array(
                 'js' => [
                     '/MelisCmsCategory2/assets/jstree/dist/jstree.min.js',
                     '/MelisCmsCategory2/js/tools/category.tool.js',
-                    '/MelisCmsCategory2/js/tools/documents.tool.js',
                     '/MelisCmsCategory2/js/tools/category.media.tool.js',
                     // for selecting a category in a tree
                     '/MelisCmsCategory2/plugins/js/category.plugin.select.js',
@@ -60,7 +59,7 @@ return array(
                  * lesser requests
                  */
                 'build' => [
-                    'disable_bundle' => true,
+//                    'disable_bundle' => true,
                     // lists of assets that will be loaded in the layout
                     'css' => [
                         '/MelisCmsCategory2/build/css/bundle.css',
@@ -293,7 +292,7 @@ return array(
                                                                         'module' => 'MelisCmsCategory2',
                                                                         'controller' => 'MelisCmsCategory',
                                                                         'action' => 'render-category-form-status',
-                                                                        'jscallback' => 'initCategoryStatus();'
+                                                                        'jscallback' => 'initCmsCategoryStatus();'
                                                                     )
                                                                 )
                                                             )

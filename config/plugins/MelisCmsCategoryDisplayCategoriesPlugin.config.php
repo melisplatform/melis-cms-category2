@@ -3,6 +3,9 @@
 return array(
     'plugins' => array(
         'meliscmscategory2' => array(
+            'conf' => [
+                'rightsDisplay' => 'none'
+            ],
             'plugins' => array(
                 'MelisCmsCategoryDisplayCategoriesPlugin' => array(
                     'front' => array(

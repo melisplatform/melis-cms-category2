@@ -9,9 +9,10 @@
 
 namespace MelisCmsCategory2\Service;
 
-use MelisCommerce\Model\MelisCategory;
+use MelisCmsCategory2\Model\MelisCategory;
 use MelisCore\Service\MelisCoreGeneralService;
 use Zend\Stdlib\ArrayUtils;
+use Zend\Session\Container;
 /**
  *
  * This service handles the category system of MelisCommerce.
@@ -264,7 +265,7 @@ class MelisCmsCategoryMediaService  extends MelisCoreGeneralService
      * @param $dirPath
      * @param $filenamepath
      */
-    public function deleteFile($dirPath,$filenamePath)
+    public function deleteFile($dirPath,$filenamePath,$fileType = null)
     {
         $arrayParameters = $this->makeArrayFromParameters(__METHOD__, func_get_args());
         //service event start
@@ -273,17 +274,29 @@ class MelisCmsCategoryMediaService  extends MelisCoreGeneralService
         $filenamePath  = $arrayParameters['filenamePath'];
         $results = false;
         // implentation start
+        // get file info
+        $fileInfo = pathinfo($filenamePath);
+        $fileName = null;
+        if (! empty($fileInfo)) {
+            // get the file name and extension
+            $fileName = $fileInfo['basename'];
+        }
         //first  delete the file in the db
         $status = $this->categoryMediaTbl->deleteByField('catm2_path',$filenamePath);
-        if ($status) {
-            // get the file name and extension
-            $fileInfo = pathinfo($filenamePath);
-            $fileName = null;
-            if (! empty($fileInfo)) {
-                $fileName = $fileInfo['basename'];
-            }
-            $results = $this->removeFileInDir($dirPath,$fileName);
+        // get session of melis_cms_category2
+        $category2Session = new Container('melis_cms_category2');
+        // remove file in the session
+        if ($fileType == 'image') {
+            $fileType = "images";
         }
+        if (! empty($category2Session[$fileType])) {
+            foreach ($category2Session[$fileType] as $idx => $val) {
+              unset($category2Session[$fileType][$idx]);
+            }
+        }
+
+        // remove file in the directory
+        $results = $this->removeFileInDir($dirPath,$fileName);
 
         $arrayParameters['results'] = $results;
         //service event end

@@ -173,7 +173,8 @@ class MelisCmsCategoryMediaController extends AbstractActionController
             $mediaPath = $_SERVER['DOCUMENT_ROOT'] . "/media/categories/tmp/";
             $extensionPattern = "*.{png,jpeg,jpg,svg}";
            // $files = $categoryMediaSvc->getFilesInDir($mediaPath,$extensionPattern, true);
-
+//            print_r($category2Session->getArrayCopy());
+//            die;
             $files = $category2Session['images'] ?? null;
             if (! empty($files)) {
                 foreach ($files as $idx => $val) {
@@ -184,8 +185,6 @@ class MelisCmsCategoryMediaController extends AbstractActionController
                 }
             }
         }
-
-
         $view->melisKey = $this->getMelisKey();
         $view->mediaData = $categoryMediaData;
         $view->categoryId = $categoryId;
@@ -344,7 +343,6 @@ class MelisCmsCategoryMediaController extends AbstractActionController
                 }
                 $path = $_SERVER['DOCUMENT_ROOT'] . "/media";
                 // check first if media directory is writable
-
                 if (is_writable($path)) {
                     // create categories folder if not created
                     $path = $path . "/categories/";
@@ -377,6 +375,12 @@ class MelisCmsCategoryMediaController extends AbstractActionController
                         if ($success === true) {
                             // if success then we will save the img on db
                             $tmpData = $categoryTable->getEntryById($categoryId)->current();
+
+                            $message = "tr_meliscms_categories_upload_file_success";
+                            if ($fileType == 'image') {
+                                $logTypeCode = 'CMS_CATEGORY2_IMAGE_ADD';
+                                $message = 'tr_meliscms_categories_upload_image_success';
+                            }
                             if (! empty($tmpData)) {
                                 // if data is not empty it means category is on the db
                                 // then we will save the image on db
@@ -387,12 +391,6 @@ class MelisCmsCategoryMediaController extends AbstractActionController
                                 ];
                                 $catMediaTbl = $this->getServiceLocator()->get('MelisCmsCategory2MediaTable');
                                 $catMediaTbl->save($data);
-
-                                $message = "tr_meliscms_categories_upload_file_success";
-                                if ($fileType == 'image') {
-                                    $logTypeCode = 'CMS_CATEGORY2_IMAGE_ADD';
-                                    $message = 'tr_meliscms_categories_upload_image_success';
-                                }
                             } else {
                                 $files = [];
                                 if ($fileType == 'image') {
@@ -417,7 +415,6 @@ class MelisCmsCategoryMediaController extends AbstractActionController
                     }
 
                 } else {
-
                     $message = 'Permission denied';
                 }
             } else {
@@ -439,7 +436,9 @@ class MelisCmsCategoryMediaController extends AbstractActionController
             // flash messenger
             $this->getEventManager()->trigger('meliscms_category2_save_end', $this, array_merge($response, array('typeCode' => $logTypeCode, 'itemId' => $categoryId)));
         }
-        $response['textMessage'] =  sprintf($translator->translate($response['textMessage']),$maxFileSizeUpload);
+        if (! is_null($maxFileSizeUpload)) {
+            $response['textMessage'] =  sprintf($translator->translate($response['textMessage']),$maxFileSizeUpload);
+        }
 
 
         return new JsonModel($response);
@@ -470,7 +469,7 @@ class MelisCmsCategoryMediaController extends AbstractActionController
             if (! empty($imageName) && ! empty($categoryId)) {
                 // delete category in db and delete files in the directory
                 $fullPath = $_SERVER['DOCUMENT_ROOT'] . "/../public/media/categories/$categoryId/";
-                $status = $categoryMediaSvc->deleteFile($fullPath,$imageName);
+                $status = $categoryMediaSvc->deleteFile($fullPath,$imageName,$fileType);
                 // default
                 $message = "tr_meliscms_categories_confirm_delete_file_success";
                 if ($fileType == 'image') {
@@ -493,8 +492,10 @@ class MelisCmsCategoryMediaController extends AbstractActionController
             'textTitle'   => $title,
             'id'      => $id
         ];
-        // flash messenger
-        $this->getEventManager()->trigger('meliscms_category2_save_end', $this, array_merge($response, array('typeCode' => $logTypeCode, 'itemId' => $id)));
+        if ($id != "tmp") {
+            // flash messenger
+            $this->getEventManager()->trigger('meliscms_category2_save_end', $this, array_merge($response, array('typeCode' => $logTypeCode, 'itemId' => $id)));
+        }
 
         return new JsonModel($response);
     }
