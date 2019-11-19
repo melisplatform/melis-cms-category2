@@ -16,14 +16,15 @@
 ?>
 
 <div <?php echo $id. ' '.$data_melisKey?> class="ecom-doc-container" data-doc-relation-type="<?= $relationType; ?>" data-doc-relation-id="<?= $this->relationId; ?>" data-doc-type="file">
-    <h4>
-        <i class="fa fa-paperclip"></i> <?php echo $this->translate('tr_meliscategory_documents_file_attachments')?>
-    </h4>
-    <button class="btn btn-success pull-right category-add-file" data-type="file">
-        <i class="fa fa-plus"></i>
-        <?php echo $this->translate('tr_meliscms_categories_add_file')?>
-    </button>
-    <div class="clearfix"></div>
+    <div class="pdc-heading clearfix">
+        <h4>
+            <i class="fa fa-paperclip"></i> <?php echo $this->translate('tr_meliscategory_documents_file_attachments')?>
+        </h4>
+        <button class="btn btn-success float-right category-add-file" data-type="file">
+            <i class="fa fa-plus"></i>
+            <?php echo $this->translate('tr_meliscms_categories_add_file')?>
+        </button>
+    </div>
     <div class="parent-file-list">
         <div class="category-file-list row">
             <div class="col-md-12 margin-b-10 category-file">
