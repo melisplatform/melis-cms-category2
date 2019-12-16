@@ -64,6 +64,10 @@
 /**
 * JSTree Search Buttons
 */
+#cmsCategoryTreeViewPanel .btn {
+    padding-left: 0.3em;
+    padding-right: 0.3em;
+}
 #cmsCategoryTreeViewPanel .btn span{
     font-size: 12px;
 }
