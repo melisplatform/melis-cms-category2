@@ -457,9 +457,8 @@ $(function() {
 		});
 
 		// Category Tree Double Click Item Action
-		$categoryBody.on("dblclick", ".cms-tree-node", function(evt) {
+		$categoryBody.on("dblclick", "#cmsCategoryTreeView .cms-tree-node", function(evt) {
 			$("#cmsCategoryTreeViewPanel").collapse("hide");
-			
 			var $this 		= $(this),
 				catId 		= parseInt($this.attr("id"), 10),
 				zoneId 		= 'id_meliscategory_categories_category',
@@ -472,12 +471,11 @@ $(function() {
 
 				// Highlighting the node
 				$("#cmsCategoryTreeView #"+catId+" div").first().addClass("jstree-wholerow-clicked");
-				// evt.stopImmediatePropagation();
-				evt.stopPropagation();
-				evt.preventDefault();
 				// $(this).off('dblclick');
+			evt.stopPropagation();
+			evt.preventDefault();
 		});
-		
+
 		// Open Single Node in JSTree
 		$categoryBody.on("click", ".cat-div .jstree-node .jstree-icon", function() {
 			categoryOpeningItemFlag = true;
