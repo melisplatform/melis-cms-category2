@@ -8,7 +8,7 @@ if( melisCore.screenSize >= 768){
 				var position = stickyCatNav.position();
 					if (position.top < ($(window).scrollTop() - 10)) {
 						$("#id_meliscategory_categories_category").addClass("fix-cat");
-						$("#cmsCategoryInfoPanel").css("padding-top","66px");
+						//$("#cmsCategoryInfoPanel").css("padding-top","66px");
 						$("#cmsSaveCategory").css("margin-top","10px");
 						$("#id_meliscategory_categories_category_header").width($("#id_meliscategory_categories_list").width());
 					}
