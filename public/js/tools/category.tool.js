@@ -456,8 +456,8 @@ $(function() {
 				}
 		});
 
-		// Category Tree Double Click Item Action
-		$categoryBody.on("dblclick", "#cmsCategoryTreeView .cms-tree-node", function(evt) {
+		// Category Tree Double Click Item Action, [#cmsCategoryTreeView .cms-tree-node]
+		$categoryBody.on("dblclick", "#cmsCategoryTreeViewPanel .cms-tree-node", function(evt) {
 			$("#cmsCategoryTreeViewPanel").collapse("hide");
 			var $this 		= $(this),
 				catId 		= parseInt($this.attr("id"), 10),
