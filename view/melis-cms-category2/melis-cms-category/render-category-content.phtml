@@ -6,7 +6,7 @@
     $data_melisKey = 'data-melisKey="'.$this->melisKey.'"';
 ?>
 <div id="cmsCategoryInfoPanel" class="panel-collapse in" style="height: auto;" <?php echo $id.' '.$data_melisKey; ?>>
-	<div class="panel-body">
+	<div class="card-body">
 		<?php 
         	if(!empty($this->zoneconfig['interface'])) {
         	    foreach($this->zoneconfig['interface'] as $keyConfig => $menuConfig) {

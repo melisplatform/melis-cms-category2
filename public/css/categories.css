@@ -29,10 +29,6 @@
     overflow-y: auto !important;
 }
 
-#id_meliscommerce_categories_list .panel-group{
-    /* padding-bottom: 30px; */
-}
-
 #id_meliscms_catergories_list_categories_tree .jstree-proton .jstree-search {
     background: rgb(247, 230, 230);
     box-shadow: inset 0 0 1px rgba(169, 68, 66, 0.38);
@@ -68,6 +64,10 @@
 /**
 * JSTree Search Buttons
 */
+#cmsCategoryTreeViewPanel .btn {
+    padding-left: 0.3em;
+    padding-right: 0.3em;
+}
 #cmsCategoryTreeViewPanel .btn span{
     font-size: 12px;
 }
@@ -134,12 +134,12 @@
     padding-right: 10px;
 }
 /**
-* Category Header Panel Buttons Styles
+* Category Header card Buttons Styles
 **/
-.panel-heading-buttons{
-    margin: 10px 10px 0px
+.card-heading-buttons{
+    margin: 10px 10px 0px;
 }
-.panel-heading-buttons button{
+.card-heading-buttons button{
     margin-left: 2px;
     margin-right: 2px;
 }
@@ -158,7 +158,7 @@
 /**
  * Panel Group
  */
-.panel-group {
+.accordion-group {
     margin-bottom: 0px;
 }
 
@@ -186,10 +186,10 @@
     color: #686868 !important;
 }
 
-#id_meliscommerce_categories_category .panel-heading {
+#id_meliscommerce_categories_category .card-heading {
     position: relative;
 }
-#id_meliscommerce_categories_category.fix-cat .panel-heading {
+#id_meliscommerce_categories_category.fix-cat .card-heading {
     position: fixed;
     top: 38px;
     z-index: 105;
@@ -198,7 +198,6 @@
 /* ACCORDION */
 .a-accordion .fa-times {
     clear: none;
-    display: inline-block;
     float: right;
     font-size: 20px;
 }
@@ -233,25 +232,25 @@
     background: #932E2A;
     color: #fff;
 }
-#id_meliscommerce_categories_page .panel-heading{
+#id_meliscommerce_categories_page .card-heading{
     padding: 0;
 }
-.panel-title a.btn {
+.card-title a.btn {
     margin: 10px 0 0 10px;
 }
-.panel-title > a {
+.card-title > a {
     display: block;
     text-decoration: none;
 }
-.panel-heading .accordion-toggle:before {
+.card-heading .accordion-toggle:before {
     font-family: 'Glyphicons Halflings';
     content: "\e114";
     float: left;
     color: grey;
-    margin: 17px 0 0;
+    margin: 12px 0 0;
     padding: 0 10px;
 }
-.panel-heading .accordion-toggle.collapsed:before {
+.card-heading .accordion-toggle.collapsed:before {
     content: "\e080";
 }
 .accordion-toggle {
@@ -262,30 +261,27 @@
 #content .accordion-toggle h1.content-heading {
     text-transform: none;
 }
-#id_meliscommerce_categories_page .panel-default {
+#id_meliscommerce_categories_page .card-default {
     border: none medium;
 }
-#id_meliscommerce_categories_page .panel-title {
+#id_meliscommerce_categories_page .card-title {
     border-bottom: 1px solid #eee;
 }
-#id_meliscommerce_categories_page .panel-heading {
+#id_meliscommerce_categories_page .card-heading {
     border: none medium;
     border-bottom: none medium;
 }
-#content .panel-default > .panel-heading+.panel-collapse .panel-body {
+#content .card > .card-heading+.card-collapse .card-body {
     border: none medium;
 }
-.panel-body {
+.card-body {
     padding: 0;
 }
-.content-cont .panel-title > a {
+.content-cont .card-title > a {
     color: #111;
 }
 
 /* TABS */
-.content-cont .nav-tabs.product-text-tab li:hover {
-    /*border-bottom: 1px solid #e5e5e5; 8*/
-}
 .content-cont .product-text-tab li.active:hover a{
     background: #932E2A;
     border-color: transparent;
@@ -577,9 +573,15 @@
     color:#ff0000 !important;
 }
 .site-filtered  > .jstree-anchor{
-    color:#72af46;
+    color:#72af46 !important;
 }
 #meliscms_categories_site_filter .info-site-filter {
     font-size:12px;
     display: none;
+}
+#meliscms_categories_filter_area .btn {
+    padding: .375rem .25rem;
+}
+.row .pdc-heading {
+    margin-bottom: 1.8rem;
 }

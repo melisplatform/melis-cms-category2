@@ -10,34 +10,30 @@
     $showNoImage = "display:none";
 ?>
 <div <?= $id . $data_melisKey; ?>>
-	<div class="row">
-        <div class="parent-image-list">
-            <div class="category-image-list row">
-                <?php if (! empty($media)) {?>
-                    <?php foreach ($media as $key => $data) {
-                            $path = $data['catm2_path'] ?? null; ?>
-                        <?php if ($data['catm2_type'] == 'image' ){?>
-                            <div class="col-md-12 margin-b-10 category-image">
-                                <img src="<?= $path ?>" class="img-responsive"/>
-                                <input type="hidden" value="<?= $path ?>">
-                                <div class="category-image-option">
-                                    <a class="viewImage" target="_blank" href="<?= $path ?>"> <i class='fa fa-eye' title='View image'></i></a>
-                                    <span class="removeImage text-primary" data-categoryid="<?= $this->categoryId ?>"><i class='fa fa-times' title='Delete image'></i></span>
-                                </div>
+    <div class="parent-image-list">
+        <div class="category-image-list">
+            <?php if (! empty($media)) {?>
+                <?php foreach ($media as $key => $data) {
+                        $path = $data['catm2_path'] ?? null; ?>
+                    <?php if ($data['catm2_type'] == 'image' ){?>
+                        <div class="col-md-12 margin-b-10 category-image">
+                            <img src="<?= $path ?>" class="img-fluid"/>
+                            <input type="hidden" value="<?= $path ?>">
+                            <div class="category-image-option">
+                                <a class="viewImage" target="_blank" href="<?= $path ?>"> <i class='fa fa-eye' title='View image'></i></a>
+                                <span class="removeImage text-primary" data-categoryid="<?= $this->categoryId ?>"><i class='fa fa-times' title='Delete image'></i></span>
                             </div>
-                            <?php $currentPosition = $currentPosition + 1;?>
-                        <?php }?>
+                        </div>
+                        <?php $currentPosition = $currentPosition + 1;?>
                     <?php }?>
-                <?php } ?>
-
-
-            </div>
-            <?php
-                if (empty($media)){
-                    $showNoImage = "display:block";
-                }
-            ?>
-            <span class="no-image" style="<?= $showNoImage ?>"><?= $this->translate('tr_melis_cms_category_empty_media_image')?></span>
+                <?php }?>
+            <?php } ?>
         </div>
-	</div>
+        <?php
+            if (empty($media)){
+                $showNoImage = "display:block";
+            }
+        ?>
+        <span class="no-image" style="<?= $showNoImage ?>"><?= $this->translate('tr_melis_cms_category_empty_media_image')?></span>
+    </div>
 </div>

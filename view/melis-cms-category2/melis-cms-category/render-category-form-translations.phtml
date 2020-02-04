@@ -8,14 +8,12 @@
 ?>
 <div <?php echo $id. ' '.$data_melisKey?> >
 	<div class="row">
-    	<div class="col-xs-12">	
-        	<div class="pdc-heading clearfix">
-                <h4>
-                	<i class="fa fa-cog"></i> <?php echo $this->translate('tr_meliscategory_categories_common_label_texts')?>
-                </h4>
-            </div>
-        </div>
 		<div class="col-xs-12 col-md-5 col-lg-4">
+			<div class="pdc-heading clearfix">
+				<h3>
+					<i class="fa fa-cog"></i> <?php echo $this->translate('tr_meliscategory_categories_common_label_texts')?>
+				</h3>
+			</div>
     		<div class="product-text-tab-container">
             	<ul class="nav-tabs product-text-tab">
             		<?php foreach ($this->ecomLang as $key => $val){;?>
@@ -23,7 +21,7 @@
                 			<a class="clearfix" data-toggle="tab" href="#<?php echo $val['lang_cms_name'].'_categoryInfo' ?>" aria-expanded="false">
 								<?php
 								    $langLocale = $val['lang_cms_locale'] ?? null;
-                                    echo '<span class="pull-right"><img src="/MelisCms/images/lang-flags/' . $langLocale .'.png" class="imgDisplay pull-right"/></span>';
+                                    echo '<span class="float-right"><img src="/MelisCms/images/lang-flags/' . $langLocale .'.png" class="imgDisplay float-right"/></span>';
                                 ?>
                 				<span><?php echo $val['lang_cms_name']?></span>
                 			</a>

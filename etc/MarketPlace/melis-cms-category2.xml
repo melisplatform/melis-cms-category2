@@ -1,0 +1,32 @@
+<melis-cms-category2>
+	<package_info>
+		<mp_title>Melis Cms Category 2</mp_title>
+		<mp_subtitle>This module brings a full category system to use in your websites and to administrate on the platform with fully multilingual and multisites functionalities</mp_subtitle>
+		<mp_description>
+			<![CDATA[
+				<p>
+					MelisCmsCategory2 allows to create categories that can be used in other modules such as News, Blogs, etc...<br />The categories can be activated, deactivated, validity dates can be set, they can be translated in different languages and assigned to different sites. Also pictures and documents can be added to each category.<br />The categories can be organized through a drag and drop system.
+				</p>
+			]]>
+		</mp_description>
+		<mp_maintainers>melisplatform</mp_maintainers>
+		<mp_group>Melis Cms</mp_group>
+	</package_info>
+	<package_images>
+		<img_1>
+			<mpi_image_title>MeliSCmsCategory2' List of categories</mpi_image_title>
+			<mpi_image_file>Melis-Cms-Category2_1.JPG</mpi_image_file>
+			<mpi_image_main>1</mpi_image_main>
+		</img_1>
+		<img_2>
+			<mpi_image_title>MeliSCmsCategory2' Edit category</mpi_image_title>
+			<mpi_image_file>Melis-Cms-Category2_2.JPG</mpi_image_file>
+			<mpi_image_main>0</mpi_image_main>
+		</img_2>
+		<img_3>
+			<mpi_image_title>MeliSCmsCategory2' pictures and documents</mpi_image_title>
+			<mpi_image_file>Melis-Cms-Category2_3.JPG</mpi_image_file>
+			<mpi_image_main>0</mpi_image_main>
+		</img_3>
+	</package_images>
+</melis-cms-category2>
