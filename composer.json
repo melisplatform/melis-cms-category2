@@ -23,8 +23,8 @@
     "ext-json": "*",
     "ext-pdo_mysql": "*",
     "justinrainbow/json-schema": "5.2.1",
-    "melisplatform/melis-core": "^3.1.0",
-    "melisplatform/melis-cms": "^3.1.0"
+    "melisplatform/melis-core": "^3.2",
+    "melisplatform/melis-cms": "^3.2"
   },
   "autoload": {
     "psr-4": {
