@@ -76,8 +76,8 @@ return array(
         )
     ),
     'view_helpers' => array(
-        'factories' => array(
-            'renderTreeRec' => 'MelisCmsCategory2\View\Helper\Factory\RenderRecTreeHelperFactory',
+        'aliases' => array(
+            'renderTreeRec' => MelisCmsCategory2\View\Helper\RenderRecTreeHelper::class,
         ),
     ),
     'view_manager' => array(

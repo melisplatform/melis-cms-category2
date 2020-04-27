@@ -550,7 +550,7 @@ $(function() {
 				catv2ImageMelisKey 	= "meliscategory_mini_media_library",
 				categoryv2ModalUrl 	= '/melis/MelisCmsCategory2/MelisCmsCategoryMedia/render-mini-media-modal-container',
 				element 			= $(this),
-				data 				= $this.data();
+				data 				= element.data();
 			
 				melisCoreTool.pending(element);
 				melisHelper.createModal(catv2ImageZoneId,catv2ImageMelisKey,true,{

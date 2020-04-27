@@ -124,9 +124,9 @@ class MelisCmsCategory2Table extends MelisGenericTable
 
         $dataCategory = $this->tableGateway->selectWith($select);
 
-        if ($this->cacheResults) {
+//        if ($this->cacheResults) {
             #$melisEngineCacheSystem->setCacheByKey($cacheKey, $cacheConfig, $dataCategory);
-        }
+//        }
 
         return $dataCategory;
     }

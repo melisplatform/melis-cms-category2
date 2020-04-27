@@ -400,6 +400,7 @@
 }
 .category-file span i {
     position: absolute;
+    z-index: 10;
     right: 10px;
     top:25%;
     font-size: 20px;

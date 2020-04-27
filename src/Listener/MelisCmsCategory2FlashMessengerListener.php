@@ -11,12 +11,12 @@ namespace MelisCmsCategory2\Listener;
 
 use Laminas\EventManager\EventManagerInterface;
 use Laminas\EventManager\ListenerAggregateInterface;
-use MelisCore\Listener\MelisCoreGeneralListener;
+use MelisCore\Listener\MelisGeneralListener;
 
-class MelisCmsCategory2FlashMessengerListener extends MelisCoreGeneralListener implements ListenerAggregateInterface
+class MelisCmsCategory2FlashMessengerListener extends MelisGeneralListener implements ListenerAggregateInterface
 {
 	
-    public function attach(EventManagerInterface $events)
+    public function attach(EventManagerInterface $events, $priority = 1)
     {
         $sharedEvents      = $events->getSharedManager();
         
