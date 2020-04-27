@@ -10,14 +10,14 @@
 namespace MelisCmsCategory2\View\Helper\Factory;
 
 use MelisCmsCategory2\View\Helper\RenderRecTreeHelper;
-use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\ServiceManager\FactoryInterface;
+use Laminas\ServiceManager\ServiceLocatorInterface;
+use Laminas\ServiceManager\FactoryInterface;
 
 class RenderRecTreeHelperFactory implements FactoryInterface
 {
 	public function createService(ServiceLocatorInterface $sl)
 	{
-		$serviceLoc = $sl->getServiceLocator();
+		$serviceLoc = $sl->getServiceManager();
 		$helper = new RenderRecTreeHelper($serviceLoc);
 	    
 	    return $helper;

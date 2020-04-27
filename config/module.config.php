@@ -42,23 +42,17 @@ return array(
         	),
         ),
     ),
-    'translator' => array(
-        'locale' => 'en_EN',
-    ),
     'service_manager' => array(
         'aliases' => array(
-            'translator' => 'MvcTranslator',
-        ),
-        'factories' => array(
             //db tables
-            'MelisCmsCategory2Table' => 'MelisCmsCategory2\Model\Tables\Factory\MelisCmsCategory2TableFactory',
-            'MelisCmsCategory2TransTable' => 'MelisCmsCategory2\Model\Tables\Factory\MelisCmsCategory2TransTableFactory',
-            'MelisCmsCategory2SitesTable' => 'MelisCmsCategory2\Model\Tables\Factory\MelisCmsCategory2SitesTableFactory',
-            'MelisCmsCategory2MediaTable' => 'MelisCmsCategory2\Model\Tables\Factory\MelisCmsCategory2MediaTableFactory',
+            'MelisCmsCategory2Table' => MelisCmsCategory2\Model\Tables\MelisCmsCategory2Table::class,
+            'MelisCmsCategory2TransTable' => MelisCmsCategory2\Model\Tables\MelisCmsCategory2TransTable::class,
+            'MelisCmsCategory2SitesTable' => MelisCmsCategory2\Model\Tables\MelisCmsCategory2SitesTable::class,
+            'MelisCmsCategory2MediaTable' => MelisCmsCategory2\Model\Tables\MelisCmsCategory2MediaTable::class,
             //Service
-            'MelisCmsCategory2Service' => 'MelisCmsCategory2\Service\Factory\MelisCmsCategoryServiceFactory',
-            'MelisCmsCategory2MediaService' => 'MelisCmsCategory2\Service\Factory\MelisCmsCategoryMediaServiceFactory',
-        )
+            'MelisCmsCategory2Service' => MelisCmsCategory2\Service\MelisCmsCategoryService::class,
+            'MelisCmsCategory2MediaService' => MelisCmsCategory2\Service\MelisCmsCategoryMediaService::class,
+        ),
     ),
     'controllers' => array(
         'invokables' => array(

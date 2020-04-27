@@ -14,7 +14,7 @@ return array(
                             'method' => '',
                             'action' => '',
                         ),
-                        'hydrator'  => 'Zend\Stdlib\Hydrator\ArraySerializable',
+                        'hydrator'  => 'Laminas\Stdlib\Hydrator\ArraySerializable',
                         'elements' => array(
                             array(
                                 'spec' => array(
@@ -38,7 +38,7 @@ return array(
                             'method' => '',
                             'action' => '',
                         ),
-                        'hydrator'  => 'Zend\Stdlib\Hydrator\ArraySerializable',
+                        'hydrator'  => 'Laminas\Stdlib\Hydrator\ArraySerializable',
                         'elements' => array(
                             array(
                                 'spec' => array(
@@ -87,7 +87,7 @@ return array(
                                         'name' => 'NotEmpty',
                                         'options' => array(
                                             'messages' => array(
-                                                \Zend\Validator\NotEmpty::IS_EMPTY => 'tr_meliscategory_categories_input_empty',
+                                                \Laminas\Validator\NotEmpty::IS_EMPTY => 'tr_meliscategory_categories_input_empty',
                                             ),
                                         ),
                                     ),
@@ -105,7 +105,7 @@ return array(
                                         'name' => 'NotEmpty',
                                         'options' => array(
                                             'messages' => array(
-                                                \Zend\Validator\NotEmpty::IS_EMPTY => 'tr_meliscategory_categories_input_empty',
+                                                \Laminas\Validator\NotEmpty::IS_EMPTY => 'tr_meliscategory_categories_input_empty',
                                             ),
                                         ),
                                     ),
@@ -114,7 +114,7 @@ return array(
 //                                        'options' => array(
 //                                            'pattern' => '/^[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*$/',
 //                                            'messages' => array(
-//                                                \Zend\Validator\Regex::NOT_MATCH => 'tr_meliscmscategory_invalid_name'
+//                                                \Laminas\Validator\Regex::NOT_MATCH => 'tr_meliscmscategory_invalid_name'
 //                                            ),
 //                                            'encoding' => 'UTF-8',
 //                                        ),
@@ -134,7 +134,7 @@ return array(
 //                                        'options' => array(
 //                                            'pattern' => '/^[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*$/',
 //                                            'messages' => array(
-//                                                \Zend\Validator\Regex::NOT_MATCH => 'tr_meliscmscategory_invalid_description'
+//                                                \Laminas\Validator\Regex::NOT_MATCH => 'tr_meliscmscategory_invalid_description'
 //                                            ),
 //                                            'encoding' => 'UTF-8',
 //                                        ),
@@ -154,7 +154,7 @@ return array(
                             'method' => '',
                             'action' => '',
                         ),
-                        'hydrator'  => 'Zend\Stdlib\Hydrator\ArraySerializable',
+                        'hydrator'  => 'Laminas\Stdlib\Hydrator\ArraySerializable',
                         'elements' => array(
                             array(
                                 'spec' => array(
@@ -193,7 +193,7 @@ return array(
                             'name' => 'meliscategory_site_filer_form',
                             'id'   => 'meliscategory_site_filer_form',
                         ],
-                        'hydrator' => 'Zend\Stdlib\Hydrator\ArraySerializable',
+                        'hydrator' => 'Laminas\Stdlib\Hydrator\ArraySerializable',
                         'elements' => [
                             [
                                 'spec' => [
@@ -219,7 +219,7 @@ return array(
                             'method' => '',
                             'action' => '',
                         ),
-                        'hydrator'  => 'Zend\Stdlib\Hydrator\ArraySerializable',
+                        'hydrator'  => 'Laminas\Stdlib\Hydrator\ArraySerializable',
                         'elements' => array(
                             array(
                                 'spec' => array(

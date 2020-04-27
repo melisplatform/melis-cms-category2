@@ -10,15 +10,16 @@
 namespace MelisCmsCategory2\Service;
 
 use MelisCmsCategory2\Model\MelisCategory;
-use MelisCore\Service\MelisCoreGeneralService;
-use Zend\Stdlib\ArrayUtils;
-use Zend\Session\Container;
+use Laminas\Stdlib\ArrayUtils;
+use Laminas\Session\Container;
+use MelisCore\Service\MelisGeneralService;
+
 /**
  *
  * This service handles the category system of MelisCommerce.
  *
  */
-class MelisCmsCategoryMediaService  extends MelisCoreGeneralService
+class MelisCmsCategoryMediaService  extends MelisGeneralService
 {
     /**
      * @var $categoryMediaTbl \MelisCmsCategory2\Model\Tables\MelisCmsCategory2MediaTable

@@ -2,7 +2,7 @@
 
 namespace MelisCmsCategory2\View\Helper;
 
-use Zend\View\Helper\AbstractHelper;
+use Laminas\View\Helper\AbstractHelper;
 
 class RenderRecTreeHelper extends AbstractHelper
 {

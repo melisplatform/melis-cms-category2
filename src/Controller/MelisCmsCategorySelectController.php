@@ -7,9 +7,9 @@
  */
 namespace MelisCmsCategory2\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
-use Zend\Session\Container;
+use Laminas\View\Model\ViewModel;
+use Laminas\Session\Container;
+use MelisCore\Controller\AbstractActionController;
 
 class MelisCmsCategorySelectController extends AbstractActionController
 {
@@ -40,11 +40,11 @@ class MelisCmsCategorySelectController extends AbstractActionController
         $container = new Container('meliscore');
         $locale = $container['melis-lang-locale'];
         //get locale data
-        $langTable = $this->getServiceLocator()->get('MelisEngineTableCmsLang');
+        $langTable = $this->getServiceManager()->get('MelisEngineTableCmsLang');
         // get all available lang
         $langData = $langTable->fetchAll()->toArray();
         //get site filter form
-        $melisConfig = $this->getServiceLocator()->get('MelisConfig');
+        $melisConfig = $this->getServiceManager()->get('MelisConfig');
         $siteFilterForm = $this->createForm($melisConfig->getItem('/meliscategory/forms/meliscategory_category_select_site_filter_form'));
         $langFilter = $siteFilterForm->get('categorySelectLangFilter');
         $tmpdata = [];
@@ -73,8 +73,8 @@ class MelisCmsCategorySelectController extends AbstractActionController
     }
     private function createForm($formConfig)
     {
-        $factory        = new \Zend\Form\Factory();
-        $formElements   = $this->getServiceLocator()->get('FormElementManager');
+        $factory        = new \Laminas\Form\Factory();
+        $formElements   = $this->getServiceManager()->get('FormElementManager');
         $factory->setFormElementManager($formElements);
         $form = $factory->createForm($formConfig);
         return $form;

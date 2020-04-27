@@ -59,7 +59,7 @@ File: /melis-cms-category2/src/Service/MelisCsmCategoryService.php
 
 ```
 // Get the category service
-$cmsCategorySvc = $this->getServiceLocator()->get("MelisCmsCategory2Service");
+$cmsCategorySvc = $this->getServiceManager()->get("MelisCmsCategory2Service");
  
 // Get category tree
 $result = $cmsCategorySvc->getCategoryTreeview($fatherId,$langId,$onlyValid, $siteId);
