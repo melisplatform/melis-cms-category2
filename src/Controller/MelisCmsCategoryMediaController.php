@@ -14,9 +14,9 @@ use Laminas\Session\Container;
 use Laminas\Validator\File\IsImage;
 use Laminas\View\Model\ViewModel;
 use Laminas\View\Model\JsonModel;
-use MelisCore\Controller\AbstractActionController;
+use MelisCore\Controller\MelisAbstractActionController;
 
-class MelisCmsCategoryMediaController extends AbstractActionController
+class MelisCmsCategoryMediaController extends MelisAbstractActionController
 {
     /**
      * @var $uploadForm return the form

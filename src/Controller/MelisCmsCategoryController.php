@@ -12,9 +12,9 @@ namespace MelisCmsCategory2\Controller;
 use Laminas\View\Model\ViewModel;
 use Laminas\View\Model\JsonModel;
 use Laminas\Session\Container;
-use MelisCore\Controller\AbstractActionController;
+use MelisCore\Controller\MelisAbstractActionController;
 
-class MelisCmsCategoryController extends AbstractActionController
+class MelisCmsCategoryController extends MelisAbstractActionController
 {
     const PLUGIN_INDEX = 'melis_cms_categories_v2';
     const TOOL_KEY = 'meliscategory_categories_category';

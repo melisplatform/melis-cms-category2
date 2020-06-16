@@ -9,9 +9,9 @@ namespace MelisCmsCategory2\Controller;
 
 use Laminas\View\Model\ViewModel;
 use Laminas\Session\Container;
-use MelisCore\Controller\AbstractActionController;
+use MelisCore\Controller\MelisAbstractActionController;
 
-class MelisCmsCategorySelectController extends AbstractActionController
+class MelisCmsCategorySelectController extends MelisAbstractActionController
 {
     public function renderCategorySelectModalAction()
     {
