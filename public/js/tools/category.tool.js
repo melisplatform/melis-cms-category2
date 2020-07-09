@@ -268,7 +268,7 @@ $(function() {
 				langText 	= $this.text(),
 				langLocale 	= $this.data('locale');
 
-				$('.cat-tree-view-languages span.filter-key').text(langText);
+				$('.cat-tree-view-languages.cms-category2-tree-view-languages span.filter-key').text(langText);
 				// disable buttons
 				$("#cmsCategoryTreeViewSearchInput").attr("disabled","disabeld");
 				$(".category-list-lang-dropdown").attr("disabled","disabeld");
