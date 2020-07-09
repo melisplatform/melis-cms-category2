@@ -261,7 +261,7 @@ $(function() {
 		});
 		
 		// Category Tree Languages Dropdown
-		$categoryBody.on("click", ".category-tree-view-lang li a", function() {
+		$categoryBody.on("click", ".category-tree-view-lang.cms-category2-tree-view-lang li a", function() {
 			categoryOpeningItemFlag = false;
 
 			var $this 		= $(this),
