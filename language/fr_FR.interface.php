@@ -3,7 +3,7 @@
  * Return array of translations in French
  */
 return [
-    'tr_melis_cms_category_v2'              => 'Melis Catégories',
+    'tr_melis_cms_category_v2'              => 'Catégories',
     'tr_melis_cms_category_v2_header_title' => 'Catégories',
     'tr_melis_cms_category_v2_header_sub_title' => 'Gérez ici vos catégories. Vous pouvez définir leur ordre par glisser-déposer.',
     'tr_melis_cms_category_v2_header_add_btn' => 'Ajouter une catégorie',
