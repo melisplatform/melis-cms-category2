@@ -2,17 +2,19 @@
 
 namespace MelisCmsCategory2\View\Helper;
 
-use Zend\View\Helper\AbstractHelper;
+use Laminas\ServiceManager\ServiceManager;
+use Laminas\View\Helper\AbstractHelper;
 
 class RenderRecTreeHelper extends AbstractHelper
 {
     public $serviceManager;
-    public $dataBreadcrumbs;
 
-    public function __construct($sm)
+    /**
+     * @param ServiceManager $serviceManager
+     */
+    public function setServiceManager(ServiceManager $serviceManager)
     {
-        $this->serviceManager = $sm;
-        $this->dataBreadcrumbs = array();
+        $this->serviceManager = $serviceManager;
     }
 
     /**

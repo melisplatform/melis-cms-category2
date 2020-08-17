@@ -9,25 +9,23 @@
 
 namespace MelisCmsCategory2\Listener;
 
-use Zend\EventManager\EventManagerInterface;
-use Zend\EventManager\ListenerAggregateInterface;
-use MelisCore\Listener\MelisCoreGeneralListener;
+use Laminas\EventManager\EventManagerInterface;
+use Laminas\EventManager\ListenerAggregateInterface;
+use MelisCore\Listener\MelisGeneralListener;
 
-class MelisCmsCategory2FlashMessengerListener extends MelisCoreGeneralListener implements ListenerAggregateInterface
+class MelisCmsCategory2FlashMessengerListener extends MelisGeneralListener implements ListenerAggregateInterface
 {
 	
-    public function attach(EventManagerInterface $events)
+    public function attach(EventManagerInterface $events, $priority = 1)
     {
         $sharedEvents      = $events->getSharedManager();
         
         $callBackHandler = $sharedEvents->attach(
         	'MelisCmsCategory2',
-        	array(
-        	    'meliscms_category2_save_end',
-        	),
+            'meliscms_category2_save_end',
         	function($e){
 
-        		$sm = $e->getTarget()->getServiceLocator();
+        		$sm = $e->getTarget()->getServiceManager();
         		
         		$flashMessenger = $sm->get('MelisCoreFlashMessenger');
         		$params = $e->getParams();

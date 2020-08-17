@@ -10,11 +10,11 @@
 namespace MelisCmsCategory2;
 
 use MelisCmsCategory2\Listener\MelisCmsCategory2FlashMessengerListener;
-use Zend\Mvc\ModuleRouteListener;
-use Zend\Mvc\MvcEvent;
-use Zend\ModuleManager\ModuleManager;
-use Zend\Stdlib\ArrayUtils;
-use Zend\Session\Container;
+use Laminas\Mvc\ModuleRouteListener;
+use Laminas\Mvc\MvcEvent;
+use Laminas\ModuleManager\ModuleManager;
+use Laminas\Stdlib\ArrayUtils;
+use Laminas\Session\Container;
 
 class Module
 {
@@ -34,7 +34,7 @@ class Module
         # attach listener to back-office to avoid conflict in front
         if ($renderType == 'back') {
             # attach listener
-            $eventManager->attach(new MelisCmsCategory2FlashMessengerListener());
+            (new MelisCmsCategory2FlashMessengerListener())->attach($eventManager);
         }
     }
 
@@ -107,7 +107,7 @@ class Module
     public function getAutoloaderConfig() : array
     {
         return array(
-            'Zend\Loader\StandardAutoloader' => array(
+            'Laminas\Loader\StandardAutoloader' => array(
                 'namespaces' => array(
                     __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
                 ),

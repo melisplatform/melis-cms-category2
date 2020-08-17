@@ -9,14 +9,14 @@
 
 namespace MelisCmsCategory2\Controller;
 
-use Zend\Di\ServiceLocatorInterface;
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Session\Container;
-use Zend\Validator\File\IsImage;
-use Zend\View\Model\ViewModel;
-use Zend\View\Model\JsonModel;
+use Laminas\Di\ServiceLocatorInterface;
+use Laminas\Session\Container;
+use Laminas\Validator\File\IsImage;
+use Laminas\View\Model\ViewModel;
+use Laminas\View\Model\JsonModel;
+use MelisCore\Controller\MelisAbstractActionController;
 
-class MelisCmsCategoryMediaController extends AbstractActionController
+class MelisCmsCategoryMediaController extends MelisAbstractActionController
 {
     /**
      * @var $uploadForm return the form
@@ -45,7 +45,7 @@ class MelisCmsCategoryMediaController extends AbstractActionController
     protected $serviceLocator = null;
     public function __construct()
     {
-       // $this->serviceLocator = $serviceLocator;
+       // $this->getServiceManager() = $serviceLocator;
       //  self::initilizeDependencies();
     }
     private function initilizeDependencies()
@@ -61,13 +61,13 @@ class MelisCmsCategoryMediaController extends AbstractActionController
     private function setTables()
     {
         // category2 table
-        $this->categoryTbl      = $this->serviceLocator->get('MelisCmsCategory2Table');
+        $this->categoryTbl      = $this->getServiceManager()->get('MelisCmsCategory2Table');
         // media category table
-        $this->mediaCategoryTbl = $this->serviceLocator->get('MelisCmsCategory2MediaTable');
+        $this->mediaCategoryTbl = $this->getServiceManager()->get('MelisCmsCategory2MediaTable');
         // sites category table
-        $this->sitesCategoryTbl = $this->serviceLocator->get('MelisCmsCategory2SitesTable');
+        $this->sitesCategoryTbl = $this->getServiceManager()->get('MelisCmsCategory2SitesTable');
         // translations category table
-        $this->transCategoryTbl = $this->serviceLocator->get('MelisCmsCategory2TransTable');
+        $this->transCategoryTbl = $this->getServiceManager()->get('MelisCmsCategory2TransTable');
     }
     private function setNextId()
     {
@@ -79,11 +79,11 @@ class MelisCmsCategoryMediaController extends AbstractActionController
     }
     private function setUploadForm()
     {
-        $config = $this->getServiceLocator()->get('MelisCoreConfig');
+        $config = $this->getServiceManager()->get('MelisCoreConfig');
         $formConfig = $config->getItem('meliscategory/forms/meliscategory_categories/meliscategory_media_upload_form');
 
-        $factory = new \Zend\Form\Factory();
-        $formElements = $this->serviceLocator->get('FormElementManager');
+        $factory = new \Laminas\Form\Factory();
+        $formElements = $this->getServiceManager()->get('FormElementManager');
         $factory->setFormElementManager($formElements);
         $form = $factory->createForm($formConfig);
 
@@ -158,11 +158,11 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         $category2Session = new Container('melis_cms_category2');
         $categoryId = $query->catId ?? null;
         $forAdding  = $query->forAdding ?? null;
-        $categoryMediaTable = $this->getServiceLocator()->get('MelisCmsCategory2MediaTable');
-        $categoryMediaSvc = $this->getServiceLocator()->get('MelisCmsCategory2MediaService');
+        $categoryMediaTable = $this->getServiceManager()->get('MelisCmsCategory2MediaTable');
+        $categoryMediaSvc = $this->getServiceManager()->get('MelisCmsCategory2MediaService');
         $categoryMediaData = [];
         // clear directory when adding a new category
-        $categoryTable = $this->getServiceLocator()->get("MelisCmsCategory2Table");
+        $categoryTable = $this->getServiceManager()->get("MelisCmsCategory2Table");
         if ($forAdding) {
             $category2Session->getManager()->getStorage()->clear('melis_cms_category2');
             $categoryMediaSvc->removeCategoryDir();
@@ -209,8 +209,8 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         $request = $this->getRequest();
         $query   = $request->getQuery();
         $categoryId = $query['catId'] ?? null;
-        $categoryMediaTable = $this->getServiceLocator()->get('MelisCmsCategory2MediaTable');
-        $categoryMediaSvc = $this->getServiceLocator()->get('MelisCmsCategory2MediaService');
+        $categoryMediaTable = $this->getServiceManager()->get('MelisCmsCategory2MediaTable');
+        $categoryMediaSvc = $this->getServiceManager()->get('MelisCmsCategory2MediaService');
         $categoryMediaData = [];
         $category2Session = new Container('melis_cms_category2');
 
@@ -283,15 +283,15 @@ class MelisCmsCategoryMediaController extends AbstractActionController
      * MelisCmsUserACcount/config/app.tools.php
      *
      * @param int $forUpdate
-     * @return \Zend\Form\ElementInterface
+     * @return \Laminas\Form\ElementInterface
      */
     private function getForm()
     {
-        $config = $this->getServiceLocator()->get('MelisCoreConfig');
+        $config = $this->getServiceManager()->get('MelisCoreConfig');
         $formConfig = $config->getItem('meliscategory/forms/meliscategory_categories/meliscategory_media_upload_form');
 
-        $factory = new \Zend\Form\Factory();
-        $formElements = $this->serviceLocator->get('FormElementManager');
+        $factory = new \Laminas\Form\Factory();
+        $formElements = $this->getServiceManager()->get('FormElementManager');
         $factory->setFormElementManager($formElements);
         $form = $factory->createForm($formConfig);
 
@@ -317,9 +317,9 @@ class MelisCmsCategoryMediaController extends AbstractActionController
         $maxFileSizeUpload = null;
         $imageError = false;
         $logTypeCode = 'CMS_CATEGORY2_FILE_ADD';
-        $categoryTable = $this->getServiceLocator()->get("MelisCmsCategory2Table");
-        $categoryMediaSvc = $this->getServiceLocator()->get('MelisCmsCategory2MediaService');
-        $translator       = $this->getServiceLocator()->get('translator');
+        $categoryTable = $this->getServiceManager()->get("MelisCmsCategory2Table");
+        $categoryMediaSvc = $this->getServiceManager()->get('MelisCmsCategory2MediaService');
+        $translator       = $this->getServiceManager()->get('translator');
         // this for adding
         if (empty($categoryId)) {
             $categoryId = "tmp";
@@ -389,7 +389,7 @@ class MelisCmsCategoryMediaController extends AbstractActionController
                                     'catm2_path' => "/media/categories/$categoryId/$fileName",
                                     'catm2_cat_id' => $categoryId
                                 ];
-                                $catMediaTbl = $this->getServiceLocator()->get('MelisCmsCategory2MediaTable');
+                                $catMediaTbl = $this->getServiceManager()->get('MelisCmsCategory2MediaTable');
                                 $catMediaTbl->save($data);
                             } else {
                                 $files = [];
@@ -446,7 +446,7 @@ class MelisCmsCategoryMediaController extends AbstractActionController
     public function deleteFileAction()
     {
         $request = $this->getRequest();
-        $toolSvc = $this->getServiceLocator()->get('MelisCoreTool');
+        $toolSvc = $this->getServiceManager()->get('MelisCoreTool');
         $success = false;
         $logTypeCode = "CMS_CATEGORY2_FILE_DELETE";
         $errors  = [];
@@ -456,7 +456,7 @@ class MelisCmsCategoryMediaController extends AbstractActionController
 
         if ($request->isPost()){
             // media service
-            $categoryMediaSvc = $this->getServiceLocator()->get('MelisCmsCategory2MediaService');
+            $categoryMediaSvc = $this->getServiceManager()->get('MelisCmsCategory2MediaService');
             // post values
             $postvalues = get_object_vars($request->getPost());
             $imageName  = $postvalues['imageName'] ??  null;

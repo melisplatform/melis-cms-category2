@@ -10,20 +10,29 @@
 namespace MelisCmsCategory2\Service;
 
 use MelisCmsCategory2\Model\MelisCategory;
-use MelisCore\Service\MelisCoreGeneralService;
-use Zend\Stdlib\ArrayUtils;
-use Zend\Session\Container;
+use Laminas\Stdlib\ArrayUtils;
+use Laminas\Session\Container;
+use MelisCore\Service\MelisGeneralService;
+
 /**
  *
  * This service handles the category system of MelisCommerce.
  *
  */
-class MelisCmsCategoryMediaService  extends MelisCoreGeneralService
+class MelisCmsCategoryMediaService  extends MelisGeneralService
 {
+//    /**
+//     * @var $categoryMediaTbl \MelisCmsCategory2\Model\Tables\MelisCmsCategory2MediaTable
+//     */
+//    public $categoryMediaTbl;
+
     /**
-     * @var $categoryMediaTbl \MelisCmsCategory2\Model\Tables\MelisCmsCategory2MediaTable
+     * @return mixed
      */
-    public $categoryMediaTbl;
+    public function getCategoryMediaTbl()
+    {
+        return $this->getServiceManager()->get('MelisCmsCategory2MediaTable');
+    }
 
     /**
      * Removed the tmp directory or category directory
@@ -282,7 +291,7 @@ class MelisCmsCategoryMediaService  extends MelisCoreGeneralService
             $fileName = $fileInfo['basename'];
         }
         //first  delete the file in the db
-        $status = $this->categoryMediaTbl->deleteByField('catm2_path',$filenamePath);
+        $status = $this->getCategoryMediaTbl()->deleteByField('catm2_path',$filenamePath);
         // get session of melis_cms_category2
         $category2Session = new Container('melis_cms_category2');
         // remove file in the session
@@ -319,7 +328,7 @@ class MelisCmsCategoryMediaService  extends MelisCoreGeneralService
         $results = false;
         // implentation start
         // get media files
-        $results = $this->categoryMediaTbl->getMediaFilesByCategoryId($categoryId,$fileType)->toArray();
+        $results = $this->getCategoryMediaTbl()->getMediaFilesByCategoryId($categoryId,$fileType)->toArray();
 
         $arrayParameters['results'] = $results;
         //service event end

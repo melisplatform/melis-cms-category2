@@ -10,20 +10,24 @@
 namespace MelisCmsCategory2\Model\Tables;
 
 use MelisCore\Model\Tables\MelisGenericTable;
-use Zend\Db\TableGateway\TableGateway;
-use Zend\Db\Sql\Join;
-use Zend\Db\Sql;
+use Laminas\Db\TableGateway\TableGateway;
+use Laminas\Db\Sql\Join;
+use Laminas\Db\Sql;
 
 class MelisCmsCategory2Table extends MelisGenericTable
 {
-    protected $tableGateway;
-    protected $idField;
+    /**
+     * Table name
+     */
+    const TABLE = 'melis_cms_category2';
+    /**
+     * Primary key
+     */
+    const PRIMARY_KEY = 'cat2_id';
 
-    public function __construct(TableGateway $tableGateway)
+    public function __construct()
     {
-        parent::__construct($tableGateway);
-        $this->idField = 'cat2_id';
-        $this->cacheResults = true;
+        $this->idField = self::PRIMARY_KEY;
     }
 
     public function disableCache()
@@ -91,14 +95,14 @@ class MelisCmsCategory2Table extends MelisGenericTable
      * Get Category Deatils and Translation
      * @param int $categoryId
      * @param int $langId
-     * @return NULL|\Zend\Db\ResultSet\ResultSetInterface
+     * @return NULL|\Laminas\Db\ResultSet\ResultSetInterface
      */
     public function getCategoryTranslationBylangId($categoryId, $langId = null, $onlyValid = false)
     {
         // Retrieve cache version if front mode to avoid multiple calls
         $cacheKey = 'category-' . $categoryId . '_getCategoryTranslationBylangId_' . $categoryId . '_' . $langId;
         $cacheConfig = 'commerce_memory_services';
-        $melisEngineCacheSystem = $this->getServiceLocator()->get('MelisEngineCacheSystem');
+        $melisEngineCacheSystem = $this->getServiceManager()->get('MelisEngineCacheSystem');
         $results = null;#$melisEngineCacheSystem->getCacheByKey($cacheKey, $cacheConfig);
 
         if (!empty($results)) {
@@ -120,9 +124,9 @@ class MelisCmsCategory2Table extends MelisGenericTable
 
         $dataCategory = $this->tableGateway->selectWith($select);
 
-        if ($this->cacheResults) {
+//        if ($this->cacheResults) {
             #$melisEngineCacheSystem->setCacheByKey($cacheKey, $cacheConfig, $dataCategory);
-        }
+//        }
 
         return $dataCategory;
     }
@@ -239,7 +243,7 @@ class MelisCmsCategory2Table extends MelisGenericTable
     public function getCategoryNameAsTextById($catId, $langId, $anyLang = false){
         $select = $this->tableGateway->getSql()->select();
 
-        $select->columns(array(new \Zend\Db\Sql\Expression('CONCAT(cat2_id," - ",catt2_name) As text')));
+        $select->columns(array(new \Laminas\Db\Sql\Expression('CONCAT(cat2_id," - ",catt2_name) As text')));
         $select->join('melis_cms_category2_trans', 'melis_cms_category2_trans.catt2_category_id = melis_cms_category2.'.$this->idField,
             array('catt2_lang_id'), $select::JOIN_RIGHT);
 
@@ -282,7 +286,7 @@ class MelisCmsCategory2Table extends MelisGenericTable
         // Retrieve cache version if front mode to avoid multiple calls
         $cacheKey = 'categories_table_getParentCategory_' . $catId . '_' . $langId . '_' . $addSeo;
         $cacheConfig = 'commerce_big_services';
-        $melisEngineCacheSystem = $this->getServiceLocator()->get('MelisEngineCacheSystem');
+        $melisEngineCacheSystem = $this->getServiceManager()->get('MelisEngineCacheSystem');
         $results = $melisEngineCacheSystem->getCacheByKey($cacheKey, $cacheConfig);
         if (!empty($results)) return $results;
 

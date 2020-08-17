@@ -261,14 +261,14 @@ $(function() {
 		});
 		
 		// Category Tree Languages Dropdown
-		$categoryBody.on("click", ".category-tree-view-lang li a", function() {
+		$categoryBody.on("click", ".category-tree-view-lang.cms-category2-tree-view-lang li a", function() {
 			categoryOpeningItemFlag = false;
 
 			var $this 		= $(this),
 				langText 	= $this.text(),
 				langLocale 	= $this.data('locale');
 
-				$('.cat-tree-view-languages span.filter-key').text(langText);
+				$('.cat-tree-view-languages.cms-category2-tree-view-languages span.filter-key').text(langText);
 				// disable buttons
 				$("#cmsCategoryTreeViewSearchInput").attr("disabled","disabeld");
 				$(".category-list-lang-dropdown").attr("disabled","disabeld");
@@ -550,7 +550,7 @@ $(function() {
 				catv2ImageMelisKey 	= "meliscategory_mini_media_library",
 				categoryv2ModalUrl 	= '/melis/MelisCmsCategory2/MelisCmsCategoryMedia/render-mini-media-modal-container',
 				element 			= $(this),
-				data 				= $this.data();
+				data 				= element.data();
 			
 				melisCoreTool.pending(element);
 				melisHelper.createModal(catv2ImageZoneId,catv2ImageMelisKey,true,{

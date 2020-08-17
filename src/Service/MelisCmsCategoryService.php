@@ -10,14 +10,15 @@
 namespace MelisCmsCategory2\Service;
 
 use MelisCommerce\Model\MelisCategory;
-use MelisCore\Service\MelisCoreGeneralService;
-use Zend\Stdlib\ArrayUtils;
+use Laminas\Stdlib\ArrayUtils;
+use MelisCore\Service\MelisGeneralService;
+
 /**
  *
  * This service handles the category system of MelisCommerce.
  *
  */
-class MelisCmsCategoryService  extends MelisCoreGeneralService
+class MelisCmsCategoryService  extends MelisGeneralService
 {
     public function saveCategory(
         $parentId,
@@ -35,7 +36,7 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
         // Sending service start event
         $arrayParameters = $this->sendEvent('melis_cms_category_save_category2_start', $arrayParameters);
         // Service implementation start
-        $categoryTable = $this->getServiceLocator()->get('MelisCmsCategory2Table');
+        $categoryTable = $this->getServiceManager()->get('MelisCmsCategory2Table');
         # order
         $order = null;
         if (! empty($categoryId)) {
@@ -119,7 +120,7 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
         // Sending service start event
         $arrayParameters = $this->sendEvent('melis_cms_category_save_category_trans_start', $arrayParameters);
         // Service implementation start
-        $categoryTextsTable = $this->getServiceLocator()->get('MelisCmsCategory2TransTable');
+        $categoryTextsTable = $this->getServiceManager()->get('MelisCmsCategory2TransTable');
         # construct data
         $postData['catt2_category_id'] = $categoryId;
         $postData['catt2_lang_id'] = $catLangId;
@@ -158,7 +159,7 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
         // Sending service start event
         $arrayParameters = $this->sendEvent('melis_cms_category_save_category_sites_start', $arrayParameters);
         // Service implementation start
-        $categorySitesTable = $this->getServiceLocator()->get('MelisCmsCategory2SitesTable');
+        $categorySitesTable = $this->getServiceManager()->get('MelisCmsCategory2SitesTable');
         # construct data
         $data = [
             'cats2_site_id' => $siteId,
@@ -196,7 +197,7 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
         // Sending service start event
         $arrayParameters = $this->sendEvent('melis_cms_category_category_get_media_start', $arrayParameters);
         // Service implementation start
-        $categoryMediaTbl = $this->getServiceLocator()->get('MelisCmsCategory2MediaTable');
+        $categoryMediaTbl = $this->getServiceManager()->get('MelisCmsCategory2MediaTable');
         $categoryMediaData = $categoryMediaTbl->getEntryByField('catm2_cat_id', $categoryId);
         // Service implementation end
         $arrayParameters['results'] = $categoryMediaData;
@@ -233,7 +234,7 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
         $limit = $arrayParameters['limit'];
         $fatherId = $arrayParameters['fatherId'];
         
-        $melisEcomCategoryTable = $this->getServiceLocator()->get('MelisCmsCategory2Table');
+        $melisEcomCategoryTable = $this->getServiceManager()->get('MelisCmsCategory2Table');
         
         $dataCategoryData = $melisEcomCategoryTable->getCategoryChildrenListById($categoryId, $langId, $onlyValid, $start, $limit, $fatherId);
 
@@ -271,7 +272,7 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
         // Retrieve cache version if front mode to avoid multiple calls
         $cacheKey = 'category-' . $categoryId . '-getCategoryById_' . $categoryId . '_' . $langId;
 
-        $melisEngineCacheSystem = $this->getServiceLocator()->get('MelisEngineCacheSystem');
+        $melisEngineCacheSystem = $this->getServiceManager()->get('MelisEngineCacheSystem');
 
         if (!empty($results)) return $results;
 
@@ -285,7 +286,7 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
         // Service implementation start
         $melisCategory = new \MelisCmsCategory2\Entity\MelisCategory();
 
-        $melisEcomCategoryTable = $this->getServiceLocator()->get('MelisCmsCategory2Table');
+        $melisEcomCategoryTable = $this->getServiceManager()->get('MelisCmsCategory2Table');
 
         // Getting Categories under Category ID
         $melisCategoryDataRes = $melisEcomCategoryTable->getEntryById($arrayParameters['categoryId']);
@@ -340,7 +341,7 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
         // Retrieve cache version if front mode to avoid multiple calls
         $cacheKey = 'category-' . $categoryId . '-getCategoryNameById_' . $categoryId . '_' . $langId;
 
-        $melisEngineCacheSystem = $this->getServiceLocator()->get('MelisEngineCacheSystem');
+        $melisEngineCacheSystem = $this->getServiceManager()->get('MelisEngineCacheSystem');
         $results = $melisEngineCacheSystem->getCacheByKey($cacheKey, $cacheConfig);
         if (!empty($results)) return $results;
 
@@ -412,7 +413,7 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
 
         // Retrieve cache version if front mode to avoid multiple calls
         $cacheKey = 'category-' . $categoryId . '-getCategoryTranslationById_' . $categoryId . '_' . $langId;
-        $melisEngineCacheSystem = $this->getServiceLocator()->get('MelisEngineCacheSystem');
+        $melisEngineCacheSystem = $this->getServiceManager()->get('MelisEngineCacheSystem');
 
         // Event parameters prepare
         $arrayParameters = $this->makeArrayFromParameters(__METHOD__, func_get_args());
@@ -422,7 +423,7 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
         $arrayParameters = $this->sendEvent('meliscms_categories_service_category_get_category_translations_start', $arrayParameters);
 
         // Service implementation start
-        $melisEcomCategoryTable = $this->getServiceLocator()->get('MelisCmsCategory2Table');
+        $melisEcomCategoryTable = $this->getServiceManager()->get('MelisCmsCategory2Table');
         $melisCategoryTranslation = $melisEcomCategoryTable->getCategoryTranslationBylangId($arrayParameters['categoryId'], $arrayParameters['langId'], $arrayParameters['onlyValid']);
 
         foreach ($melisCategoryTranslation As $val)
@@ -474,13 +475,13 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
         $siteId   = $arrayParameters['siteId'];
 
 
-        $melisCmsCategory2Tbl = $this->getServiceLocator()->get('MelisCmsCategory2Table');
+        $melisCmsCategory2Tbl = $this->getServiceManager()->get('MelisCmsCategory2Table');
         $categoryData = $melisCmsCategory2Tbl->getCategoryByFatherId($fatherId, $onlyValid, $siteId);
         $catData = $categoryData->toArray();
         /**
          * TEMPORARY, NEED TO CREATE GENERAL HELPER FOR THIS
          */
-        $escaper = new \Zend\Escaper\Escaper('utf-8');
+        $escaper = new \Laminas\Escaper\Escaper('utf-8');
 
         foreach ($catData As $key => $val)
         {
@@ -543,7 +544,7 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
         $langId = $arrayParameters['langId'];
 
         //implementation start
-        $categoryTable = $this->getServiceLocator()->get('MelisCmsCategory2Table');
+        $categoryTable = $this->getServiceManager()->get('MelisCmsCategory2Table');
         $categories = $categoryTable->getFirstLevelCategoriesPerSite($siteId,$langId)->toArray();
         
         //implementation end
@@ -570,7 +571,7 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
         $langId = $arrayParameters['langId'];
 
         //implementation start
-        $categoryTable = $this->getServiceLocator()->get('MelisCmsCategory2Table');
+        $categoryTable = $this->getServiceManager()->get('MelisCmsCategory2Table');
         $categories = $categoryTable->getCategoriesPerSite($siteId,$langId)->toArray();
 
         //implementation end
@@ -589,7 +590,7 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
         $currentOrder = $arrayParameters['currentOrder'];
         $results = [];
         //implementation start
-        $categoryTable = $this->getServiceLocator()->get('MelisCmsCategory2Table');
+        $categoryTable = $this->getServiceManager()->get('MelisCmsCategory2Table');
         $categoryOrdersData = $categoryTable->getCategoryOrders($parentId,$currentOrder)->toArray();
         if (! empty($categoryOrdersData)) {
             foreach ($categoryOrdersData as $idx => $val) {
@@ -612,7 +613,7 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
     }
     public function getSiteCategoryById($categoryId)
     {
-        $categorySiteTbl = $this->getServiceLocator()->get('MelisCmsCategory2SitesTable');
+        $categorySiteTbl = $this->getServiceManager()->get('MelisCmsCategory2SitesTable');
         $categorySitesData = $categorySiteTbl->getEntryByField('cats2_cat2_id',$categoryId)->toArray();
         $data = [];
         if (! empty($categorySitesData)) {
@@ -633,7 +634,7 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
         //service event start
         $arrayParameters = $this->sendEvent('meliscms_service_category_get_locale_data_start', $arrayParameters);
         $results = [];
-        $tableLang = $this->getServiceLocator()->get('MelisEngineTableCmsLang');
+        $tableLang = $this->getServiceManager()->get('MelisEngineTableCmsLang');
         $results = $tableLang->getEntryById($langId)->current();
         //implementation end
         $arrayParameters['results'] = $results;
@@ -653,7 +654,7 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
         //service event start
         $arrayParameters = $this->sendEvent('meliscms_service_category_get_categories_data_by_id_start', $arrayParameters);
         $results = [];
-        $melisCmsCategoryTbl = $this->getServiceLocator()->get('MelisCmsCategory2Table');
+        $melisCmsCategoryTbl = $this->getServiceManager()->get('MelisCmsCategory2Table');
         $results = $melisCmsCategoryTbl->getEntryById($categoryId)->current();
 
         //implementation end
@@ -701,7 +702,7 @@ class MelisCmsCategoryService  extends MelisCoreGeneralService
     }
     private function getCategoryAvailableText($categoryData,$currentLangId = null)
     {
-        $cmsCategory = $this->getServiceLocator()->get('MelisCmsCategory2TransTable');
+        $cmsCategory = $this->getServiceManager()->get('MelisCmsCategory2TransTable');
         if (! empty($categoryData)) {
             foreach ($categoryData as $idx => $val) {
                 $categoryId = $val['cat2_id'];

@@ -10,19 +10,24 @@
 namespace MelisCmsCategory2\Model\Tables;
 
 use MelisCore\Model\Tables\MelisGenericTable;
-use Zend\Db\TableGateway\TableGateway;
-use Zend\Db\Sql\Join;
-use Zend\Db\Sql;
+use Laminas\Db\TableGateway\TableGateway;
+use Laminas\Db\Sql\Join;
+use Laminas\Db\Sql;
 
 class MelisCmsCategory2TransTable extends MelisGenericTable
 {
-    protected $tableGateway;
-    protected $idField;
-    
-    public function __construct(TableGateway $tableGateway)
+    /**
+     * Table name
+     */
+    const TABLE = 'melis_cms_category2_trans';
+    /**
+     * Primary key
+     */
+    const PRIMARY_KEY = 'catt2_id';
+
+    public function __construct()
     {
-        parent::__construct($tableGateway);
-        $this->idField = 'catt2_id';
+        $this->idField = self::PRIMARY_KEY;
     }
 
     /***

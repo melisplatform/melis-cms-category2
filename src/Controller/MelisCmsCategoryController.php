@@ -9,12 +9,12 @@
 
 namespace MelisCmsCategory2\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
-use Zend\View\Model\JsonModel;
-use Zend\Session\Container;
+use Laminas\View\Model\ViewModel;
+use Laminas\View\Model\JsonModel;
+use Laminas\Session\Container;
+use MelisCore\Controller\MelisAbstractActionController;
 
-class MelisCmsCategoryController extends AbstractActionController
+class MelisCmsCategoryController extends MelisAbstractActionController
 {
     const PLUGIN_INDEX = 'melis_cms_categories_v2';
     const TOOL_KEY = 'meliscategory_categories_category';
@@ -23,7 +23,7 @@ class MelisCmsCategoryController extends AbstractActionController
      * Render Category Page Zone
      * This also return if the zone if visible or hidden depend on request
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return \Laminas\View\Model\ViewModel
      */
     public function renderCategoryAction()
     {
@@ -31,8 +31,8 @@ class MelisCmsCategoryController extends AbstractActionController
         $catId = $this->params()->fromQuery('catId');
         $catFatherId = $this->params()->fromQuery('catFatherId');
 
-        $melisCoreRights = $this->getServiceLocator()->get('MelisCoreRights');
-        $translator = $this->getServiceLocator()->get('translator');
+        $melisCoreRights = $this->getServiceManager()->get('MelisCoreRights');
+        $translator = $this->getServiceManager()->get('translator');
         $access = true;
         $parentConfigKey = 'melis_cms_category_v2';
         if(!$melisCoreRights->canAccess($parentConfigKey)) {
@@ -51,11 +51,11 @@ class MelisCmsCategoryController extends AbstractActionController
      * Render Category Header
      * This also return the Title of the Zone
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return \Laminas\View\Model\ViewModel
      */
     public function renderCategoryHeaderAction(){
         $view = new ViewModel();
-        $translator = $this->serviceLocator->get('translator');
+        $translator = $this->getServiceManager()->get('translator');
         $melisKey = $this->params()->fromRoute('melisKey', '');
         $catId = $this->params()->fromQuery('catId');
         $catFatherId = $this->params()->fromQuery('catFatherId');
@@ -63,10 +63,10 @@ class MelisCmsCategoryController extends AbstractActionController
         if (!empty($catId))
         {
             // Getting Current Langauge ID
-            $melisTool = $this->getServiceLocator()->get('MelisCoreTool');
+            $melisTool = $this->getServiceManager()->get('MelisCoreTool');
             $langId = $melisTool->getCurrentLocaleID();
             
-            $melisCmsCategoryService = $this->getServiceLocator()->get('MelisCmsCategory2Service');
+            $melisCmsCategoryService = $this->getServiceManager()->get('MelisCmsCategory2Service');
             $categoryData = $melisCmsCategoryService->getCategoryById($catId);
             $category = $categoryData->getTranslations();
             $catname = '';
@@ -104,7 +104,7 @@ class MelisCmsCategoryController extends AbstractActionController
      * Render Category Header Button Save
      * This also return data attribute of the Save Button
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return \Laminas\View\Model\ViewModel
      */
     public function renderCategoryHeaderSaveCategoryAction(){
 
@@ -122,7 +122,7 @@ class MelisCmsCategoryController extends AbstractActionController
 
         if (!empty($catId)){
             // Getting category Data and set as Data Attribute of the Save Button
-            $melisCmsCategoryService = $this->getServiceLocator()->get('MelisCmsCategory2Service');
+            $melisCmsCategoryService = $this->getServiceManager()->get('MelisCmsCategory2Service');
             $categoryData = $melisCmsCategoryService->getCategoryById($catId);
             $category = $categoryData->getCategory();
             $catFatherId = $category->cat2_father_cat_id;
@@ -137,7 +137,7 @@ class MelisCmsCategoryController extends AbstractActionController
     /**
      * Render Category Content
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return \Laminas\View\Model\ViewModel
      */
     public function renderCategoryContentAction(){
         $melisKey = $this->params()->fromRoute('melisKey', '');
@@ -149,7 +149,7 @@ class MelisCmsCategoryController extends AbstractActionController
     /**
      * Render Category Tab Content
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return \Laminas\View\Model\ViewModel
      */
     public function renderCategoryTabContentAction(){
         $melisKey = $this->params()->fromRoute('melisKey', '');
@@ -161,7 +161,7 @@ class MelisCmsCategoryController extends AbstractActionController
     /**
      * Render Category Tab Main Content
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return \Laminas\View\Model\ViewModel
      */
     public function renderCategoryTabMainAction(){
         $melisKey = $this->params()->fromRoute('melisKey', '');
@@ -173,7 +173,7 @@ class MelisCmsCategoryController extends AbstractActionController
     /**
      * Render Category Tab Main Header
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return \Laminas\View\Model\ViewModel
      */
     public function renderCategoryTabMainHeaderAction(){
         $melisKey = $this->params()->fromRoute('melisKey', '');
@@ -185,7 +185,7 @@ class MelisCmsCategoryController extends AbstractActionController
     /**
      * Render Category Tab Main Content
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return \Laminas\View\Model\ViewModel
      */
     public function renderCategoryTabMainContentAction(){
         $melisKey = $this->params()->fromRoute('melisKey', '');
@@ -197,7 +197,7 @@ class MelisCmsCategoryController extends AbstractActionController
     /**
      * Render Category Tab Main Left Zone
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return \Laminas\View\Model\ViewModel
      */
     public function renderCategoryTabMainLeftAction(){
         $melisKey = $this->params()->fromRoute('melisKey', '');
@@ -210,7 +210,7 @@ class MelisCmsCategoryController extends AbstractActionController
      * Render Category Translations Form
      * This also return binded form with data depend on the request
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return \Laminas\View\Model\ViewModel
      */
     public function renderCategoryFormTranslationsAction(){
 
@@ -220,16 +220,16 @@ class MelisCmsCategoryController extends AbstractActionController
         $currentLocale = $this->getRequest()->getQuery('currentLocale');
         if (!empty($catId)){
             // Getting Category Translations
-            $melisCmsCategoryService = $this->getServiceLocator()->get('MelisCmsCategory2Service');
+            $melisCmsCategoryService = $this->getServiceManager()->get('MelisCmsCategory2Service');
             $categoryData = $melisCmsCategoryService->getCategoryById($catId);
             $view->categoryTrans = $categoryData->getTranslations();
         }
 
         // Getting Category Translations Form from App.forms.php Config
-        $melisMelisCoreConfig = $this->serviceLocator->get('MelisCoreConfig');
+        $melisMelisCoreConfig = $this->getServiceManager()->get('MelisCoreConfig');
         $appConfigForm = $melisMelisCoreConfig->getFormMergedAndOrdered('meliscategory/forms/meliscategory_categories/meliscategory_categories_category_information_form','meliscategory_categories_category_information_form');
-        $factory = new \Zend\Form\Factory();
-        $formElements = $this->serviceLocator->get('FormElementManager');
+        $factory = new \Laminas\Form\Factory();
+        $formElements = $this->getServiceManager()->get('FormElementManager');
         $factory->setFormElementManager($formElements);
         $propertyForm = $factory->createForm($appConfigForm);
 
@@ -244,7 +244,7 @@ class MelisCmsCategoryController extends AbstractActionController
         }
 
         // Getting Commerce available Languages
-        $ecomLangtable = $this->serviceLocator->get('MelisEngineTableCmsLang');
+        $ecomLangtable = $this->getServiceManager()->get('MelisEngineTableCmsLang');
         $ecomLang = $ecomLangtable->fetchAll();
         $ecomLangData = $ecomLang->toArray();
         $view->setVariable('meliscommerce_categories_category_information_form', $propertyForm);
@@ -260,21 +260,21 @@ class MelisCmsCategoryController extends AbstractActionController
     {
         $catId = $this->params()->fromQuery('catId');
 
-        $melisTool = $this->getServiceLocator()->get('MelisCoreTool');
+        $melisTool = $this->getServiceManager()->get('MelisCoreTool');
         // Getting Category Translations Form from App.forms.php Config
-        $melisMelisCoreConfig = $this->serviceLocator->get('MelisCoreConfig');
+        $melisMelisCoreConfig = $this->getServiceManager()->get('MelisCoreConfig');
         $appConfigForm = $melisMelisCoreConfig->getFormMergedAndOrdered('meliscategory/forms/meliscategory_categories/meliscategory_categories_date_validty_form','meliscategory_categories_date_validty_form');
-        $factory = new \Zend\Form\Factory();
-        $formElements = $this->serviceLocator->get('FormElementManager');
+        $factory = new \Laminas\Form\Factory();
+        $formElements = $this->getServiceManager()->get('FormElementManager');
         $factory->setFormElementManager($formElements);
         $propertyForm = $factory->createForm($appConfigForm);
         // Get the locale used from meliscore session
         $container = new Container('meliscore');
         $locale = $container['melis-lang-locale'];
         if (!empty($catId)){
-            $melisTranslation = $this->getServiceLocator()->get('MelisCoreTranslation');
+            $melisTranslation = $this->getServiceManager()->get('MelisCoreTranslation');
 
-            $melisCmsCategoryService = $this->getServiceLocator()->get('MelisCmsCategory2Service');
+            $melisCmsCategoryService = $this->getServiceManager()->get('MelisCmsCategory2Service');
             $categoryData = $melisCmsCategoryService->getCategoryById($catId);
             $category = $categoryData->getCategory();
             $validFrom = $category->cat2_date_valid_start ?? null;
@@ -305,7 +305,7 @@ class MelisCmsCategoryController extends AbstractActionController
      * Render Category Countries
      * This also return the Countries of the category depend on request
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return \Laminas\View\Model\ViewModel
      */
     public function renderCategoryFormSitesAction()
     {
@@ -316,7 +316,7 @@ class MelisCmsCategoryController extends AbstractActionController
         $sites = array();
         if (!empty($catId)){
 
-            $catSiteTbl = $this->getServiceLocator()->get('MelisCmsCategory2SitesTable');
+            $catSiteTbl = $this->getServiceManager()->get('MelisCmsCategory2SitesTable');
             $catSiteData = $catSiteTbl->getEntryByField('cats2_cat2_id',$catId)->toArray();
             // Countries Id's assign to a array handler
             if (!empty($catSiteData)){
@@ -330,7 +330,7 @@ class MelisCmsCategoryController extends AbstractActionController
         }
 
         // Getting all Commerce Coutnries
-        $sitesTable = $this->getServiceLocator()->get('MelisEngineTableSite');
+        $sitesTable = $this->getServiceManager()->get('MelisEngineTableSite');
         $siteData   = $sitesTable->fetchAll()->toArray();
 
         $view = new ViewModel();
@@ -347,7 +347,7 @@ class MelisCmsCategoryController extends AbstractActionController
      * Render Category Status
      * This also return the current status of the category depend on request
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return \Laminas\View\Model\ViewModel
      */
     public function renderCategoryFormStatusAction(){
         $view = new ViewModel();
@@ -355,7 +355,7 @@ class MelisCmsCategoryController extends AbstractActionController
         $melisKey = $this->params()->fromRoute('melisKey', '');
 
         if (!empty($catId)){
-            $melisCmsCategoryService = $this->getServiceLocator()->get('MelisCmsCategory2Service');
+            $melisCmsCategoryService = $this->getServiceManager()->get('MelisCmsCategory2Service');
             $categoryData = $melisCmsCategoryService->getCategoryById($catId);
             $category = $categoryData->getCategory();
             $view->categorystatus = ($category->cat2_status) ? 'checked' : '';
@@ -370,7 +370,7 @@ class MelisCmsCategoryController extends AbstractActionController
     /**
      * Render Category Tab Main Right Zone
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return \Laminas\View\Model\ViewModel
      */
     public function renderCategoryTabMainRightAction(){
         $melisKey = $this->params()->fromRoute('melisKey', '');
@@ -382,7 +382,7 @@ class MelisCmsCategoryController extends AbstractActionController
     /**
      * Render Category Tab for SEO
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return \Laminas\View\Model\ViewModel
      */
     public function renderCategoryTabSeoAction(){
         $melisKey = $this->params()->fromRoute('melisKey', '');
@@ -395,20 +395,20 @@ class MelisCmsCategoryController extends AbstractActionController
      * Render Category Products
      * This also return the DataTable for Category Products Listing
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return \Laminas\View\Model\ViewModel
      */
     public function renderCategoryTabProductsAction(){
 
-        $translator = $this->serviceLocator->get('translator');
+        $translator = $this->getServiceManager()->get('translator');
         $activateTab = $this->params()->fromQuery('activateTab');
         $catId = $this->params()->fromQuery('catId');
 
         //Get category product count
-        $prodCatTable = $this->getServiceLocator()->get('MelisEcomProductCategoryTable');
+        $prodCatTable = $this->getServiceManager()->get('MelisEcomProductCategoryTable');
         $prodCount = $prodCatTable->getCategoryProductCount($catId)->current()->count;
 
         // Getting Category Products Table on config
-        $melisTool = $this->getServiceLocator()->get('MelisCoreTool');
+        $melisTool = $this->getServiceManager()->get('MelisCoreTool');
         $melisTool->setMelisToolKey(self::PLUGIN_INDEX, self::TOOL_KEY);
         $columns = $melisTool->getColumns();
         $columns['actions'] = array('text' => $translator->translate('tr_meliscommerce_categories_common_label_action'));
@@ -442,11 +442,11 @@ class MelisCmsCategoryController extends AbstractActionController
     /**
      * This method saving Category Details
      *
-     * @return \Zend\View\Model\JsonModel
+     * @return \Laminas\View\Model\JsonModel
      */
     public function saveCategoryAction()
     {
-        $translator = $this->getServiceLocator()->get('translator');
+        $translator = $this->getServiceManager()->get('translator');
         $request = $this->getRequest();
         $success = 0;
         $textTitle = 'tr_melis_cms_category_v2';
@@ -476,7 +476,7 @@ class MelisCmsCategoryController extends AbstractActionController
             $dateActive          = str_replace(' ',null,str_replace('/','-',$postValues['cat_date_valid_start']) ?? null);
             $dateInactive        = str_replace(' ',null,str_replace('/','-',$postValues['cat_date_valid_end']) ?? null);
             // melis-core config
-            $melisMelisCoreConfig = $this->serviceLocator->get('MelisCoreConfig');
+            $melisMelisCoreConfig = $this->getServiceManager()->get('MelisCoreConfig');
             // form config
             $appConfigForm  = $melisMelisCoreConfig->getItem('meliscategory/forms/meliscategory_categories/meliscategory_categories_category_information_form');
             // create form
@@ -552,7 +552,7 @@ class MelisCmsCategoryController extends AbstractActionController
                             $catSiteTbl->deleteByField('cats2_cat2_id',$passedCatId);
                         }
                         if (in_array('-1',$catSitesData)) {
-                            $engineSite = $this->getServiceLocator()->get('MelisEngineTableSite');
+                            $engineSite = $this->getServiceManager()->get('MelisEngineTableSite');
                             $sites = $engineSite->fetchAll()->toArray();
                             if (! empty($sites)) {
                                 foreach ($sites as $idx => $val) {
@@ -588,7 +588,7 @@ class MelisCmsCategoryController extends AbstractActionController
                         }
                     }
 
-                    $mediaTable = $this->getServiceLocator()->get('MelisCmsCategory2MediaTable');
+                    $mediaTable = $this->getServiceManager()->get('MelisCmsCategory2MediaTable');
                     // save all media when adding a category
                     if (empty($passedCatId)) {
                         if (!empty($images)) {
@@ -664,11 +664,11 @@ class MelisCmsCategoryController extends AbstractActionController
     /**
      * This method get Category Data form the Post Data
      *
-     * @return \Zend\View\Model\JsonModel
+     * @return \Laminas\View\Model\JsonModel
      */
     public function getCategoryAction(){
 
-        $translator = $this->getServiceLocator()->get('translator');
+        $translator = $this->getServiceManager()->get('translator');
 
         $success = 0;
         $errors = array();
@@ -693,7 +693,7 @@ class MelisCmsCategoryController extends AbstractActionController
             }
 
             // Get Cureent User ID
-            $melisCoreAuth = $this->getServiceLocator()->get('MelisCoreAuth');
+            $melisCoreAuth = $this->getServiceManager()->get('MelisCoreAuth');
             $userAuthDatas =  $melisCoreAuth->getStorage()->read();
             $userId = (int) $userAuthDatas->usr_id;
 
@@ -812,7 +812,7 @@ class MelisCmsCategoryController extends AbstractActionController
             // This is for New Catgory entry
             if (!$catId){
                 // Getting the Last Order number as new order of the Category
-                $melisEcomCategoryTable = $this->getServiceLocator()->get('MelisCmsCategryTable');
+                $melisEcomCategoryTable = $this->getServiceManager()->get('MelisCmsCategryTable');
                 $catOrder = $melisEcomCategoryTable->getTotalData('cat_father_cat_id', $postValues['cat_father_cat_id']) + 1;
                 $catData['cat_order'] = $catOrder;
 
@@ -836,11 +836,11 @@ class MelisCmsCategoryController extends AbstractActionController
     /**
      * This method will Delete/Remove Product form Category Products
      *
-     * @return \Zend\View\Model\JsonModel
+     * @return \Laminas\View\Model\JsonModel
      */
     public function deleteCategoryAction()
     {
-        $translator = $this->getServiceLocator()->get('translator');
+        $translator = $this->getServiceManager()->get('translator');
         $request = $this->getRequest();
         // Default Values
         $catId = null;
@@ -855,8 +855,8 @@ class MelisCmsCategoryController extends AbstractActionController
             $postValues = $this->getTool()->sanitizeRecursive($postValues);
             $catId = (int) $postValues['cat_id'];
             $categoryTable = $this->getCategory2Table();
-            $categoryMediaSvc = $this->getServiceLocator()->get('MelisCmsCategory2MediaService');
-            $categorySvc = $this->getServiceLocator()->get('MelisCmsCategory2Service');
+            $categoryMediaSvc = $this->getServiceManager()->get('MelisCmsCategory2MediaService');
+            $categorySvc = $this->getServiceManager()->get('MelisCmsCategory2Service');
             $categoryData = $categoryTable->getEntryById($catId)->current();
             $parentId     = $categoryData->cat2_father_cat_id ?? null;
             $currentOrder = $categoryData->cat2_order;
@@ -906,7 +906,7 @@ class MelisCmsCategoryController extends AbstractActionController
      */
     private function getTranslation($key, $args = null)
     {
-        $translator = $this->getServiceLocator()->get('translator');
+        $translator = $this->getServiceManager()->get('translator');
         $text = vsprintf($translator->translate($key), $args);
 
         return $text;
@@ -914,7 +914,7 @@ class MelisCmsCategoryController extends AbstractActionController
 
     private function getTool()
     {
-        $tool =  $this->getServiceLocator()->get('MelisCoreTool');
+        $tool =  $this->getServiceManager()->get('MelisCoreTool');
         return $tool;
     }
     /**
@@ -924,7 +924,7 @@ class MelisCmsCategoryController extends AbstractActionController
      */
     private function getLoggedInUserInfo()
     {
-        $authService = $this->getServiceLocator()->get('MelisCoreAuth');
+        $authService = $this->getServiceManager()->get('MelisCoreAuth');
         if($authService->hasIdentity()) {
             return $authService->getIdentity();
         }
@@ -935,14 +935,14 @@ class MelisCmsCategoryController extends AbstractActionController
     /**
      * Return zend form
      * @param $formConfig
-     * @return \Zend\Form\ElementInterface
+     * @return \Laminas\Form\ElementInterface
      */
     private function getForm($formConfig)
     {
         // zend form factory
-        $factory = new \Zend\Form\Factory();
+        $factory = new \Laminas\Form\Factory();
         // get form element manager
-        $formElements = $this->serviceLocator->get('FormElementManager');
+        $formElements = $this->getServiceManager()->get('FormElementManager');
         // create form element
         $factory->setFormElementManager($formElements);
         // create zend form
@@ -956,21 +956,21 @@ class MelisCmsCategoryController extends AbstractActionController
      */
     private function getCategoryService()
     {
-        return $this->getServiceLocator()->get('MelisCmsCategory2Service');
+        return $this->getServiceManager()->get('MelisCmsCategory2Service');
     }
     /**
      * @return \MelisCmsCategory2\Model\Tables\MelisCmsCategory2SitesTable
      */
     private function getCatSiteTable()
     {
-        return $this->getServiceLocator()->get('MelisCmsCategory2SitesTable');
+        return $this->getServiceManager()->get('MelisCmsCategory2SitesTable');
     }
     /**
      * @return \MelisCmsCategory2\Model\Tables\MelisCmsCategory2SitesTable
      */
     private function getCategory2Table()
     {
-        return $this->getServiceLocator()->get('MelisCmsCategory2Table');
+        return $this->getServiceManager()->get('MelisCmsCategory2Table');
     }
     /**
      * This will pop an error after validating the form

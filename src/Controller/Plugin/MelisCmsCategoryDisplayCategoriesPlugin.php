@@ -10,9 +10,9 @@
 namespace MelisCmsCategory2\Controller\Plugin;
 
 use MelisEngine\Controller\Plugin\MelisTemplatingPlugin;
-use Zend\View\Model\ViewModel;
-use Zend\Stdlib\ArrayUtils;
-use Zend\Session\Container;
+use Laminas\View\Model\ViewModel;
+use Laminas\Stdlib\ArrayUtils;
+use Laminas\Session\Container;
 
 /**
  * This plugin implements the business logic of the
@@ -74,9 +74,9 @@ class MelisCmsCategoryDisplayCategoriesPlugin extends MelisTemplatingPlugin
         $siteId        = $data['site_id'] ?? null;
         $pageId        = $data['pageId'] ?? null;
         $startingCategory = null;
-        $melisCmsCategorySvc = $this->getServiceLocator()->get('MelisCmsCategory2Service');
+        $melisCmsCategorySvc = $this->getServiceManager()->get('MelisCmsCategory2Service');
         // get the page lang locale
-        $pageSvc       = $this->getServiceLocator()->get('MelisEnginePage');
+        $pageSvc       = $this->getServiceManager()->get('MelisEnginePage');
         $pageData      = $pageSvc->getDatasPage($pageId);
         $melisPageTree = $pageData->getMelisPageTree();
         // put in the data for view
@@ -127,19 +127,19 @@ class MelisCmsCategoryDisplayCategoriesPlugin extends MelisTemplatingPlugin
     {
 
         // construct form
-        $factory        = new \Zend\Form\Factory();
-        $formElements   = $this->getServiceLocator()->get('FormElementManager');
+        $factory        = new \Laminas\Form\Factory();
+        $formElements   = $this->getServiceManager()->get('FormElementManager');
         $factory->setFormElementManager($formElements);
         $formConfig     = $this->pluginBackConfig['modal_form'];
-        $tool           = $this->getServiceLocator()->get('translator');
-        $melisPage = $this->getServiceLocator()->get('MelisEnginePage');
+        $tool           = $this->getServiceManager()->get('translator');
+        $melisPage = $this->getServiceManager()->get('MelisEnginePage');
 
         $response = [];
         $render   = [];
         if (!empty($formConfig)) {
             foreach ($formConfig as $formKey => $config) {
                 $form = $factory->createForm($config);
-                $request = $this->getServiceLocator()->get('request');
+                $request = $this->getServiceManager()->get('request');
                 $parameters = $request->getQuery()->toArray();
 
                 if (!isset($parameters['validate'])) {
@@ -158,7 +158,7 @@ class MelisCmsCategoryDisplayCategoriesPlugin extends MelisTemplatingPlugin
                         'noPropsMsg' => $tool->translate('tr_meliscms_comments_plugin_no_properties'),
                     ];
 
-                    $viewRender = $this->getServiceLocator()->get('ViewRenderer');
+                    $viewRender = $this->getServiceManager()->get('ViewRenderer');
                     $html = $viewRender->render($viewModelTab);
                     array_push($render, [
                             'name' => $config['tab_title'],
@@ -218,15 +218,15 @@ class MelisCmsCategoryDisplayCategoriesPlugin extends MelisTemplatingPlugin
     }
 
     /**
-     * Create a Zend Form
+     * Create a Laminas Form
      * @param $formConfig
      * @param null $excludeElement
-     * @return \Zend\Form\ElementInterface
+     * @return \Laminas\Form\ElementInterface
      */
     private function getPluginForm($formConfig , $excludeElement = null)
     {
-        $factory        = new \Zend\Form\Factory();
-        $formElements   = $this->getServiceLocator()->get('FormElementManager');
+        $factory        = new \Laminas\Form\Factory();
+        $formElements   = $this->getServiceManager()->get('FormElementManager');
         $factory->setFormElementManager($formElements);
         $form = $factory->createForm($formConfig);
         foreach($form->getElements() as $element => $val){
