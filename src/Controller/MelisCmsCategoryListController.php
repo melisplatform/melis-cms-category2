@@ -396,7 +396,7 @@ class MelisCmsCategoryListController extends MelisAbstractActionController
          
         if($request->isPost()) {
              
-            $datas = get_object_vars($request->getPost());
+            $datas = $request->getPost()->toArray();
              
             if (!empty($datas)){
                 

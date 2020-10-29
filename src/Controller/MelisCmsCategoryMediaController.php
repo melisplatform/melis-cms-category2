@@ -458,7 +458,7 @@ class MelisCmsCategoryMediaController extends MelisAbstractActionController
             // media service
             $categoryMediaSvc = $this->getServiceManager()->get('MelisCmsCategory2MediaService');
             // post values
-            $postvalues = get_object_vars($request->getPost());
+            $postvalues = $request->getPost()->toArray();
             $imageName  = $postvalues['imageName'] ??  null;
             $fileType   = $postvalues['fileType'] ?? null;
             $categoryId = $postvalues['categoryId'] ?? null;
