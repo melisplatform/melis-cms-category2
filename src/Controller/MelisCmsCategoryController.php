@@ -462,7 +462,7 @@ class MelisCmsCategoryController extends MelisAbstractActionController
             $currentUserLoggedIn = $this->getLoggedInUserInfo();
             $userId              = $currentUserLoggedIn->usr_id ?? null;
             $categoryService     = $this->getCategoryService();
-            $postValues          = get_object_vars($request->getPost());
+            $postValues          = $request->getPost()->toArray();
             $catTranslationData  = $postValues['cat_trans'] ?? null;
             $catSitesData        = $postValues['cat_sites'] ?? null;
             if (empty($catSitesData)) {
@@ -679,7 +679,7 @@ class MelisCmsCategoryController extends MelisAbstractActionController
 
         if($request->isPost()) {
 
-            $postValues = get_object_vars($request->getPost());
+            $postValues = $request->getPost()->toArray();
 
             $catId = $postValues['cat_id'];
 
@@ -851,7 +851,7 @@ class MelisCmsCategoryController extends MelisAbstractActionController
         $logTypeCode = 'CMS_CATEGORY2_DELETE';
         $textTitle   = $translator->translate("tr_meliscms_categories_category_delete");
         if($request->isPost()) {
-            $postValues = get_object_vars($this->getRequest()->getPost());
+            $postValues = $this->getRequest()->getPost()->toArray();
             $postValues = $this->getTool()->sanitizeRecursive($postValues);
             $catId = (int) $postValues['cat_id'];
             $categoryTable = $this->getCategory2Table();
