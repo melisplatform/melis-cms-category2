@@ -26,7 +26,7 @@ class MelisCmsCategoryService  extends MelisGeneralService
         $currentUserId,
         $validDateStart,
         $validDateEnd,
-        $categoryId = null,
+        $categoryId,
         $postValues
     ) {
 

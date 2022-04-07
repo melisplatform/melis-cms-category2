@@ -14,7 +14,7 @@ return array(
                             'method' => '',
                             'action' => '',
                         ),
-                        'hydrator'  => 'Laminas\Hydrator\ArraySerializable',
+                        'hydrator'  => 'Laminas\Hydrator\ArraySerializableHydrator',
                         'elements' => array(
                             array(
                                 'spec' => array(
@@ -38,7 +38,7 @@ return array(
                             'method' => '',
                             'action' => '',
                         ),
-                        'hydrator'  => 'Laminas\Hydrator\ArraySerializable',
+                        'hydrator'  => 'Laminas\Hydrator\ArraySerializableHydrator',
                         'elements' => array(
                             array(
                                 'spec' => array(
@@ -154,7 +154,7 @@ return array(
                             'method' => '',
                             'action' => '',
                         ),
-                        'hydrator'  => 'Laminas\Hydrator\ArraySerializable',
+                        'hydrator'  => 'Laminas\Hydrator\ArraySerializableHydrator',
                         'elements' => array(
                             array(
                                 'spec' => array(
@@ -193,7 +193,7 @@ return array(
                             'name' => 'meliscategory_site_filer_form',
                             'id'   => 'meliscategory_site_filer_form',
                         ],
-                        'hydrator' => 'Laminas\Hydrator\ArraySerializable',
+                        'hydrator' => 'Laminas\Hydrator\ArraySerializableHydrator',
                         'elements' => [
                             [
                                 'spec' => [
@@ -219,7 +219,7 @@ return array(
                             'method' => '',
                             'action' => '',
                         ),
-                        'hydrator'  => 'Laminas\Hydrator\ArraySerializable',
+                        'hydrator'  => 'Laminas\Hydrator\ArraySerializableHydrator',
                         'elements' => array(
                             array(
                                 'spec' => array(
