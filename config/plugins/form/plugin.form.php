@@ -12,7 +12,7 @@ return [
                         'name' => 'meliscategory_category_select_site_filter_form',
                         'id'   => 'meliscategory_category_select_site_filter_form',
                     ],
-                    'hydrator' => 'Laminas\Hydrator\ArraySerializable',
+                    'hydrator' => 'Laminas\Hydrator\ArraySerializableHydrator',
                     'elements' => [
                         [
                             'spec' => [

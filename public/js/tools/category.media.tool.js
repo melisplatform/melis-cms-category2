@@ -110,14 +110,15 @@ $(function() {
                 panelHeight         = $('#cmsCategoryInfoPanel .card-body').height() + 290;
 
                 $('.viewImage').parent().parent().find('input').each(function(i,val) {
-                    var tmpVal = $(val).val();
+                    var tmpVal = $(val).val();                   
 
-                        if ( currentImageValue === tmpVal ) {
-                            images = images + "<img src='" + tmpVal+ "' class='active'/>";
-                        }
-                        else {
-                            images = images + "<img src='" + tmpVal+ "'/>";
-                        }
+                    if ( currentImageValue === tmpVal ) {
+                        tmpVal = tmpVal.replace(/'/g, "&#039;");//for escaping values with single quote
+                        images = images + "<img src='" + tmpVal+ "' class='active'/>";
+                    } else {
+                        tmpVal = tmpVal.replace(/'/g, "&#039;");//for escaping values with single quote
+                        images = images + "<img src='" + tmpVal+ "'/>";
+                    }
                 });
                 
                 var backDrop = "<div class='back-drop' style='height:"+ panelHeight+ "px'>" +
