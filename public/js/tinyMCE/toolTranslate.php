@@ -1,23 +1,22 @@
 <?php
-return array(
-    'mode' => 'textareas',
+return [
+    // 'mode' => 'textareas',
     'relative_urls' => false,
     'branding' => false,
     'selector' => 'tool-editable-selector',
     'language' => 'en',
     'inline' => false,
     'menubar' => false,
-    'forced_root_block' => '',
+    'forced_root_block' => 'div',
     'cleanup' => false,
     'verify_html' => false,
-    'setup' => 'melisTinyMCE.tinyMceActionEvent',
     'paste_auto_cleanup_on_paste' => true,
-    'plugins' => array(
-        //[contextmenu, textcolor, colorpicker] this plugin is already built in the core editor as of TinyMCE v. 5
-        'lists advlist autolink link image charmap print preview anchor',
-        'searchreplace visualblocks code fullscreen',
-        'insertdatetime media table paste'
-    ),
+    'plugins' => [
+        'lists', 'advlist', 'autolink', 'link', 'image', 'charmap', 'preview', 'anchor',
+        'searchreplace', 'visualblocks', 'code', 'fullscreen', 'insertdatetime', 'media', 'table'
+    ],
     'toolbar' => 'undo redo | styleselect | bold italic | link image |  alignleft aligncenter alignright alignjustify',
-    'init_instance_callback' => 'tinyMceCleaner',
-);
+    'deprecation_warnings' => false,
+    'setup' => 'melisTinyMCE.tinyMceActionEvent',
+    'init_instance_callback' => 'tinyMceCleaner'
+];
