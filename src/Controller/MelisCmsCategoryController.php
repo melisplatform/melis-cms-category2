@@ -473,8 +473,8 @@ class MelisCmsCategoryController extends MelisAbstractActionController
             }
 
             $passedCatId         = $postValues['cat_id'] ?? null;
-            $dateActive          = str_replace(' ',null,str_replace('/','-',$postValues['cat_date_valid_start']) ?? null);
-            $dateInactive        = str_replace(' ',null,str_replace('/','-',$postValues['cat_date_valid_end']) ?? null);
+            $dateActive          = str_replace(' ','',str_replace('/','-',$postValues['cat_date_valid_start']) ?? null);
+            $dateInactive        = str_replace(' ','',str_replace('/','-',$postValues['cat_date_valid_end']) ?? null);
             // melis-core config
             $melisMelisCoreConfig = $this->getServiceManager()->get('MelisCoreConfig');
             // form config
