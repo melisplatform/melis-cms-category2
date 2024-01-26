@@ -9,7 +9,7 @@
 
 namespace MelisCmsCategory2\Form\Factory;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\ServiceManager\FactoryInterface;
 use Laminas\Form\Element\Text;

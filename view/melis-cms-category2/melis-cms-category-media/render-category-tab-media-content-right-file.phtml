@@ -34,7 +34,7 @@
                             $path = $data['catm2_path'] ?? null; ?>
                             <?php if ($data['catm2_type'] == 'file' ){?>
                                 <span>
-                                    <a href="#" class="list-group-item list-group-item-action"><?= str_replace($this->mediaPath,null,$path) ?></a>
+                                    <a href="#" class="list-group-item list-group-item-action"><?= str_replace($this->mediaPath,'',$path) ?></a>
                                     <i class="fa fa-times-circle remove-file" data-categoryid="<?= $this->categoryId ?>" ></i>
                                      <input type="hidden" value="<?= $path ?>">
                                 </span>

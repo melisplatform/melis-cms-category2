@@ -101,7 +101,7 @@ class MelisCmsCategoryMediaService  extends MelisGeneralService
                 foreach ($files as $idx => $file) {
                     // if filenameOnly set to true
                     if ($filenameOnly) {
-                        $file =  str_replace($path,null,$file);
+                        $file =  str_replace($path,'',$file);
                     }
                     // get the path info of a file
                     $pathInfo = pathinfo($file);
