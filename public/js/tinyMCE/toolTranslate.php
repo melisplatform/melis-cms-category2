@@ -16,8 +16,10 @@ return [
         'lists', 'advlist', 'autolink', 'link', 'image', 'charmap', 'preview', 'anchor',
         'searchreplace', 'visualblocks', 'code', 'fullscreen', 'insertdatetime', 'media', 'table'
     ],
-    'toolbar' => 'undo redo | styleselect | bold italic | link image |  alignleft aligncenter alignright alignjustify',
+    //styleselect = styles
+    'toolbar' => 'undo redo | styles | bold italic | link image |  alignleft aligncenter alignright alignjustify',
     'deprecation_warnings' => false,
+    'promotion' => false,
     'setup' => 'melisTinyMCE.tinyMceActionEvent',
     'init_instance_callback' => 'tinyMceCleaner'
 ];
