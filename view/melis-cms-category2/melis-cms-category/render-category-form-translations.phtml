@@ -81,6 +81,9 @@
 					// styleselect = styles
 					toolbar: 'undo redo | styles | bold italic |  alignleft aligncenter alignright alignjustify | forecolor backcolor | code',
 				},
+				/* Fixes issue: https://mantis2.uat.melistechnology.fr/view.php?id=4906
+				 * Added back the default toolbar option on createTinyMCE .editme on .close-tab #close-all-tab
+				 */
 				defaultOption = {
 					height: "300px",
 					plugins: [
@@ -91,7 +94,7 @@
 				};
 
 				melisTinyMCE.createTinyMCE("toolTranslate", ".editme", option);
-
+				
 				$body.on("click", ".close-tab", function() {
 					if ( $(this).attr("data-id") === "id_meliscommerce_categories_page" ) {
 						melisTinyMCE.createTinyMCE("tool", ".editme", defaultOption);
