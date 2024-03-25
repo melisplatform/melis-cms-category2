@@ -18,6 +18,7 @@ return [
     ],
     //styleselect = styles
     'toolbar' => 'undo redo | styles | bold italic | link image |  alignleft aligncenter alignright alignjustify',
+    'toolbar_mode' => 'sliding',
     'deprecation_warnings' => false,
     'promotion' => false,
     'setup' => 'melisTinyMCE.tinyMceActionEvent',
