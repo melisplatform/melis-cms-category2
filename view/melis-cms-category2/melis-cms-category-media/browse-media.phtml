@@ -27,7 +27,7 @@
             <div class="widget widget-tabs widget-tabs-double widget-tabs-responsive margin-none border-none">
                 <div class="widget-head">
                     <ul class="nav nav-tabs">
-                        <li class="active"><a href="#<?php echo $this->zoneconfig['conf']['id'] ?>" class="glyphicons plus" data-toggle="tab" aria-expanded="true" style="cursor: move;"><i></i><?php echo $this->translate($title) ?></a></li>
+                        <li class="active"><a href="#<?php echo $this->zoneconfig['conf']['id'] ?>" class="glyphicons plus" data-bs-toggle="tab" aria-expanded="true" style="cursor: move;"><i></i><?php echo $this->translate($title) ?></a></li>
                     </ul>
                 </div>
                 <div class="widget-body innerAll inner-2x">
@@ -61,7 +61,7 @@
                         </div>
                         <br>
                         <div class="buttons">
-                            <button data-dismiss="modal" id="closeMedialibrary" class="btn btn-danger float-left"><i class="fa fa-times"></i> <?= $this->translate('tr_meliscore_common_close')?></button>
+                            <button data-bs-dismiss="modal" id="closeMedialibrary" class="btn btn-danger float-left"><i class="fa fa-times"></i> <?= $this->translate('tr_meliscore_common_close')?></button>
                             <button  id="cmsSaveCategoryMedia" class="btn btn-success float-right" data-file-type="<?= $this->fileType ?>"><i class="fa fa-save"></i> <?= $this->translate('tr_meliscore_tool_gen_save')?></button>
                         </div>
                         <div class="clearfix"></div>

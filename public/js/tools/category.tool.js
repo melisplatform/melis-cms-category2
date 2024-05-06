@@ -622,14 +622,14 @@ $(function() {
 						}
 						else {
 							melisHelper.melisKoNotification(data.textTitle, data.textMessage, data.errors);
-							saveCategoryBtn.removeAttr('disabled');
+							saveCategoryBtn.prop('disabled', false);
 						}
 					}).fail(function() {
-						saveCategoryBtn.removeAttr('disabled');
+						saveCategoryBtn.prop('disabled', false);
 						alert( translations.tr_meliscore_error_message );
 					})
 				} else {
-					saveCategoryBtn.removeAttr('disabled');
+					saveCategoryBtn.prop('disabled', false);
 
 					var message = "Please upload a file",
 						heading = translations.tr_melis_cms_category_v2;
@@ -734,14 +734,14 @@ window.initCmsCategoryTreeView = function() {
 							father.html(temp.get(0).outerHTML  + fatherIcon +' ' + father.text() );
 					});
 					
-					$("#categorySiteFilter").removeAttr('disabled');
-					$("#cmsCategoryTreeViewSearchInput").removeAttr('disabled');
-					$(".category-list-lang-dropdown").removeAttr('disabled');
+					$("#categorySiteFilter").prop('disabled', false);
+					$("#cmsCategoryTreeViewSearchInput").prop('disabled', false);
+					$(".category-list-lang-dropdown").prop('disabled', false);
 					$(".category-list-lang-dropdown").css("cursor","pointer");
-					$("#clearSearchInputBtn").removeAttr('disabled');
-					$("#collapseCategoryTreeViewBtn").removeAttr('disabled');
-					$("#expandCategoryTreeViewBtn").removeAttr('disabled');
-					$("#refreshCmsCategoryTreeView").removeAttr('disabled');
+					$("#clearSearchInputBtn").prop('disabled', false);
+					$("#collapseCategoryTreeViewBtn").prop('disabled', false);
+					$("#expandCategoryTreeViewBtn").prop('disabled', false);
+					$("#refreshCmsCategoryTreeView").prop('disabled', false);
 
 					if ($(".jstree-container-ul").children("li").length ===  0) {
 						$("#noResultData").fadeIn("fast").css("display","inline-block");
