@@ -15,10 +15,10 @@
 				</h3>
 			</div>
     		<div class="product-text-tab-container">
-            	<ul class="nav-tabs product-text-tab">
+            	<ul class="nav nav-tabs product-text-tab">
             		<?php foreach ($this->ecomLang as $key => $val){;?>
-                		<li class="">
-                			<a class="clearfix" data-bs-toggle="tab" href="#<?php echo $val['lang_cms_name'].'_categoryInfo' ?>" aria-expanded="false">
+                		<li class="nav-item">
+                			<a class="nav-link clearfix" data-bs-toggle="tab" data-bs-target="#<?php echo $val['lang_cms_name'].'_categoryInfo' ?>" href="#<?php echo $val['lang_cms_name'].'_categoryInfo' ?>" aria-expanded="false">
 								<?php
 								    $langLocale = $val['lang_cms_locale'] ?? null;
                                     echo '<span class="float-right"><img src="/MelisCms/images/lang-flags/' . $langLocale .'.png" class="imgDisplay float-right"/></span>';
