@@ -1117,5 +1117,6 @@ filter: gray;
   }
 }
 .jstree-proton {
-  font-family: 'Titillium Web', sans-serif, Arial, sans-serif;
+  /* 'Titillium Web , sans-serif, ' */
+  font-family: Arial, sans-serif;
 }

@@ -49,7 +49,8 @@ return array(
                     '/MelisCmsCategory2/plugins/js/category.plugin.select.js',
                 ],
                 'css' => [
-                    '/MelisCmsCategory2/assets/jstree/dist/themes/proton/style.min.css',
+                    //'/MelisCmsCategory2/assets/jstree/dist/themes/proton/style.min.css',
+                    '/MelisCmsCategory2/assets/jstree/dist/themes/default/style.min.css',
                     '/MelisCmsCategory2/css/categories.css',
                      // for selecting a category in a tree
                     '/MelisCmsCategory2/plugins/css/category.plugin.select.css',

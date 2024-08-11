@@ -966,7 +966,7 @@ window.initCmsCategoryTreeView = function() {
 				"check_callback": true,
 				"animation" : 500,
 				"themes": {
-					"name": "proton",
+					"name": "default",
 					"responsive": false
 				},
 				"dblclick_toggle" : false,
