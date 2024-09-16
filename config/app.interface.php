@@ -39,7 +39,6 @@ return array(
                 'icon' => 'fa-th-list',
                'rightsDisplay' => 'none'
             ],
-            'datas' => [],
             'ressources' => [
                 'js' => [
                     '/MelisCmsCategory2/assets/jstree/dist/jstree.min.js',
@@ -60,13 +59,29 @@ return array(
                  * lesser requests
                  */
                 'build' => [
-                    // 'disable_bundle' => true,
+                    //'disable_bundle' => true,
                     // lists of assets that will be loaded in the layout
                     'css' => [
                         '/MelisCmsCategory2/build/css/bundle.css',
                     ],
                     'js' => [
                         '/MelisCmsCategory2/build/js/bundle.js',
+                    ]
+                ]
+            ],
+            'datas' => [
+                /**
+                 * Used to copy necessary file to
+                 * main public/bundles-generated folder
+                 */
+                'bundle_all_needed_files' => [
+                    //will be put inside css folder
+                    'css' => [
+                        '/assets/jstree/dist/themes/default/32px.png'
+                    ],
+                    //will be put inside js folder
+                    'js' => [
+
                     ]
                 ]
             ],
