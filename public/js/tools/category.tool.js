@@ -225,7 +225,7 @@ $(function() {
 								$('.category-sites-heading').css('color',"#ff0000");
 							}
 							else {
-								$('.category-sites-heading').removeAttr('style')
+								$('.category-sites-heading').prop('style', null);
 							}
 
 						var customErrorTrans = data.customError.trans;
@@ -270,17 +270,17 @@ $(function() {
 
 				$('.cat-tree-view-languages.cms-category2-tree-view-languages span.filter-key').text(langText);
 				// disable buttons
-				$("#cmsCategoryTreeViewSearchInput").attr("disabled","disabeld");
-				$(".category-list-lang-dropdown").attr("disabled","disabeld");
+				$("#cmsCategoryTreeViewSearchInput").prop("disabled", true);
+				$(".category-list-lang-dropdown").prop("disabled", true);
 				$(".category-list-lang-dropdown").css("cursor","not-allowed");
-				$("#clearSearchInputBtn").attr("disabled","disabeld");
-				$("#collapseCategoryTreeViewBtn").attr("disabled","disabeld");
-				$("#expandCategoryTreeViewBtn").attr("disabled","disabeld");
-				$("#refreshCmsCategoryTreeView").attr("disabled","disabeld");
+				$("#clearSearchInputBtn").prop("disabled", true);
+				$("#collapseCategoryTreeViewBtn").prop("disabled", true);
+				$("#expandCategoryTreeViewBtn").prop("disabled", true);
+				$("#refreshCmsCategoryTreeView").prop("disabled", true);
 
 			var categorySiteFilter = $("#categorySiteFilter");
 
-				categorySiteFilter.attr("disabled","disabeld");
+				categorySiteFilter.prop("disabled", true);
 				//put attribute on button add category
 				$(".category-list-lang-dropdown").attr('data-locale',langLocale);
 
@@ -296,15 +296,15 @@ $(function() {
 				langLocale 		= cmsCategoryTree.data('langlocale');
 
 				if (typeof(cmsCategoryTree.jstree(true).settings) !== "undefined" ) {
-					$this.attr("disabled","disabeld");
+					$this.prop("disabled", true);
 					// disable buttons
-					$("#cmsCategoryTreeViewSearchInput").attr("disabled","disabeld");
-					$(".category-list-lang-dropdown").attr("disabled","disabeld");
+					$("#cmsCategoryTreeViewSearchInput").prop("disabled", true);
+					$(".category-list-lang-dropdown").prop("disabled", true);
 					$(".category-list-lang-dropdown").css("cursor","not-allowed");
-					$("#clearSearchInputBtn").attr("disabled","disabeld");
-					$("#collapseCategoryTreeViewBtn").attr("disabled","disabeld");
-					$("#expandCategoryTreeViewBtn").attr("disabled","disabeld");
-					$("#refreshCmsCategoryTreeView").attr("disabled","disabeld");
+					$("#clearSearchInputBtn").prop("disabled", true);
+					$("#collapseCategoryTreeViewBtn").prop("disabled", true);
+					$("#expandCategoryTreeViewBtn").prop("disabled", true);
+					$("#refreshCmsCategoryTreeView").prop("disabled", true);
 					
 					if (value !== "") {
 						$(".info-site-filter").fadeIn('medium');
@@ -352,9 +352,9 @@ $(function() {
 		});
 		
 		$categoryBody.on('keyup keypress', '#cmsCategoryTreeViewSearchForm', function(e) {
-			var keyCode = e.keyCode || e.which;
+			var key = e.key || e.which;
 
-				if (keyCode === 13) { 
+				if (key === 'Enter') { 
 					e.preventDefault();
 					return false;
 				}
@@ -402,19 +402,19 @@ $(function() {
 				if($this.find('.fa').hasClass('fa-check-square-o')) { // unchecking category Checkbox
 					$this.find('.fa').removeClass('fa-check-square-o');
 					$this.find('.fa').addClass('fa-square-o');
-					$this.find('input[type="checkbox"]').removeAttr('checked');
+					$this.find('input[type="checkbox"]').prop('checked', false);
 					
 					// If the uncheck is check all checkbox
 					if($this.find('.check-all').hasClass('fa-square-o')) {
 						$(".cms-category-checkbox .fa").not(".check-all").addClass('fa-square-o');
 						$(".cms-category-checkbox .fa").not(".check-all").removeClass('fa-check-square-o');
-						$(".cms-category-checkbox .fa").not(".check-all").next('input[type="checkbox"]').removeAttr('checked');
+						$(".cms-category-checkbox .fa").not(".check-all").next('input[type="checkbox"]').prop('checked', false);
 					}
 				}
 				else { // Checking Category Checkboxes
 					$this.find('.fa').removeClass('fa-square-o');
 					$this.find('.fa').addClass('fa-check-square-o');
-					$this.find('input[type="checkbox"]').attr('checked','checked');
+					$this.find('input[type="checkbox"]').prop('checked', true);
 				}
 				
 				// check all countries
@@ -423,21 +423,21 @@ $(function() {
 					// Keeping the check mark but removing the checkbox unchecked
 					$(".cms-category-checkbox .fa").not(".check-all").removeClass('fa-square-o');
 					$(".cms-category-checkbox .fa").not(".check-all").addClass('fa-check-square-o');
-					$(".cms-category-checkbox .fa").not(".check-all").next('input[type="checkbox"]').removeAttr('checked');
+					$(".cms-category-checkbox .fa").not(".check-all").next('input[type="checkbox"]').prop('checked', false);
 					
 					// Check mark on checkbox all ang its input checkbox
 					$(".cms-category-checkbox .fa.check-all").removeClass('fa-square-o');
 					$(".cms-category-checkbox .fa.check-all").addClass('fa-check-square-o');
-					$(".cms-category-checkbox .fa.check-all").next('input[type="checkbox"]').attr('checked','checked');
+					$(".cms-category-checkbox .fa.check-all").next('input[type="checkbox"]').prop('checked', true);
 				}
 				else {
 					// puting back checkbox with check mark to input checkbox checked
-					$(".cms-category-checkbox .fa.fa-check-square-o").not(".check-all").next('input[type="checkbox"]').attr('checked','checked');
+					$(".cms-category-checkbox .fa.fa-check-square-o").not(".check-all").next('input[type="checkbox"]').prop('checked', true);
 					
 					// Unchecking "check all" checkbox
 					$(".cms-category-checkbox .fa.check-all").addClass('fa-square-o');
 					$(".cms-category-checkbox .fa.check-all").removeClass('fa-check-square-o');
-					$(".cms-category-checkbox .fa.check-all").next('input[type="checkbox"]').removeAttr('checked');
+					$(".cms-category-checkbox .fa.check-all").next('input[type="checkbox"]').prop('checked', false);
 				}
 				
 				evt.stopPropagation();
@@ -449,10 +449,10 @@ $(function() {
 			var $this = $(this);
 
 				if(state.value == true){
-					$this.find('input[type="checkbox"]').attr('checked','checked');
+					$this.find('input[type="checkbox"]').prop('checked', true);
 				}
 				else {
-					$this.find('input[type="checkbox"]').removeAttr('checked');
+					$this.find('input[type="checkbox"]').prop('checked', false);
 				}
 		});
 
@@ -540,7 +540,7 @@ $(function() {
 					currentPosition : data.currentposition,
 					catId 			: data.catId
 				},categoryv2ModalUrl, function() {
-					$(".category-add-image").removeAttr('disabled ');
+					$(".category-add-image").prop('disabled', false);
 					melisCoreTool.done(element);
 				});
 		});
@@ -558,7 +558,7 @@ $(function() {
 					targetDiv 		: ".category-file-list .list-group",
 					currentPosition : data.currentposition
 				},categoryv2ModalUrl, function(){
-					$(".category-add-file").removeAttr('disabled ');
+					$(".category-add-file").prop('disabled', false);
 					melisCoreTool.pending(element);
 				});
 		});
@@ -683,11 +683,11 @@ window.initButtonScrollToTop = function() {
 window.enableDisableAddCategoryBtn = function(action) {
 	var addCmsCategory = $('#id_meliscms_categories_list_header_add_category');
 		if ( action == 'enable' ) {
-			addCmsCategory.attr('disabled', false);
-			addCmsCategory.attr('title', null);
+			addCmsCategory.prop('disabled', false);
+			addCmsCategory.prop('title', null);
 		} else if ( action == 'disable' ) {
-			addCmsCategory.attr('disabled', true);
-			addCmsCategory.attr('title', translations.tr_meliscategory_categories_category_no_selected_catalog_category);
+			addCmsCategory.prop('disabled', true);
+			addCmsCategory.prop('title', translations.tr_meliscategory_categories_category_no_selected_catalog_category);
 		}
 };
 
