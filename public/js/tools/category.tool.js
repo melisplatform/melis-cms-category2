@@ -294,7 +294,7 @@ $(function() {
 				value 			= this.value,
 				cmsCategoryTree = $("#cmsCategoryTreeView"),
 				langLocale 		= cmsCategoryTree.data('langlocale');
-
+				console.log(`typeof(cmsCategoryTree.jstree(true).settings): `, typeof(cmsCategoryTree.jstree(true).settings));
 				if (typeof(cmsCategoryTree.jstree(true).settings) !== "undefined" ) {
 					$this.prop("disabled", true);
 					// disable buttons
@@ -757,10 +757,10 @@ window.initCmsCategoryTreeView = function() {
 				/*console.log(data);*/
 			})
 			.on('#cmsCategoryTreeView open_node.jstree', function (e, data) {
-				if(categoryOpeningItemFlag == true){
-					if($(".cat-div").length){
+				if( categoryOpeningItemFlag == true ) {
+					if( $(".cat-div").length ) {
 						// if Node open sub nodes and not visible to the parent container, this will scroll down to show the sub nodes
-						if($("#cmsCategoryTreeView .cat-div #"+data.node.id).offset().top + $("#cmsCategoryTreeView .cat-div #"+data.node.id).height() > $("#cmsCategoryTreeView .cat-div").offset().top + $("#cmsCategoryTreeView .cat-div").height() ){
+						if( $("#cmsCategoryTreeView #"+data.node.id).offset().top + $("#cmsCategoryTreeView #"+data.node.id).height() > $("#cmsCategoryTreeView").offset().top + $("#cmsCategoryTreeView").height() ){
 							// exucute scroll after the opening animation of the node
 							$timeOut = setTimeout(function() { 
 								var catContainer 	= $('#cmsCategoryTreeView .cat-div').scrollTop(),
