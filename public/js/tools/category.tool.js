@@ -294,7 +294,7 @@ $(function() {
 				value 			= this.value,
 				cmsCategoryTree = $("#cmsCategoryTreeView"),
 				langLocale 		= cmsCategoryTree.data('langlocale');
-				console.log(`typeof(cmsCategoryTree.jstree(true).settings): `, typeof(cmsCategoryTree.jstree(true).settings));
+				
 				if (typeof(cmsCategoryTree.jstree(true).settings) !== "undefined" ) {
 					$this.prop("disabled", true);
 					// disable buttons
