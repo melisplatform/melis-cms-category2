@@ -77,7 +77,8 @@ return array(
                 'bundle_all_needed_files' => [
                     //will be put inside css folder
                     'css' => [
-                        '/assets/jstree/dist/themes/default/32px.png'
+                        '/assets/jstree/dist/themes/default/32px.png',
+                        '/assets/jstree/dist/themes/default/throbber.gif'
                     ],
                     //will be put inside js folder
                     'js' => [
