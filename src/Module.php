@@ -10,6 +10,7 @@
 namespace MelisCmsCategory2;
 
 use MelisCmsCategory2\Listener\MelisCmsCategory2FlashMessengerListener;
+use MelisCmsCategory2\Listener\MelisCmsCategoryNewsListListener;
 use Laminas\Mvc\ModuleRouteListener;
 use Laminas\Mvc\MvcEvent;
 use Laminas\ModuleManager\ModuleManager;
@@ -36,6 +37,8 @@ class Module
             # attach listener
             (new MelisCmsCategory2FlashMessengerListener())->attach($eventManager);
         }
+
+        (new MelisCmsCategoryNewsListListener())->attach($eventManager);
     }
 
     /**
@@ -91,6 +94,8 @@ class Module
             include __DIR__ . '/../config/diagnostic.config.php',
             // Templating plugins
             include __DIR__ . '/../config/plugins/MelisCmsCategoryDisplayCategoriesPlugin.config.php',
+            include __DIR__ . '/../config/plugins/MelisCmsNewsLatestNewsPlugin.config.php',
+            include __DIR__ . '/../config/plugins/MelisCmsNewsListNewsPlugin.config.php',
         );
 
         foreach ($configFiles as $file) {

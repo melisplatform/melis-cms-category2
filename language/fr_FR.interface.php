@@ -171,6 +171,7 @@ return [
     'tr_meliscmsnews_plugin_filter_category_start' => 'Catégorie début',
     'tr_meliscmsnews_plugin_filter_category_start tooltip' => 'Saisissez une catégorie de début',
     // plugin setting error messages
-    'tr_melis_cms_categories_plugin_category_start_empty' => 'Valeur requise, ne peut être vide'
+    'tr_melis_cms_categories_plugin_category_start_empty' => 'Valeur requise, ne peut être vide',
+    'tr_meliscmsnews_plugin_filter_category' => 'Catégory'
 
 ];

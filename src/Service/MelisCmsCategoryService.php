@@ -745,4 +745,69 @@ class MelisCmsCategoryService  extends MelisGeneralService
 
         return $categoryListData;
     }
+ 
+    /**
+     * Retrieves a list of news
+     *
+     * @param null $status
+     * @param null $categoryIdNews
+     * @param null $langId
+     * @param null $dateMin
+     * @param null $dateMax
+     * @param null $publishDateMin
+     * @param null $publishDateMax
+     * @param bool $unpublishFilter
+     * @param null $start
+     * @param null $limit
+     * @param null $orderColumn
+     * @param null $order
+     * @param null $siteId
+     * @param null $search
+     * @param bool $count
+     * @return mixed
+     */
+    public function getCategoryNewsList(
+        $status = null,
+        $categoryIdNews = null,
+        $langId = null,
+        $dateMin = null,
+        $dateMax = null,
+        $publishDateMin = null,
+        $publishDateMax = null,
+        $unpublishFilter = false,
+        $start = null,
+        $limit = null,
+        $orderColumn = null,
+        $order = null,
+        $siteId = null,
+        $search = null,
+        $count = false)
+    {
+        // Event parameters prepare
+        $arrayParameters = $this->makeArrayFromParameters(__METHOD__, func_get_args());
+        $results = array();
+
+        // Sending service start event
+        $arrayParameters = $this->sendEvent('melis_cms_category_get_news_list_start', $arrayParameters);
+
+        // Service implementation start 
+        $cmsCategory = $this->getServiceManager()->get('MelisCmsCategory2Table'); 
+
+        $news = $cmsCategory->getCategoryNewsList(
+            $arrayParameters['status'], $arrayParameters['categoryIdNews'], $arrayParameters['langId'], $arrayParameters['dateMin'], $arrayParameters['dateMax'], $arrayParameters['publishDateMin'],
+            $arrayParameters['publishDateMax'], $arrayParameters['unpublishFilter'], $arrayParameters['start'], $arrayParameters['limit'],
+            $arrayParameters['orderColumn'], $arrayParameters['order'], $arrayParameters['siteId'], $arrayParameters['search'], $arrayParameters['count']
+        )->toArray();
+
+        $results = $news;
+        // Service implementation end
+
+        // Adding results to parameters for events treatment if needed
+        $arrayParameters['results'] = $results;
+        // Sending service end event
+        $arrayParameters = $this->sendEvent('melis_cms_category_get_news_list_end', $arrayParameters);
+
+        return $arrayParameters['results'];
+    }
+
 }

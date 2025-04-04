@@ -536,4 +536,123 @@ class MelisCmsCategory2Table extends MelisGenericTable
 
         return $resultSet;
     }
+
+
+    // 
+
+    public function getCategoryNewsList(
+        $status             = null,
+        $categoryIdNews     = null,
+        $langId             = null,
+        $dateMin            = null,
+        $dateMax            = null,
+        $publishDateMin     = null,
+        $publishDateMax     = null,
+        $unpublishFilter    = false,
+        $start              = null,
+        $limit              = null,
+        $orderColumn        = null,
+        $order              = null,
+        $siteId             = null,
+        $search             = null,
+        $count              = false)
+    {
+        $select = $this->tableGateway->getSql()->select();
+        
+        $select->join('melis_cms_news_category', 'melis_cms_news_category.cnc_cat2_id = melis_cms_category2.cat2_id', '*', $select::JOIN_LEFT);
+        $select->join('melis_cms_news', 'melis_cms_news.cnews_id = melis_cms_news_category.cnc_cnews_id', '*', $select::JOIN_LEFT);
+        $select->join('melis_cms_news_texts', 'melis_cms_news_texts.cnews_id = melis_cms_news.cnews_id', '*', $select::JOIN_LEFT);  
+ 
+ 
+        if (!is_null($search)) {
+            $search = '%'.$search.'%';
+            $select->where->NEST->like('melis_cms_news.cnews_id', $search)
+            ->or->like('melis_cms_news_texts.cnews_title', $search);
+        }
+
+        if (!is_null($siteId)) {
+            $select->where->equalTo('cnews_site_id', $siteId);
+        }
+        
+        if (!is_null($status)) {
+            $select->where('cnews_status ='.$status);
+        } 
+
+        if (!empty($categoryIdNews)) {
+            $select->where('cnc_cat2_id ='.$categoryIdNews);
+        }
+        
+        
+        if (!is_null($langId)) {
+            $select->where('melis_cms_news_texts.cnews_lang_id ='.$langId);
+        }
+        
+        if (!is_null($dateMin)) {
+            $select->where('cnews_creation_date >= "'.$dateMin.'"');
+        }
+        
+        if (!is_null($dateMax)) {
+            $select->where('cnews_creation_date <= "'.$dateMax.'"');
+        } 
+
+        if (!is_null($publishDateMin)) {
+            $select->where('DATE(cnews_publish_date)>= "'.$publishDateMin.'"');
+        }
+
+        if (!is_null($publishDateMax)) {
+            $select->where('DATE(cnews_publish_date) <= "'.$publishDateMax.'"');
+        }
+
+        if (!is_null($limit)) {
+            $select->limit( (int) $limit);
+        }  
+
+        if ($unpublishFilter) {
+            $select->where->nest->greaterThan('cnews_unpublish_date', date("Y-m-d H:i:s"))->or->isNull('cnews_unpublish_date')->unnest;
+        }
+        
+        if (!is_null($start)) {
+            $select->offset($start);
+        }
+
+        $cnews_text_cols = [
+            'cnews_text_id',
+            'cnews_title',
+            'cnews_subtitle',
+            'cnews_paragraph1',
+            'cnews_paragraph2',
+            'cnews_paragraph3',
+            'cnews_paragraph4',
+            'cnews_paragraph5',
+            'cnews_paragraph6',
+            'cnews_paragraph7',
+            'cnews_paragraph8',
+            'cnews_paragraph9',
+            'cnews_paragraph10',
+            'cnews_id',
+            'cnews_lang_id',
+        ];
+
+        if (!is_null($orderColumn) && !is_null($order)) {
+            if ($orderColumn == 'site_label') {
+                $select->order('melis_cms_site.' . $orderColumn . ' ' . $order);
+            } elseif (in_array($orderColumn, $cnews_text_cols)) {
+                $select->order('melis_cms_news_texts.' . $orderColumn . ' ' . $order);
+            } else {
+                $select->order('melis_cms_news.' . $orderColumn . ' ' . $order);
+            }
+        }
+
+        if (!empty($count)) {
+            $select->group('melis_cms_news.cnews_id');
+        }
+        
+ 
+        
+        $select->where('melis_cms_news_texts.cnews_title !=""');
+
+        $resultData = $this->tableGateway->selectWith($select);
+
+        return $resultData;
+    }
 }

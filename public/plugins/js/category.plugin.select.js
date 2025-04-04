@@ -2,8 +2,10 @@ window.initCategorySelectField  =  function() {
     var targetElement   = $('.melis-cms-category-select'),
         btn             = "<a class='btn btn-default melis-cms-category-select-button'><i class='fa fa-sitemap'></i></a>";
 
-        targetElement.wrap("<div></div>");
-        targetElement.after(btn);
+        if(targetElement) { 
+            targetElement.wrap("<div></div>");
+            targetElement.after(btn);
+        }
 };
 
 window.initCategorySelectTree = function(targetElement) {
