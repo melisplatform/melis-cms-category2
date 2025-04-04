@@ -19,7 +19,8 @@ return [
                             ],
                         ], 
                         'modal_form' => [
-                            'melis_cms_news_list_plugin_template_form' => [ 
+                            'melis_cms_news_list_plugin_template_form' => [],
+                            'melis_cms_news_list_plugin_filter_form' => [ 
                                 'elements' => [ 
                                     [
                                         'spec' => [
