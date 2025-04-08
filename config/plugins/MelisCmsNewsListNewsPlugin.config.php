@@ -12,10 +12,10 @@ return [
                     'melis' => [ 
                         'files' => [
                             'css' => [ 
-                                '/MelisCmsNews/plugins/css/category.plugin.select.css', 
+                                '/MelisCmsCategory2/plugins/css/category.plugin.select.css', 
                             ],
                             'js' => [ 
-                                '/MelisCmsNews/plugins/js/category.plugin.select.js',
+                                '/MelisCmsCategory2/plugins/js/category.plugin.select.js',
                             ],
                         ], 
                         'modal_form' => [
