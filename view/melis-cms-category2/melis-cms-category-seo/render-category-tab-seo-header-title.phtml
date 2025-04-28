@@ -1,0 +1,11 @@
+<?php 
+    $id = ''; 
+    if (!empty($this->zoneconfig['conf']['id'])){
+        $id .= $this->newsId.'_'.$this->zoneconfig['conf']['id'];
+    }
+    $name = '';
+    if (!empty($this->zoneconfig['conf']['name'])){
+        $name = $this->zoneconfig['conf']['name'];
+    }
+?>
+<h3 id="<?= $id ?>" data-melisKey="<?= $this->melisKey; ?>" style="margin-bottom: inherit"><?= $name; ?></h3>

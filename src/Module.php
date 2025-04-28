@@ -11,6 +11,8 @@ namespace MelisCmsCategory2;
 
 use MelisCmsCategory2\Listener\MelisCmsCategory2FlashMessengerListener;
 use MelisCmsCategory2\Listener\MelisCmsCategoryNewsListListener;
+use MelisCmsCategory2\Listener\MelisCmsCategoryDeleteSeoListener; 
+use MelisCmsCategory2\Listener\MelisCmsCategoryDeleteTransListener; 
 use Laminas\Mvc\ModuleRouteListener;
 use Laminas\Mvc\MvcEvent;
 use Laminas\ModuleManager\ModuleManager;
@@ -39,6 +41,9 @@ class Module
         }
 
         (new MelisCmsCategoryNewsListListener())->attach($eventManager);
+        (new MelisCmsCategoryDeleteSeoListener())->attach($eventManager);
+        (new MelisCmsCategoryDeleteTransListener())->attach($eventManager); 
+        
     }
 
     /**

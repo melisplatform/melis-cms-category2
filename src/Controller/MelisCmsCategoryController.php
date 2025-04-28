@@ -617,8 +617,18 @@ class MelisCmsCategoryController extends MelisAbstractActionController
                         $category2Session = new Container('melis_cms_category2');
                         $category2Session->getManager()->getStorage()->clear('melis_cms_category2');
                     }
-                    $success = 1;
-                    $message = 'tr_meliscms_categories_err_category_save_success';
+ 
+                    //save seo tab
+                    list('success' => $isSeoSuccess, 'errors' => $errors) = $this->saveCategorySeo($categoryId); 
+ 
+                    if ($isSeoSuccess == 1) {  
+                        $success = 1;
+                        $message = 'tr_meliscms_categories_err_category_save_success';
+                    } else {
+                        $success = 0;  
+                    }
+
+
                 }
 
             } else {
@@ -629,20 +639,21 @@ class MelisCmsCategoryController extends MelisAbstractActionController
                 $customError['trans'] = 1;
             }
         }
-
         if (!empty($errors)) {
             $success = 0;
             $message = $translator->translate('tr_meliscms_categories_err_category_save_unable');
+        } else {
+
+            if (! empty($passedCatId)) {
+                $logTypeCode = "CMS_CATEGORY2_UPDATE";
+                $message = 'tr_meliscms_categories_err_category_update_ok';
+            }
         }
 
         if (empty($catSitesData)) {
             $customError['site'] = 1;
         }
-        if (! empty($passedCatId)) {
-            $logTypeCode = "CMS_CATEGORY2_UPDATE";
-            $message = 'tr_meliscms_categories_err_category_update_ok';
-        }
-
+ 
         $response = array(
             'success' => $success,
             'textTitle' => $textTitle,
@@ -661,6 +672,236 @@ class MelisCmsCategoryController extends MelisAbstractActionController
         return new JsonModel($response);
     }
 
+    
+    /**
+     * This function saves the seo of the category 
+     */
+    private function saveCategorySeo($category2_id)
+    {        
+        $translator = $this->getServiceManager()->get('translator');        
+        // Get the form properly loaded               
+        $factory = new \Laminas\Form\Factory();
+        $formElements = $this->getServiceManager()->get('FormElementManager');
+        $factory->setFormElementManager($formElements);
+        $melisCoreConfig = $this->getServiceManager()->get('MelisCoreConfig');  
+        $seoFormConfig = $melisCoreConfig->getFormMergedAndOrdered('meliscategory/forms/meliscategory_categories/meliscmscategory_seo_form', 'meliscmscategory_seo_form');
+        $MelisCmsCategory2SeoTable = $this->getServiceManager()->get('MelisCmsCategory2SeoTable');
+        $MelisCmsCategory2TransTable = $this->getServiceManager()->get('MelisCmsCategory2TransTable');
+        // Check if post
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $postValues = $request->getPost()->toArray(); 
+            $languages = $this->getOrderedLanguagesByCurrentLocale();
+            $languageCount = count($languages);
+            if ($languages) {
+                foreach ($languages as $lang) {
+                    // Generating form for each language
+                    $seoFormtmp = $factory->createForm($seoFormConfig);
+                    //loop through the language form data
+                    $ctr = 1;
+                    foreach ($postValues['category2_seo'] as $val) {  
+                        if ($val['category2_seo_lang_id'] && $val['category2_seo_lang_id'] == $lang['lang_cms_id']) {   
+                            if (!empty($val['category2_seo_url'])) {
+                                $val['category2_seo_url'] = $this->cleanURL($val['category2_seo_url']);
+                            }
+                            if (!empty($val['category2_seo_canonical'])) {
+                                $val['category2_seo_canonical'] = $this->cleanURL($val['category2_seo_canonical']);
+                            }
+                            if (!empty($val['category2_seo_url_redirect'])) {
+                                $val['category2_seo_url_redirect'] = $this->cleanURL($val['category2_seo_url_redirect']);
+                            }
+                            if (!empty($val['category2_seo_url_301'])) {
+                                $val['category2_seo_url_301'] = $this->cleanURL($val['category2_seo_url_301']);
+                            }
+                            $seoFormtmp->setData($val);    
+                            break;                
+                        }             
+                    }   
+                    if ($seoFormtmp->isValid()) {                       
+                        $seoData = $seoFormtmp->getData();
+                        $allEmpty = true;
+                        if (!empty($seoData['category2_seo_meta_title']) || !empty($seoData['category2_seo_meta_description']) || !empty($seoData['category2_seo_url']) || !empty($seoData['category2_seo_canonical']) || !empty($seoData['category2_seo_url_redirect']) || !empty($seoData['category2_seo_url_301'])) {
+                            $allEmpty = false;
+                        }
+                        $success = 1;
+                        $seoData['category2_id'] = $category2_id;//set the category id
+                        //if at least one seo property is filled up, continue
+                        if (!$allEmpty)  {
+                            // Check for unicity of the URL declared
+                            if (!empty($seoData['category2_seo_url'])) {
+                                $catSiteTbl = $this->getServiceManager()->get('MelisCmsCategory2SitesTable');
+                                $catSiteData = $catSiteTbl->getEntryByField('cats2_cat2_id',$category2_id)->toArray();
+                                if($catSiteData) {
+                                    foreach ($catSiteData as $key => $siteData) {
+
+                                        $categorySeo = $MelisCmsCategory2SeoTable->checkSeoUrlDuplicates($seoData['category2_seo_url'], $siteData['cats2_site_id'])->current();
+                                        if (!empty($categorySeo)) {
+                                            // Not this page of course
+                                            if (empty($seoData['category2_seo_id']) || (!empty($seoData['category2_seo_id']) && $seoData['category2_seo_id'] != $categorySeo->category2_seo_id)) {
+                                                $categoryTitleDuplicate = '';                                    
+                                                $categoryText = $MelisCmsCategory2TransTable->getEntryByField('catt2_category_id', $categorySeo->category2_id)->current();
+ 
+                                                //get all languages available in the plaftform
+                                                $cmsLangTable = $this->getServiceManager()->get('MelisEngineTableCmsLang');
+                                                $languages = $cmsLangTable->getEntryByField('lang_cms_id', $categorySeo->category2_seo_lang_id)->current();
+                                                if (!empty($categoryText))
+                                                    $categoryTitleDuplicate = $categoryText->catt2_name;                                      
+                                                // This URL is already used somewhere else
+                                                return [
+                                                    'success' => 0, 
+                                                    'errors' => [ 
+                                                        'category2_seo_url' => [ 
+                                                            'category2_seo_url' => $translator->translate('tr_meliscmscategory_page_tab_seo_error_duplicate_url') . ' '. $categoryTitleDuplicate,
+                                                            'label' => $translator->translate('tr_meliscmscategory_page_tab_seo_error_label_seo_url'). '('.$lang["lang_cms_name"].')' 
+                                                        ]
+                                                    ] 
+                                                ];
+                                            }
+                                        }
+                                    }
+                                }
+
+                                //check also from page seo table                                
+                                $melisTablePageSeo = $this->getServiceManager()->get('MelisEngineTablePageSeo');
+                                $datasPageSeo = $melisTablePageSeo->getEntryByField('pseo_url', $seoData['category2_seo_url']);
+                                if (!empty($datasPageSeo))
+                                {
+                                    $datasPageSeo = $datasPageSeo->current();
+                                    if (!empty($datasPageSeo))
+                                    {                                       
+                                        $pageNameDuplicate = '';
+                                        $melisPage = $this->getServiceManager()->get('MelisEnginePage');
+                                        $datasPage = $melisPage->getDatasPage($datasPageSeo->pseo_id, 'saved');
+                                        $pageTree = $datasPage->getMelisPageTree();
+                                        if (!empty($pageTree))
+                                            $pageNameDuplicate = ' ' . $pageTree->page_name . ' (' . $datasPageSeo->pseo_id . ')';
+                                        // This URL is already used somewhere else
+                                        return array(
+                                                'success' => 0,                                              
+                                                'errors' => array( 'category2_seo_url' =>
+                                                                array(
+                                                                        'category2_seo_url' => $translator->translate('tr_meliscmscategory_page_tab_seo_error_duplicate_url') . $pageNameDuplicate,
+                                                                        'label' => $translator->translate('tr_meliscmscategory_page_tab_seo_error_label_seo_url'). '('.$lang["lang_cms_name"].')'
+                                                                    )
+                                                                )
+                                        );
+                                    }
+                                }                              
+                            }
+                            // Cleaning special char and white spaces on SEO Url
+                            $enginePage = $this->getServiceManager()->get('MelisEngineTree');
+                            $seoData['category2_seo_url'] = $enginePage->cleanString(mb_strtolower($seoData['category2_seo_url']));
+                            // Checking for spaces
+                            if (preg_match('/\s/', $seoData['category2_seo_url'])) {
+                                $seoData['category2_seo_url'] = str_replace(" ", "", $seoData['category2_seo_url']);
+                            }
+
+                            $categorySeoId = $seoData['category2_seo_id'];
+                            unset($seoData['category2_seo_id']);
+
+                            $res = $MelisCmsCategory2SeoTable->save($seoData, $categorySeoId);
+                            if (!$res) {
+                                $success = 0;
+                            }
+                        } else {
+                            if (!empty($seoData['category2_seo_id'])) {
+                                 // All fields are empty, let's delete the entry
+                                $res = $MelisCmsCategory2SeoTable->deleteById($seoData['category2_seo_id']);
+                                if (!$res) {
+                                    $success = 0;
+                                }
+                            }
+                        }
+                        $result = array(
+                            'success' => $success,
+                            'errors' => array(),
+                        );
+                    } else {
+                        // Add labels of errors
+                        $errors = $seoFormtmp->getMessages();
+                        $melisMelisCoreConfig = $this->getServiceManager()->get('MelisCoreConfig');                       
+                        $seoFormConfig = $seoFormConfig['elements'];
+                        foreach ($errors as $keyError => $valueError) {
+                            foreach ($seoFormConfig as $keyForm => $valueForm) {                          
+                                if ($valueForm['spec']['name'] == $keyError &&
+                                        !empty($valueForm['spec']['options']['label'])){
+                                            $errors[$keyError]['label'] = $valueForm['spec']['options']['label']. '('.$lang["lang_cms_name"].')';
+                                            //$errors[$keyError][key($valueError)] = sprintf(current($valueError), $lang['lang_cms_name']);
+                                        }
+                            }
+                        }
+                        return array(
+                                'success' => 0,                                               
+                                'errors' => $errors
+                        );
+                    }   
+                }//end foreach language
+            } // end if languages       
+        } else {
+            $result = array(
+                    'success' => 0,
+                    'errors' => array(array('empty' => $translator->translate('tr_meliscms_form_common_errors_Empty datas'))),
+            );
+        }
+        return $result;
+    }
+
+    /**
+     * Rids the URL from special characters -> reference: MelisCms/PageSeoController
+     * @param string $url
+     * @return mixed
+     */
+    private function cleanURL(string $url = '')
+    {
+        $url = str_replace(' ', '-', $url);                 // Replaces all spaces with hyphens
+        $url = preg_replace('/[^A-Za-z0-9\/\-]+/', '-', $url);  // Replaces special characters with hyphens
+        // remove "/" prefix on generated URL
+        if (substr($url, 0, 1) == '/') {
+            return preg_replace('/\//', '', $url, 1);
+        }
+        return $url;
+    }
+
+    /**
+    * This retrieves the list of languages available in the platform where the current locale used is the first in the list
+    * @return array
+    */
+    private function getOrderedLanguagesByCurrentLocale()
+    {
+        //get all languages available in the plaftform
+        $coreLang = $this->getServiceManager()->get('MelisEngineTableCmsLang');
+        $languages = $coreLang->fetchAll()->toArray();      
+        $curLangId = $this->getLangId();
+        //set the current locale as the first value in the array
+        foreach ($languages as $key => $langData) {
+            if ($langData["lang_cms_id"] == $curLangId) {
+                unset($languages[$key]);
+                array_unshift($languages,$langData);
+            }
+        }
+        return $languages;
+    }
+    
+    /**
+     * Get Language
+     * @return int
+     */
+    private function getLangId()
+    {
+        $container = new Container('meliscore');
+        $currentLang = '';
+
+        if ($container) {
+            $melisEngineLangTable = $this->getServiceManager()->get('MelisEngineTableCmsLang');
+            $locale = $container['melis-lang-locale'];
+            $currentLangData = $melisEngineLangTable->getEntryByField('lang_cms_locale', $locale);
+
+            $currentLang = $currentLangData->current();
+        }
+
+        return !empty($currentLang) ? $currentLang->lang_cms_id : 1;
+    }
+    
     /**
      * This method get Category Data form the Post Data
      *

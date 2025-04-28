@@ -1,0 +1,66 @@
+<?php
+    $id = '';
+    if (!empty($this->zoneconfig['conf']['id'])) {
+        $id .= $this->zoneconfig['conf']['id'];
+    }
+
+?>
+
+<div class="wizard" id="<?= $id ?>" data-melisKey="<?= $this->melisKey; ?>">
+    <div class="widget widget-tabs widget-tabs-double widget-tabs-responsive margin-none border-none">
+        <div class="widget-body innerAll inner-2x">
+            <div class="tab-pane active">
+                <div class="row">
+                    <div class="col-xs-12 col-md-2">
+                        <div class="product-text-tab-container">
+                            <ul class="nav nav-tabs product-text-tab">
+                                <?php foreach($this->languages as $idx => $lang) :?>
+                                    <li class="nav-item">
+                                        <a class="nav-link clearfix" data-bs-toggle="tab" data-bs-target="#<?= $lang['lang_cms_name']; ?>-log-type-details-<?= $id; ?>" id="category_seo_cms_lang_<?= $lang['lang_cms_id'] ?>" href="#<?= $lang['lang_cms_name']; ?>-log-type-details-<?= $id; ?>" aria-expanded="true" data-lang-id="<?= $lang['lang_cms_id'] ?>">
+                                        <span><?= $lang['lang_cms_name'] ?></span>
+
+                                        <?php 
+                                            $img = $lang['lang_cms_locale'];
+                                            echo '<span class="float-right"><img src="/MelisCms/images/lang-flags/'.$img.'.png" class="imgDisplay float-right"/></span>';
+                                        ?>
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-10">
+                        <div class="tab-content">
+                            <?php foreach ($this->languages as $idx => $lang) : ?>
+                                <div id="<?= $lang['lang_cms_name']; ?>-log-type-details-<?= $id; ?>" class="tab-pane product-text-tab-content">
+                                    <div class="bg-white">
+                                        <h4 class=""><i class="fa fa-language" aria-hidden="true"></i> <?= $lang['lang_cms_name']; ?></h4>
+                                    </div>
+                                    <div id="category2_<?= $lang['lang_cms_id']; ?>" class="category-seo-form" data-lang-id="<?= $lang['lang_cms_id']; ?>">
+                                        <?php
+                                            $form = clone $this->seoForm;
+                                            $form->get('category2_seo_lang_id')->setValue($lang['lang_cms_id']);
+                                            $form->get('category2_id')->setValue($this->categoryId);
+
+                                            if ($this->data) {
+                                                foreach ($this->data as $item) {
+                                                    if($item['category2_seo_lang_id'] == $lang['lang_cms_id']){
+                                                        $form->setData((array)$item);
+                                                    }
+                                                } 
+                                            } 
+                                            
+                                            echo $this->form()->openTag($form);
+                                            echo $this->melisFieldCollection($form);
+                                            echo $this->form()->closeTag();
+                                        ?>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

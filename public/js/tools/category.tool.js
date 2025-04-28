@@ -125,6 +125,18 @@ $(function() {
 						});
 				});
 				
+				var seoForms   = $('#id_meliscategory_content_tabs_seo_details .category-seo-form');
+					seoForms.each(function(index, val) {                        
+						var formData = new FormData($(this).find('form')[0]);
+						var formValues = formData.entries();
+						for(var pair of formValues){     
+							dataString.push({
+								name: 'category2_seo['+index+']['+pair[0]+']',
+								value: pair[1]
+							});                             
+						}                                  
+					});
+
 				// serialize the new array and send it to server
 				dataString = $.param(dataString);
 				

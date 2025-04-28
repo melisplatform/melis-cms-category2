@@ -49,9 +49,13 @@ return array(
             'MelisCmsCategory2TransTable' => MelisCmsCategory2\Model\Tables\MelisCmsCategory2TransTable::class,
             'MelisCmsCategory2SitesTable' => MelisCmsCategory2\Model\Tables\MelisCmsCategory2SitesTable::class,
             'MelisCmsCategory2MediaTable' => MelisCmsCategory2\Model\Tables\MelisCmsCategory2MediaTable::class,
+            'MelisCmsCategory2SeoTable' => MelisCmsCategory2\Model\Tables\MelisCmsCategory2SeoTable::class,
+            
             //Service
             'MelisCmsCategory2Service' => MelisCmsCategory2\Service\MelisCmsCategoryService::class,
             'MelisCmsCategory2MediaService' => MelisCmsCategory2\Service\MelisCmsCategoryMediaService::class,
+            'MelisCmsCategorySeoService' => MelisCmsCategory2\Service\MelisCmsCategorySeoService::class,
+ 
         ),
     ),
     'controllers' => array(
@@ -60,8 +64,9 @@ return array(
             'MelisCmsCategory2\Controller\MelisCmsCategory'     => 'MelisCmsCategory2\Controller\MelisCmsCategoryController',
             'MelisCmsCategory2\Controller\MelisCmsCategoryMedia'     => 'MelisCmsCategory2\Controller\MelisCmsCategoryMediaController',
             'MelisCmsCategory2\Controller\MelisCmsCategorySelect'     => 'MelisCmsCategory2\Controller\MelisCmsCategorySelectController',
+            'MelisCmsCategory2\Controller\MelisCmsCategorySeo'     => 'MelisCmsCategory2\Controller\MelisCmsCategorySeoController',
         ),
-
+        
     ),
     'controller_plugins' => array(
         'invokables' => array(

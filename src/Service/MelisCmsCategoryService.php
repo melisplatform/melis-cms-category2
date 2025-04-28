@@ -810,4 +810,18 @@ class MelisCmsCategoryService  extends MelisGeneralService
         return $arrayParameters['results'];
     }
 
+    /**
+     * Deletes a Category Seo in the category_seo  table
+     * @param int $categoryId
+     */
+    public function deleteCategoryTransData($categoryId) 
+    {
+        $table = $this->getServiceManager()->get('MelisCmsCategory2TransTable'); 
+        
+        if($categoryId) { 
+            $table->getTableGateway()->delete([
+                'catt2_category_id' => $categoryId, 
+            ]);
+        } 
+    }
 }

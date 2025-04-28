@@ -232,7 +232,244 @@ return array(
                                 )
                             ),
                         )
-                    ]
+                    ],
+                    'meliscmscategory_seo_form' => [
+                        'attributes' => [
+                            'name' => 'categorySeoForm',
+                            'id' => 'categorySeoForm',
+                            'method' => 'POST',
+                            'action' => '',
+                        ],
+                        'hydrator' => 'Laminas\Hydrator\ArraySerializableHydrator',
+                        'elements' => array( 
+                            array(
+                                'spec' => array(
+                                    'name' => 'category2_seo_id',
+                                    'type' => 'hidden'                                
+                                ),
+                            ),    
+                            array(
+                                'spec' => array(
+                                    'name' => 'category2_id',
+                                    'type' => 'hidden'                                
+                                ),
+                            ), 
+                            array(
+                                'spec' => array(
+                                    'name' => 'category2_seo_lang_id',
+                                    'type' => 'hidden'                                
+                                ),
+                            ),
+                            array(
+                                'spec' => array(
+                                    'name' => 'category2_seo_meta_title',
+                                    'type' => 'MelisText',
+                                    'options' => array(
+                                        'label' => 'tr_meliscmscategory_page_tab_seo_form_Meta Title',
+                                        'tooltip' => 'tr_meliscmscategory_page_tab_seo_form_Meta Title tooltip',
+                                    ),
+                                    'attributes' => array(
+                                        'id' => 'category2_seo_meta_title',
+                                        'value' => '',
+                                    ),
+                                ),
+                            ),
+                            array(
+                                'spec' => array(
+                                    'name' => 'category2_seo_meta_description',
+                                    'type' => 'Textarea',
+                                    'options' => array(
+                                        'label' => 'tr_meliscmscategory_page_tab_seo_form_Meta Description',
+                                        'tooltip' => 'tr_meliscmscategory_page_tab_seo_form_Meta Description tooltip',
+                                    ),
+                                    'attributes' => array(
+                                        'id' => 'category2_seo_meta_description',
+                                        'value' => '',
+                                        'rows' => 5,
+                                        'class' => 'melis-seo-desc form-control'
+                                    ),
+                                ),
+                            ),
+                            array(
+                                'spec' => array(
+                                    'name' => 'category2_seo_url',
+                                    'type' => 'MelisText',
+                                    'options' => array(
+                                        'label' => 'tr_meliscmscategory_page_tab_seo_form_Url',
+                                        'tooltip' => 'tr_meliscmscategory_page_tab_seo_form_Url tooltip',
+                                    ),
+                                    'attributes' => array(
+                                        'id' => 'category2_seo_url',
+                                        'value' => '',
+                                    ),
+                                ),
+                            ),
+                            array(
+                                'spec' => array(
+                                    'name' => 'category2_seo_url_redirect',
+                                    'type' => 'MelisText',
+                                    'options' => array(
+                                        'label' => 'tr_meliscmscategory_page_tab_seo_form_Url Redirect',
+                                        'tooltip' => 'tr_meliscmscategory_page_tab_seo_form_Url Redirect tooltip',
+                                    ),
+                                    'attributes' => array(
+                                        'id' => 'category2_seo_url_redirect',
+                                        'value' => '',
+                                    ),
+                                ),
+                            ),
+                            array(
+                                'spec' => array(
+                                    'name' => 'category2_seo_url_301',
+                                    'type' => 'MelisText',
+                                    'options' => array(
+                                        'label' => 'tr_meliscmscategory_page_tab_seo_form_Url 301',
+                                        'tooltip' => 'tr_meliscmscategory_page_tab_seo_form_Url 301 tooltip',
+                                    ),
+                                    'attributes' => array(
+                                        'id' => 'category2_seo_url_301',
+                                        'value' => '',
+                                    ),
+                                ),
+                            ),
+                            array(
+                                'spec' => array(
+                                    'name' => 'category2_seo_canonical',
+                                    'type' => 'MelisText',
+                                    'options' => array(
+                                        'label' => 'tr_meliscmscategory_page_tab_seo_form_canonical',
+                                        'tooltip' => 'tr_meliscmscategory_page_tab_seo_form_canonical tooltip',
+                                    ),
+                                    'attributes' => array(
+                                        'id' => 'category2_seo_canonical',
+                                        'value' => '',
+                                    ),
+                                ),
+                            ),                                            
+                        ),
+                        'input_filter' => array( 
+                            'category2_seo_meta_title' => array(
+                                'name'     => 'category2_seo_meta_title',
+                                'required' => false,
+                                'validators' => array(
+                                    array(
+                                        'name'    => 'StringLength',
+                                        'options' => array(
+                                            'encoding' => 'UTF-8',
+                                            'max'      => 65,
+                                            'messages' => array(
+                                                \Laminas\Validator\StringLength::TOO_LONG => 'tr_meliscmscategory_pageseo_form_page_title_long',
+                                            ),
+                                        ),
+                                    ),
+                                ),
+                                'filters'  => array(
+                                    array('name' => 'StripTags'),
+                                    array('name' => 'StringTrim'),
+                                ),
+                            ),
+                            'category2_seo_meta_description' => array(
+                                'name'     => 'category2_seo_meta_description',
+                                'required' => false,
+                                'validators' => array(
+                                    array(
+                                        'name'    => 'StringLength',
+                                        'options' => array(
+                                            'encoding' => 'UTF-8',
+                                            'max'      => 255,
+                                            'messages' => array(
+                                                \Laminas\Validator\StringLength::TOO_LONG => 'tr_meliscmscategory_pageseo_form_page_desc_long',
+                                            ),
+                                        ),
+                                    ),
+                                ),
+                                'filters'  => array(
+                                    array('name' => 'StripTags'),
+                                    array('name' => 'StringTrim'),
+                                ),
+                            ),
+                            'category2_seo_canonical' => array(
+                                'name'     => 'category2_seo_canonical',
+                                'required' => false,
+                                'validators' => array(
+                                    array(
+                                        'name'    => 'StringLength',
+                                        'options' => array(
+                                            'encoding' => 'UTF-8',
+                                            'max'      => 255,
+                                            'messages' => array(
+                                                \Laminas\Validator\StringLength::TOO_LONG => 'tr_meliscmscategory_pageseo_form_page_desc_long',
+                                            ),
+                                        ),
+                                    ),
+                                ),
+                                'filters'  => array(
+                                    array('name' => 'StripTags'),
+                                    array('name' => 'StringTrim'),
+                                ),
+                            ),
+                            'category2_seo_url' => array(
+                                'name'     => 'category2_seo_url',
+                                'required' => false,
+                                'validators' => array(
+                                    array(
+                                        'name'    => 'StringLength',
+                                        'options' => array(
+                                            'encoding' => 'UTF-8',
+                                            'max'      => 255,
+                                            'messages' => array(
+                                                \Laminas\Validator\StringLength::TOO_LONG => 'tr_meliscmscategory_pageseo_form_page_url_too_long',
+                                            ),
+                                        ),
+                                    ),
+                                ),
+                                'filters'  => array(
+                                    array('name' => 'StripTags'),
+                                    array('name' => 'StringTrim'),
+                                ),
+                            ),
+                            'category2_seo_url_redirect' => array(
+                                'name'     => 'category2_seo_url_redirect',
+                                'required' => false,
+                                'validators' => array(
+                                    array(
+                                        'name'    => 'StringLength',
+                                        'options' => array(
+                                            'encoding' => 'UTF-8',
+                                            'max'      => 255,
+                                            'messages' => array(
+                                                \Laminas\Validator\StringLength::TOO_LONG => 'tr_meliscmscategory_pageseo_form_page_url_too_long',
+                                            ),
+                                        ),
+                                    ),
+                                ),
+                                'filters'  => array(
+                                    array('name' => 'StripTags'),
+                                    array('name' => 'StringTrim'),
+                                ),
+                            ),
+                            'category2_seo_url_301' => array(
+                                'name'     => 'category2_seo_url_301',
+                                'required' => false,
+                                'validators' => array(
+                                    array(
+                                        'name'    => 'StringLength',
+                                        'options' => array(
+                                            'encoding' => 'UTF-8',
+                                            'max'      => 255,
+                                            'messages' => array(
+                                                \Laminas\Validator\StringLength::TOO_LONG => 'tr_meliscmscategory_pageseo_form_page_url_too_long',
+                                            ),
+                                        ),
+                                    ),
+                                ),
+                                'filters'  => array(
+                                    array('name' => 'StripTags'),
+                                    array('name' => 'StringTrim'),
+                                ),
+                            ),
+                        ),
+                    ],
                 ),
             ),
         ),
