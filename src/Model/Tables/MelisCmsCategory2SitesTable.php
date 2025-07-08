@@ -36,8 +36,8 @@ class MelisCmsCategory2SitesTable extends MelisGenericTable
         $select = $this->tableGateway->getSql()->select();
         $select->columns(array('cats2_id'));
 
-        $select->where->equalTo('cats2_site_id',$siteId);
-        $select->where->equalTo('cats2_cat2_id',$catId);
+        $select->where->equalTo('cats2_site_id', $siteId);
+        $select->where->equalTo('cats2_cat2_id', $catId);
 
         $resultSet = $this->tableGateway->selectWith($select);
         return $resultSet;

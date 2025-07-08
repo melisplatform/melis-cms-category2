@@ -40,37 +40,37 @@ class MelisCmsCategory2TransTable extends MelisGenericTable
      * @param null $limit
      * @return mixed
      */
-    public function getData($search = '', $searchableColumns = [], $orderBy = '', $orderDirection = 'ASC', $start = 0, $limit = null,$siteId = null, $adminId = null)
+    public function getData($search = '', $searchableColumns = [], $orderBy = '', $orderDirection = 'ASC', $start = 0, $limit = null, $siteId = null, $adminId = null)
     {
         $select = $this->tableGateway->getSql()->select();
         $select->columns(array('*'));
 
-        if(!empty($searchableColumns) && !empty($search)) {
-            foreach($searchableColumns as $column) {
-                $select->where->or->like($column, '%'.$search.'%');
+        if (!empty($searchableColumns) && !empty($search)) {
+            foreach ($searchableColumns as $column) {
+                $select->where->or->like($column, '%' . $search . '%');
             }
         }
-        if($siteId == 'null') $siteId = null;
-        if($adminId == 'null') $adminId = null;
-        if(!is_null($siteId)){
-            $select->where->equalTo('uac_site_id',$siteId);
+        if ($siteId == 'null') $siteId = null;
+        if ($adminId == 'null') $adminId = null;
+        if (!is_null($siteId)) {
+            $select->where->equalTo('uac_site_id', $siteId);
         }
-        if(!is_null($adminId)){
-            $select->where->equalTo('uac_admin',$adminId);
+        if (!is_null($adminId)) {
+            $select->where->equalTo('uac_admin', $adminId);
         }
 
-        if(!empty($orderBy)) {
+        if (!empty($orderBy)) {
             $select->order($orderBy . ' ' . $orderDirection);
         }
         $getCount = $this->tableGateway->selectWith($select);
         // set current data count for pagination
         $this->setCurrentDataCount((int) $getCount->count());
 
-        if(!empty($limit)) {
+        if (!empty($limit)) {
             $select->limit((int)$limit);
         }
 
-        if(!empty($start)) {
+        if (!empty($start)) {
             $select->offset((int)$start);
         }
 
@@ -89,32 +89,31 @@ class MelisCmsCategory2TransTable extends MelisGenericTable
         $select = $this->tableGateway->getSql()->select();
         $select->columns(array('*'));
 
-        $select->where->equalTo('uac_email',$email);
-        $select->where->equalTo('uac_password',$password);
+        $select->where->equalTo('uac_email', $email);
+        $select->where->equalTo('uac_password', $password);
 
         $resultSet = $this->tableGateway->selectWith($select);
         return $resultSet;
-
     }
     public function getTextByLangId($catId, $langId)
     {
         $select = $this->tableGateway->getSql()->select();
         $select->columns(array('catt2_name'));
 
-        $select->where->equalTo('catt2_category_id',$catId);
+        $select->where->equalTo('catt2_category_id', $catId);
 
-        $select->where->equalTo('catt2_lang_id',$langId);
+        $select->where->equalTo('catt2_lang_id', $langId);
         $resultSet = $this->tableGateway->selectWith($select);
         return $resultSet;
     }
 
-    public function getTextIdByLangIdCatId($catId , $langId)
+    public function getTextIdByLangIdCatId($catId, $langId)
     {
         $select = $this->tableGateway->getSql()->select();
         $select->columns(array('catt2_id'));
 
-        $select->where->equalTo('catt2_category_id',$catId);
-        $select->where->equalTo('catt2_lang_id',$langId);
+        $select->where->equalTo('catt2_category_id', $catId);
+        $select->where->equalTo('catt2_lang_id', $langId);
 
         $resultSet = $this->tableGateway->selectWith($select);
         return $resultSet;
@@ -128,13 +127,12 @@ class MelisCmsCategory2TransTable extends MelisGenericTable
         $relation    = "melis_cms_lang.lang_cms_id = melis_cms_category2_trans.catt2_lang_id ";
         $joinColumns = ['*'];
         $joinType    = $select::JOIN_LEFT;
-        $select->join($tblToJoin,$relation,$joinColumns,$joinType);
+        $select->join($tblToJoin, $relation, $joinColumns, $joinType);
 
-        $select->where->equalTo('catt2_category_id',$catId);
+        $select->where->equalTo('catt2_category_id', $catId);
 
         $resultSet = $this->tableGateway->selectWith($select);
 
         return $resultSet;
     }
-
 }

@@ -39,15 +39,14 @@ class MelisCmsCategory2MediaTable extends MelisGenericTable
         $relation    = "melis_cms_category2.cat2_id = melis_cms_category2_media.catm2_cat_id ";
         $joinColumns = ['*'];
         $joinType    = $select::JOIN_LEFT;
-        $select->join($tblToJoin,$relation,$joinColumns,$joinType);
+        $select->join($tblToJoin, $relation, $joinColumns, $joinType);
         // category id
-        $select->where->equalTo('melis_cms_category2_media.catm2_cat_id',$categoryId);
+        $select->where->equalTo('melis_cms_category2_media.catm2_cat_id', $categoryId);
         // file type
-        $select->where->equalTo('melis_cms_category2_media.catm2_type',$fileType);
+        $select->where->equalTo('melis_cms_category2_media.catm2_type', $fileType);
 
         $resultSet = $this->tableGateway->selectWith($select);
 
         return $resultSet;
     }
-
 }
