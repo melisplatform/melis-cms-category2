@@ -85,10 +85,10 @@ class MelisCmsCategoryDisplayCategoriesPlugin extends MelisTemplatingPlugin
         // get category data based from category start
         if (! empty($data['category_start'])) {
             $categoryStart = $data['category_start'];
-            $categoryStart = $melisCmsCategorySvc->getCategoryDataById($categoryStart)->cat2_father_cat_id;
+            $categoryStart = $melisCmsCategorySvc->getCategoryDataById($categoryStart)?->cat2_father_cat_id ?? null;
         }
         // category data
-        $categoryListData = $melisCmsCategorySvc->getCategoryTreeview($categoryStart,$langId,true,$siteId);
+        $categoryListData = $melisCmsCategorySvc->getCategoryTreeview($categoryStart, $langId, true, $siteId);
         // start only on what is set category_start
         if (! empty($data['category_start'])) {
             if (! empty($categoryListData)) {
@@ -104,7 +104,7 @@ class MelisCmsCategoryDisplayCategoriesPlugin extends MelisTemplatingPlugin
         $categoryListData = array_values($categoryListData);
         // return category only based from siteId selected
         if (! empty($siteId)) {
-            $categoryListData = array_values($melisCmsCategorySvc->returnCategoryBasedFromSiteId($categoryListData,$siteId));
+            $categoryListData = array_values($melisCmsCategorySvc->returnCategoryBasedFromSiteId($categoryListData, $siteId));
         }
 
         /*
@@ -123,7 +123,7 @@ class MelisCmsCategoryDisplayCategoriesPlugin extends MelisTemplatingPlugin
      * when editing the parameters of the plugin
      * @return array
      */
-    public function createOptionsForms() : array
+    public function createOptionsForms(): array
     {
 
         // construct form
@@ -144,7 +144,7 @@ class MelisCmsCategoryDisplayCategoriesPlugin extends MelisTemplatingPlugin
 
                 if (!isset($parameters['validate'])) {
                     $formData = $this->getFormData();
-                    if ( empty($formData['category_start'])) {
+                    if (empty($formData['category_start'])) {
                         $formData['category_start'] = 0;
                     }
 
@@ -160,15 +160,15 @@ class MelisCmsCategoryDisplayCategoriesPlugin extends MelisTemplatingPlugin
 
                     $viewRender = $this->getServiceManager()->get('ViewRenderer');
                     $html = $viewRender->render($viewModelTab);
-                    array_push($render, [
+                    array_push(
+                        $render,
+                        [
                             'name' => $config['tab_title'],
                             'icon' => $config['tab_icon'],
                             'html' => $html
                         ]
                     );
-
-                }
-                else {
+                } else {
 
                     // validate the forms and send back an array with errors by tabs
                     $post = $request->getPost()->toArray();
@@ -188,7 +188,8 @@ class MelisCmsCategoryDisplayCategoriesPlugin extends MelisTemplatingPlugin
 
                         foreach ($errors as $keyError => $valueError) {
                             foreach ($config['elements'] as $keyForm => $valueForm) {
-                                if ($valueForm['spec']['name'] == $keyError &&
+                                if (
+                                    $valueForm['spec']['name'] == $keyError &&
                                     !empty($valueForm['spec']['options']['label'])
                                 )
                                     $errors[$keyError]['label'] = $valueForm['spec']['options']['label'];
@@ -203,18 +204,15 @@ class MelisCmsCategoryDisplayCategoriesPlugin extends MelisTemplatingPlugin
                             'message' => '',
                         ]);
                     }
-
                 }
             }
         }
 
         if (!isset($parameters['validate'])) {
             return $render;
-        }
-        else {
+        } else {
             return $response;
         }
-
     }
 
     /**
@@ -223,14 +221,14 @@ class MelisCmsCategoryDisplayCategoriesPlugin extends MelisTemplatingPlugin
      * @param null $excludeElement
      * @return \Laminas\Form\ElementInterface
      */
-    private function getPluginForm($formConfig , $excludeElement = null)
+    private function getPluginForm($formConfig, $excludeElement = null)
     {
         $factory        = new \Laminas\Form\Factory();
         $formElements   = $this->getServiceManager()->get('FormElementManager');
         $factory->setFormElementManager($formElements);
         $form = $factory->createForm($formConfig);
-        foreach($form->getElements() as $element => $val){
-            if($element == $excludeElement){
+        foreach ($form->getElements() as $element => $val) {
+            if ($element == $excludeElement) {
                 unset($formElements->getElements()[$element]);
             }
         }
@@ -259,8 +257,7 @@ class MelisCmsCategoryDisplayCategoriesPlugin extends MelisTemplatingPlugin
         $configValues = array();
 
         $xml = simplexml_load_string($this->pluginXmlDbValue);
-        if ($xml)
-        {
+        if ($xml) {
             if (!empty($xml->template_path))
                 $configValues['template_path'] = (string)$xml->template_path;
             if (!empty($xml->site_id))
@@ -303,7 +300,7 @@ class MelisCmsCategoryDisplayCategoriesPlugin extends MelisTemplatingPlugin
 
         //
         // Something has been saved, let's generate an XML for DB
-        $xmlValueFormatted = "\t" . '<' . $this->pluginXmlDbKey . ' id="' . $parameters['melisPluginId'] . '"' .$widthDesktop . $widthMobile . $widthTablet . ' >' .
+        $xmlValueFormatted = "\t" . '<' . $this->pluginXmlDbKey . ' id="' . $parameters['melisPluginId'] . '"' . $widthDesktop . $widthMobile . $widthTablet . ' >' .
             $xmlValueFormatted .
             "\t" . '</' . $this->pluginXmlDbKey . '>' . "\n";
 
