@@ -1,6 +1,6 @@
 {
   "id": "category2",
-  "route": "/melis-cms/category2",
+  "route": "/melis-cms/category-v2",
   "label": "Catégories",
   "forwardKey": "MelisCmsCategory2/MelisCmsCategoryList",
   "melisKey": "melis_cms_categories_v2",
