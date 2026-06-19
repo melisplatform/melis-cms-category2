@@ -640,7 +640,11 @@ class MelisCmsCategoryController extends MelisAbstractActionController
         }
         if (! empty($passedCatId)) {
             $logTypeCode = "CMS_CATEGORY2_UPDATE";
-            $message = 'tr_meliscms_categories_err_category_update_ok';
+            // Only show the "updated successfully" message on an actual success — otherwise a failed
+            // update (e.g. no site selected) would display the success wording inside a red KO toast.
+            if ($success) {
+                $message = 'tr_meliscms_categories_err_category_update_ok';
+            }
         }
 
         $response = array(

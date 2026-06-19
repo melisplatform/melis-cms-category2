@@ -1,0 +1,8 @@
+{
+  "id": "category2",
+  "route": "/melis-cms/category2",
+  "label": "Catégories",
+  "forwardKey": "MelisCmsCategory2/MelisCmsCategoryList",
+  "melisKey": "melis_cms_categories_v2",
+  "entry": "brick.js"
+}
