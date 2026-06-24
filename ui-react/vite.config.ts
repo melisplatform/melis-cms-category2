@@ -11,6 +11,7 @@ import path from 'node:path'
 export default defineConfig({
   esbuild: { jsx: 'automatic' },
   build: {
+    minify: false,
     outDir: path.resolve(import.meta.dirname, '..', 'public', 'ui-react'),
     emptyOutDir: false,
     lib: {
