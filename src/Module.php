@@ -85,6 +85,8 @@ class Module
         $config = array();
         $configFiles = array(
             include __DIR__ . '/../config/module.config.php',
+            // React back-office JSON API (owned by the module)
+            include __DIR__ . '/../config/react-api.php',
             // interface design Melis
             include __DIR__ . '/../config/app.interface.php',
             include __DIR__ . '/../config/app.forms.php',
