@@ -2,6 +2,13 @@ import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 
 
 /* Shared inline-style helpers + tiny primitives for the Categories brick (theme CSS vars). */
 
+// ── Capacités (droits avancés) — lit le global window.MelisCan (default-allow). Clé = melisKey du
+// nœud menu porteur de droits (cf. config/react.capabilities.php). ──
+export function makeCan(melisKey: string) {
+  return (cap: string): boolean =>
+    (window as unknown as { MelisCan?: (k: string, c: string) => boolean }).MelisCan?.(melisKey, cap) ?? true
+}
+
 export const card: CSSProperties = {
   border: '1px solid var(--color-border)', background: 'var(--color-card)',
   borderRadius: 12, boxShadow: '0 1px 2px rgba(0,0,0,.04)',

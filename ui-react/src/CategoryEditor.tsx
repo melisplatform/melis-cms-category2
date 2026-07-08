@@ -4,7 +4,10 @@ import {
   type Lang, type Site, type Translation, type SavePayload, type MediaItem,
 } from './category-api'
 import { useT, currentLang } from './i18n'
-import { card, input, label, btnPrimary, btnGhost, Toggle, LangFlag, DateField, melisNotify, useConfirm, IconPlus, IconTrash, IconFolder } from './ui'
+import { card, input, label, btnPrimary, btnGhost, makeCan, Toggle, LangFlag, DateField, melisNotify, useConfirm, IconPlus, IconTrash, IconFolder } from './ui'
+
+// Droits avancés — partie « l'Édition » (cf. config/react.capabilities.php).
+const can = makeCan('melis_cms_categories_v2')
 
 export interface EditTarget { id: number | null; parentId: number; parentName?: string }
 
@@ -20,6 +23,8 @@ type TransMap = Record<number, Translation>
 
 export default function CategoryEditor({ target, langs, sites, onSaved, onCancel }: Props) {
   const t = useT()
+  const canProps = can('edition.properties')
+  const canMedia = can('edition.media')
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -35,7 +40,7 @@ export default function CategoryEditor({ target, langs, sites, onSaved, onCancel
   const key = target ? `${target.id ?? 'new'}:${target.parentId}` : 'none'
 
   useEffect(() => {
-    setError(''); setTab('props'); setActiveLang(langs[0]?.id ?? 1)
+    setError(''); setTab(canProps ? 'props' : 'media'); setActiveLang(langs[0]?.id ?? 1)
     if (!target) return
     if (target.id == null) {
       setTrans({}); setStatus(1); setDateStart(''); setDateEnd(''); setSelectedSites([])
@@ -60,6 +65,17 @@ export default function CategoryEditor({ target, langs, sites, onSaved, onCancel
       <div style={{ ...card, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center',
         color: 'var(--color-muted-foreground)', fontSize: 14, textAlign: 'center', padding: 24 }}>
         {t('empty_editor')}
+      </div>
+    )
+  }
+
+  // Droit d'édition : sans lui, le panneau ne se charge pas pour une catégorie EXISTANTE.
+  // La création reste permise (le droit `tree.create` a ouvert ce panneau en mode « nouveau »).
+  if (target.id != null && !can('edition')) {
+    return (
+      <div style={{ ...card, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+        color: 'var(--color-muted-foreground)', fontSize: 14, textAlign: 'center', padding: 24 }}>
+        {t('no_edit_access')}
       </div>
     )
   }
@@ -123,10 +139,10 @@ export default function CategoryEditor({ target, langs, sites, onSaved, onCancel
         </button>
       </div>
 
-      {/* tabs */}
+      {/* tabs — gated by the `edition.properties` / `edition.media` capabilities */}
       <div style={{ display: 'flex', gap: 4, padding: '10px 16px 0' }}>
-        <TabBtn active={tab === 'props'} onClick={() => setTab('props')}>{t('tab_props')}</TabBtn>
-        <TabBtn active={tab === 'media'} onClick={() => setTab('media')}>{t('tab_media')}</TabBtn>
+        {canProps && <TabBtn active={tab === 'props'} onClick={() => setTab('props')}>{t('tab_props')}</TabBtn>}
+        {canMedia && <TabBtn active={tab === 'media'} onClick={() => setTab('media')}>{t('tab_media')}</TabBtn>}
       </div>
 
       <div style={{ flex: 1, overflow: 'auto', padding: 16 }}>
@@ -137,9 +153,11 @@ export default function CategoryEditor({ target, langs, sites, onSaved, onCancel
 
         {loading ? (
           <div style={{ color: 'var(--color-muted-foreground)', fontSize: 14 }}>{t('loading')}</div>
-        ) : tab === 'media' ? (
+        ) : (!canProps && !canMedia) ? (
+          <div style={{ color: 'var(--color-muted-foreground)', fontSize: 14 }}>{t('no_edit_access')}</div>
+        ) : (tab === 'media' && canMedia) ? (
           <MediaTab catId={target.id} t={t} />
-        ) : (
+        ) : canProps ? (
           <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 300px', gap: 20 }}>
             {/* left: translations */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -206,7 +224,7 @@ export default function CategoryEditor({ target, langs, sites, onSaved, onCancel
               </div>
             </div>
           </div>
-        )}
+        ) : null}
       </div>
     </div>
   )

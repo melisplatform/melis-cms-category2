@@ -79,6 +79,7 @@
 			empty_tree: "Aucune catégorie. Créez-en une pour commencer.",
 			drag_hint: "Glisser pour réordonner",
 			empty_editor: "Sélectionnez une catégorie dans l’arbre, ou créez-en une.",
+			no_edit_access: "Vous n’avez pas le droit d’éditer les catégories.",
 			loading: "Chargement…",
 			tab_props: "Propriétés",
 			tab_media: "Média",
@@ -136,6 +137,7 @@
 			empty_tree: "No category yet. Create one to get started.",
 			drag_hint: "Drag to reorder",
 			empty_editor: "Select a category in the tree, or create one.",
+			no_edit_access: "You do not have permission to edit categories.",
 			loading: "Loading…",
 			tab_props: "Properties",
 			tab_media: "Media",
@@ -191,6 +193,9 @@
 	}
 	//#endregion
 	//#region src/ui.tsx
+	function makeCan(melisKey) {
+		return (cap) => window.MelisCan?.(melisKey, cap) ?? true;
+	}
 	var card = {
 		border: "1px solid var(--color-border)",
 		background: "var(--color-card)",
@@ -699,6 +704,7 @@
 	}
 	//#endregion
 	//#region src/CategoryTree.tsx
+	var can$1 = makeCan("melis_cms_categories_v2");
 	/** Does the node or any descendant match the (lowercased) search text? */
 	function matchesSearch(node, q) {
 		if (!q) return true;
@@ -808,7 +814,7 @@
 		const [drag, setDrag] = (0, react.useState)(null);
 		const [dropInfo, setDropInfo] = (0, react.useState)(null);
 		const q = search.trim().toLowerCase();
-		const dndEnabled = !q && !siteFilter;
+		const dndEnabled = !q && !siteFilter && can$1("tree.order");
 		const visible = (0, react.useMemo)(() => {
 			const prune = (list) => list.filter((n) => matchesSearch(n, q) && matchesSite(n, siteFilter)).map((n) => ({
 				...n,
@@ -952,7 +958,7 @@
 							})
 						}) : null;
 					})(),
-					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
+					can$1("tree.create") && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 						title: t("add_child"),
 						onClick: (e) => {
 							e.stopPropagation();
@@ -961,7 +967,7 @@
 						style: iconBtn,
 						children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(IconPlus, { size: 15 })
 					}),
-					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
+					can$1("tree.delete") && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 						title: t("del"),
 						onClick: (e) => {
 							e.stopPropagation();
@@ -1049,7 +1055,7 @@
 							}
 						})]
 					}),
-					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
+					can$1("tree.create") && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 						onClick: p.onAddRoot,
 						style: {
 							...btnPrimary,
@@ -1102,8 +1108,11 @@
 	};
 	//#endregion
 	//#region src/CategoryEditor.tsx
+	var can = makeCan("melis_cms_categories_v2");
 	function CategoryEditor({ target, langs, sites, onSaved, onCancel }) {
 		const t = useT();
+		const canProps = can("edition.properties");
+		const canMedia = can("edition.media");
 		const [loading, setLoading] = (0, react.useState)(false);
 		const [saving, setSaving] = (0, react.useState)(false);
 		const [error, setError] = (0, react.useState)("");
@@ -1116,7 +1125,7 @@
 		const [selectedSites, setSelectedSites] = (0, react.useState)([]);
 		(0, react.useEffect)(() => {
 			setError("");
-			setTab("props");
+			setTab(canProps ? "props" : "media");
 			setActiveLang(langs[0]?.id ?? 1);
 			if (!target) return;
 			if (target.id == null) {
@@ -1149,6 +1158,20 @@
 				padding: 24
 			},
 			children: t("empty_editor")
+		});
+		if (target.id != null && !can("edition")) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+			style: {
+				...card,
+				height: "100%",
+				display: "flex",
+				alignItems: "center",
+				justifyContent: "center",
+				color: "var(--color-muted-foreground)",
+				fontSize: 14,
+				textAlign: "center",
+				padding: 24
+			},
+			children: t("no_edit_access")
 		});
 		const setTransField = (langId, field, value) => setTrans((prev) => ({
 			...prev,
@@ -1264,11 +1287,11 @@
 						gap: 4,
 						padding: "10px 16px 0"
 					},
-					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(TabBtn, {
+					children: [canProps && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(TabBtn, {
 						active: tab === "props",
 						onClick: () => setTab("props"),
 						children: t("tab_props")
-					}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(TabBtn, {
+					}), canMedia && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(TabBtn, {
 						active: tab === "media",
 						onClick: () => setTab("media"),
 						children: t("tab_media")
@@ -1296,10 +1319,16 @@
 							fontSize: 14
 						},
 						children: t("loading")
-					}) : tab === "media" ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(MediaTab, {
+					}) : !canProps && !canMedia ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+						style: {
+							color: "var(--color-muted-foreground)",
+							fontSize: 14
+						},
+						children: t("no_edit_access")
+					}) : tab === "media" && canMedia ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(MediaTab, {
 						catId: target.id,
 						t
-					}) : /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+					}) : canProps ? /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						style: {
 							display: "grid",
 							gridTemplateColumns: "minmax(0,1fr) 300px",
@@ -1476,7 +1505,7 @@
 								})] })
 							]
 						})]
-					})]
+					}) : null]
 				})
 			]
 		});

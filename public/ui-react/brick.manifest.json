@@ -4,5 +4,6 @@
   "label": "Catégories",
   "forwardKey": "MelisCmsCategory2/MelisCmsCategoryList",
   "melisKey": "melis_cms_categories_v2",
-  "entry": "brick.js"
+  "entry": "brick.js",
+  "persistent": true
 }

@@ -2,9 +2,12 @@ import { useMemo, useState, type CSSProperties } from 'react'
 import { type TreeNode, type Lang, type Site } from './category-api'
 import { useT } from './i18n'
 import {
-  card, input, btnPrimary, IconPlus, IconTrash, IconChevron, IconSearch, IconRefresh, IconGrip,
+  card, input, btnPrimary, makeCan, IconPlus, IconTrash, IconChevron, IconSearch, IconRefresh, IconGrip,
   StatusDot, LangFlag,
 } from './ui'
+
+// Droits avancés — partie « l'Arbre » (cf. config/react.capabilities.php).
+const can = makeCan('melis_cms_categories_v2')
 
 interface Props {
   nodes: TreeNode[]
@@ -82,8 +85,8 @@ export default function CategoryTree(p: Props) {
 
   const q = search.trim().toLowerCase()
   // Drag-reorder is offered only in the FULL, unfiltered view (a pruned/searched view has no
-  // meaningful sibling order to write back).
-  const dndEnabled = !q && !siteFilter
+  // meaningful sibling order to write back) AND when the user has the `order` right.
+  const dndEnabled = !q && !siteFilter && can('tree.order')
 
   // Keep only branches that match search + site (ancestors preserved).
   const visible = useMemo(() => {
@@ -167,10 +170,14 @@ export default function CategoryTree(p: Props) {
               </span>
             ) : null
           })()}
-          <button title={t('add_child')} onClick={e => { e.stopPropagation(); p.onAddChild(node.id) }}
-            style={iconBtn}><IconPlus size={15} /></button>
-          <button title={t('del')} onClick={e => { e.stopPropagation(); p.onDelete(node) }}
-            style={iconBtn}><IconTrash size={15} /></button>
+          {can('tree.create') && (
+            <button title={t('add_child')} onClick={e => { e.stopPropagation(); p.onAddChild(node.id) }}
+              style={iconBtn}><IconPlus size={15} /></button>
+          )}
+          {can('tree.delete') && (
+            <button title={t('del')} onClick={e => { e.stopPropagation(); p.onDelete(node) }}
+              style={iconBtn}><IconTrash size={15} /></button>
+          )}
         </div>
         {hasChildren && open ? node.children.map(c => renderNode(c, depth + 1)) : null}
       </div>
@@ -197,7 +204,9 @@ export default function CategoryTree(p: Props) {
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t('search')}
             style={{ ...input, paddingLeft: 34 }} />
         </div>
-        <button onClick={p.onAddRoot} style={{ ...btnPrimary, height: 38 }}><IconPlus size={16} />{t('new_root')}</button>
+        {can('tree.create') && (
+          <button onClick={p.onAddRoot} style={{ ...btnPrimary, height: 38 }}><IconPlus size={16} />{t('new_root')}</button>
+        )}
       </div>
 
       {/* tree */}
