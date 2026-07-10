@@ -81,7 +81,7 @@ export default function CategoryTree(p: Props) {
   const [siteFilter, setSiteFilter] = useState(0)
   const [collapsed, setCollapsed] = useState<Set<number>>(new Set())
   const [drag, setDrag] = useState<{ id: number; parentId: number } | null>(null)
-  const [dropInfo, setDropInfo] = useState<{ id: number; pos: 'before' | 'after' } | null>(null)
+  const [dropInfo, setDropInfo] = useState<{ id: number; pos: 'before' | 'inside' | 'after' } | null>(null)
 
   const q = search.trim().toLowerCase()
   // Drag-reorder is offered only in the FULL, unfiltered view (a pruned/searched view has no
@@ -100,13 +100,28 @@ export default function CategoryTree(p: Props) {
   const toggle = (id: number) =>
     setCollapsed(prev => { const s = new Set(prev); s.has(id) ? s.delete(id) : s.add(id); return s })
 
+  // A node can't be dropped onto itself or into its own subtree (would create a cycle).
+  const dragNode = drag ? findNode(p.nodes, drag.id) : null
+  const isForbiddenTarget = (nodeId: number) =>
+    !dragNode || nodeId === dragNode.id || !!findNode(dragNode.children, nodeId)
+
   const onDrop = (target: TreeNode) => {
-    if (drag && dropInfo && drag.id !== target.id && drag.parentId === target.parentId) {
-      const ids = siblingsOf(p.nodes, target.parentId).map(n => n.id).filter(id => id !== drag.id)
-      let idx = ids.indexOf(target.id)
-      if (dropInfo.pos === 'after') idx += 1
-      ids.splice(idx, 0, drag.id)
-      p.onReorder(target.parentId, ids)
+    if (drag && dropInfo && dropInfo.id === target.id && !isForbiddenTarget(target.id)) {
+      if (dropInfo.pos === 'inside') {
+        // Re-parent: move the dragged node in as the LAST child of target.
+        const ids = target.children.map(n => n.id).filter(id => id !== drag.id)
+        ids.push(drag.id)
+        setCollapsed(prev => { const s = new Set(prev); s.delete(target.id); return s }) // reveal the moved child
+        p.onReorder(target.id, ids)
+      } else {
+        // Reorder as a sibling of target (works within a parent OR across parents — the
+        // backend's /reorder sets each id's father to this parentId).
+        const ids = siblingsOf(p.nodes, target.parentId).map(n => n.id).filter(id => id !== drag.id)
+        let idx = ids.indexOf(target.id)
+        if (dropInfo.pos === 'after') idx += 1
+        ids.splice(idx, 0, drag.id)
+        p.onReorder(target.parentId, ids)
+      }
     }
     setDrag(null); setDropInfo(null)
   }
@@ -123,9 +138,15 @@ export default function CategoryTree(p: Props) {
       background: selected ? 'color-mix(in srgb, var(--color-primary,#e11d48) 12%, transparent)' : 'transparent',
       color: 'var(--color-foreground)',
       opacity: drag?.id === node.id ? 0.4 : 1,
+      // before/after → an insertion line at the top/bottom edge; inside → a full outline (becomes a child).
       boxShadow: isDropTarget
-        ? (dropInfo!.pos === 'before' ? 'inset 0 2px 0 0 var(--color-primary,#e11d48)' : 'inset 0 -2px 0 0 var(--color-primary,#e11d48)')
+        ? (dropInfo!.pos === 'before' ? 'inset 0 2px 0 0 var(--color-primary,#e11d48)'
+          : dropInfo!.pos === 'after' ? 'inset 0 -2px 0 0 var(--color-primary,#e11d48)'
+          : 'inset 0 0 0 2px var(--color-primary,#e11d48)')
         : 'none',
+      ...(isDropTarget && dropInfo!.pos === 'inside'
+        ? { background: 'color-mix(in srgb, var(--color-primary,#e11d48) 8%, transparent)' }
+        : null),
     }
     return (
       <div key={node.id}>
@@ -133,10 +154,13 @@ export default function CategoryTree(p: Props) {
           // Only the grip handle is draggable (below) — NOT the whole row — so a real mouse click on
           // the +/trash buttons registers as a click instead of accidentally starting a drag.
           onDragOver={e => {
-            if (!drag || drag.id === node.id || drag.parentId !== node.parentId) return
+            if (!drag || isForbiddenTarget(node.id)) return
             e.preventDefault()
             const r = e.currentTarget.getBoundingClientRect()
-            setDropInfo({ id: node.id, pos: (e.clientY - r.top) < r.height / 2 ? 'before' : 'after' })
+            // Three zones: top ¼ = drop before, bottom ¼ = drop after, middle ½ = drop inside (re-parent).
+            const y = e.clientY - r.top
+            const pos = y < r.height * 0.25 ? 'before' : y > r.height * 0.75 ? 'after' : 'inside'
+            setDropInfo({ id: node.id, pos })
           }}
           onDragLeave={() => setDropInfo(d => (d?.id === node.id ? null : d))}
           onDrop={e => { e.preventDefault(); e.stopPropagation(); onDrop(node) }}

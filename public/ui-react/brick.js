@@ -77,7 +77,7 @@
 			del: "Supprimer",
 			refresh: "Rafraîchir",
 			empty_tree: "Aucune catégorie. Créez-en une pour commencer.",
-			drag_hint: "Glisser pour réordonner",
+			drag_hint: "Glisser pour réordonner ou déplacer dans une catégorie",
 			empty_editor: "Sélectionnez une catégorie dans l’arbre, ou créez-en une.",
 			no_edit_access: "Vous n’avez pas le droit d’éditer les catégories.",
 			loading: "Chargement…",
@@ -135,7 +135,7 @@
 			del: "Delete",
 			refresh: "Refresh",
 			empty_tree: "No category yet. Create one to get started.",
-			drag_hint: "Drag to reorder",
+			drag_hint: "Drag to reorder or move into a category",
 			empty_editor: "Select a category in the tree, or create one.",
 			no_edit_access: "You do not have permission to edit categories.",
 			loading: "Loading…",
@@ -831,8 +831,19 @@
 			s.has(id) ? s.delete(id) : s.add(id);
 			return s;
 		});
+		const dragNode = drag ? findNode$1(p.nodes, drag.id) : null;
+		const isForbiddenTarget = (nodeId) => !dragNode || nodeId === dragNode.id || !!findNode$1(dragNode.children, nodeId);
 		const onDrop = (target) => {
-			if (drag && dropInfo && drag.id !== target.id && drag.parentId === target.parentId) {
+			if (drag && dropInfo && dropInfo.id === target.id && !isForbiddenTarget(target.id)) if (dropInfo.pos === "inside") {
+				const ids = target.children.map((n) => n.id).filter((id) => id !== drag.id);
+				ids.push(drag.id);
+				setCollapsed((prev) => {
+					const s = new Set(prev);
+					s.delete(target.id);
+					return s;
+				});
+				p.onReorder(target.id, ids);
+			} else {
 				const ids = siblingsOf(p.nodes, target.parentId).map((n) => n.id).filter((id) => id !== drag.id);
 				let idx = ids.indexOf(target.id);
 				if (dropInfo.pos === "after") idx += 1;
@@ -860,15 +871,18 @@
 					background: selected ? "color-mix(in srgb, var(--color-primary,#e11d48) 12%, transparent)" : "transparent",
 					color: "var(--color-foreground)",
 					opacity: drag?.id === node.id ? .4 : 1,
-					boxShadow: isDropTarget ? dropInfo.pos === "before" ? "inset 0 2px 0 0 var(--color-primary,#e11d48)" : "inset 0 -2px 0 0 var(--color-primary,#e11d48)" : "none"
+					boxShadow: isDropTarget ? dropInfo.pos === "before" ? "inset 0 2px 0 0 var(--color-primary,#e11d48)" : dropInfo.pos === "after" ? "inset 0 -2px 0 0 var(--color-primary,#e11d48)" : "inset 0 0 0 2px var(--color-primary,#e11d48)" : "none",
+					...isDropTarget && dropInfo.pos === "inside" ? { background: "color-mix(in srgb, var(--color-primary,#e11d48) 8%, transparent)" } : null
 				},
 				onDragOver: (e) => {
-					if (!drag || drag.id === node.id || drag.parentId !== node.parentId) return;
+					if (!drag || isForbiddenTarget(node.id)) return;
 					e.preventDefault();
 					const r = e.currentTarget.getBoundingClientRect();
+					const y = e.clientY - r.top;
+					const pos = y < r.height * .25 ? "before" : y > r.height * .75 ? "after" : "inside";
 					setDropInfo({
 						id: node.id,
-						pos: e.clientY - r.top < r.height / 2 ? "before" : "after"
+						pos
 					});
 				},
 				onDragLeave: () => setDropInfo((d) => d?.id === node.id ? null : d),
