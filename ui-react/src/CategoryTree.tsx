@@ -7,7 +7,7 @@ import {
 } from './ui'
 
 // Droits avancés — partie « l'Arbre » (cf. config/react.capabilities.php).
-const can = makeCan('melis_cms_categories_v2')
+const can = makeCan('melis_cms_category_v2_tools_section')
 
 interface Props {
   nodes: TreeNode[]

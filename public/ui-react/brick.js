@@ -704,7 +704,7 @@
 	}
 	//#endregion
 	//#region src/CategoryTree.tsx
-	var can$1 = makeCan("melis_cms_categories_v2");
+	var can$1 = makeCan("melis_cms_category_v2_tools_section");
 	/** Does the node or any descendant match the (lowercased) search text? */
 	function matchesSearch(node, q) {
 		if (!q) return true;
@@ -1122,7 +1122,7 @@
 	};
 	//#endregion
 	//#region src/CategoryEditor.tsx
-	var can = makeCan("melis_cms_categories_v2");
+	var can = makeCan("melis_cms_category_v2_tools_section");
 	function CategoryEditor({ target, langs, sites, onSaved, onCancel }) {
 		const t = useT();
 		const canProps = can("edition.properties");

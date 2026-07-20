@@ -27,9 +27,13 @@ use MelisCore\Controller\MelisAbstractActionController;
  */
 class MelisCmsCategoryReactApiController extends MelisAbstractActionController
 {
-    /** melisKey of the renderable tool zone — used by the rights guard. Directly granted in the
-     *  rights XML (meliscms section), so canAccess() resolves it reliably. */
-    private const MELIS_KEY = 'melis_cms_categories_v2';
+    /** melisKey of the RIGHTS-BEARING menu node — the rights guard AND the capability key.
+     *  MUST stay in sync with config/react.capabilities.php: denyUnlessCan() resolves capabilities
+     *  through this constant, so a mismatch makes every server-side capability check silently
+     *  default-allow. This is the key React grants and the rights XML stores. NOT
+     *  `melis_cms_categories_v2` — that is the `type` target, kept as the renderable ZONE key
+     *  (iframe), and it is not granted on its own, so guarding on it would 403 every request. */
+    private const MELIS_KEY = 'melis_cms_category_v2_tools_section';
 
     private const ROOT = -1;
 

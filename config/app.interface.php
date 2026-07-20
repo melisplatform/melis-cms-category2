@@ -17,8 +17,33 @@ return array(
                                         'icon' => 'fa-th-list',
                                     ],
                                     'interface' => [
-                                        'melis_cms_category_v2_config' => [
+                                        // Rights-bearing node of the Categories menu entry, shaped like
+                                        // MelisCmsSlider / MelisCmsNews.
+                                        //
+                                        // It used to carry ONLY the `conf.type` link, so the key it
+                                        // resolved to (`melis_cms_categories_v2`) was declared on the target,
+                                        // over in the `melis_cms_category_v2_config` plugin root. Rights
+                                        // propagate UPWARD ONLY: isAccessible grants a node when it is a path
+                                        // SEGMENT of a granted tool's melisKey path (configIsParentOf). The
+                                        // target's path (/melis_cms_category_v2_config/interface/...) never
+                                        // runs through the `melis_cms_category_v2` wrapper, so the wrapper was
+                                        // denied and TreeToolsController:73 dropped the whole subtree before
+                                        // reaching this child — Categories was invisible in the legacy menu for
+                                        // non-admins while React, which gates only on the leaf, showed it.
+                                        //
+                                        // Declaring the melisKey HERE puts the rights key back on the
+                                        // left-menu path, which does run through the wrapper. A NEW name is
+                                        // used deliberately: the key this node would otherwise need,
+                                        // `melis_cms_category_v2_config`, is already the plugin root's melisKey
+                                        // → reusing it would collide in getMelisKeys (last-wins).
+                                        // The `conf.type` link still pulls in the target's forward.
+                                        'melis_cms_category_v2_tools_section' => [
                                             'conf' => [
+                                                'id' => 'id_melis_cms_category_v2_tools_section',
+                                                'name' => 'tr_melis_cms_category_v2',
+                                                'icon' => 'fa-th-list',
+                                                'rights_checkbox_disable' => false,
+                                                'melisKey' => 'melis_cms_category_v2_tools_section',
                                                 'type' => '/melis_cms_category_v2_config/interface/melis_cms_categories_v2'
                                             ]
                                         ]

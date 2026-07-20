@@ -7,7 +7,7 @@ import { useT, currentLang } from './i18n'
 import { card, input, label, btnPrimary, btnGhost, makeCan, Toggle, LangFlag, DateField, melisNotify, useConfirm, IconPlus, IconTrash, IconFolder } from './ui'
 
 // Droits avancés — partie « l'Édition » (cf. config/react.capabilities.php).
-const can = makeCan('melis_cms_categories_v2')
+const can = makeCan('melis_cms_category_v2_tools_section')
 
 export interface EditTarget { id: number | null; parentId: number; parentName?: string }
 

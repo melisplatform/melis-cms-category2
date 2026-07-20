@@ -8,9 +8,12 @@
  * MelisReactApi\Service\Capabilities). Fichier séparé ; mergé dans MelisCmsCategory2\Module::getConfig().
  * Default-allow.
  *
- * ⚠️ Clé = melisKey du NŒUD MENU (nodeKey = melisKey||key) de l'outil, ici `melis_cms_categories_v2`
- * (= la cible `type` résolue, aussi le MELIS_KEY du contrôleur react-api et le melisKey de la brique).
- * C'est ce que RightsTreeView utilise pour rattacher les capacités.
+ * ⚠️ Key = melisKey of the RIGHTS-BEARING menu node (nodeKey = melisKey||key), i.e. the one with
+ * rights_checkbox_disable=false: `melis_cms_category_v2_tools_section` (app.interface.php). That is
+ * what RightsTreeView hangs capabilities on, what the legacy rights modal now stores, and the
+ * MELIS_KEY of the react-api controller. NOT `melis_cms_categories_v2`: that is the `type` TARGET,
+ * which stays the renderable ZONE key (iframe react-tool-page?key=, CategoryPage.tsx) and is not
+ * granted on its own. Same 3-key split as MelisCmsSlider / MelisCmsNews.
  *
  * L'outil Catégories est un MASTER-DETAIL : arbre à gauche + panneau d'édition à droite. Les droits
  * sont donc divisés en DEUX parties (deux onglets de capacités) :
@@ -26,7 +29,7 @@
 
 return [
     'melisReactToolCapabilities' => [
-        'melis_cms_categories_v2' => [
+        'melis_cms_category_v2_tools_section' => [
             // Pas d'actions au niveau outil : tout est réparti dans les deux onglets ci-dessous.
             'tabs' => [
                 [
