@@ -42,7 +42,7 @@ class RenderRecTreeHelper extends AbstractHelper
                 $categoryText = $category['text'] ?? null;
                 // check if the category is linked to a site
                 echo "<li>";
-                echo "<span>$category[cat2_id] - $categoryText</span>";
+                echo '<span>' . (int) $category['cat2_id'] . ' - ' . htmlspecialchars((string) $categoryText, ENT_QUOTES) . '</span>';
                 if (! empty($category['children'])){
                     echo "<ul>";
                     echo $this->constructTree($category['children'],$ctr);

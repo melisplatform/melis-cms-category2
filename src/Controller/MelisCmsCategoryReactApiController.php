@@ -411,6 +411,12 @@ class MelisCmsCategoryReactApiController extends MelisAbstractActionController
             if (empty($file) || empty($file['tmp_name']) || !empty($file['error'])) {
                 return $this->jsonResponse(['success' => false, 'error' => 'Aucun fichier reçu.'], 400);
             }
+
+            // ── Upload hardening: allow-list extension + verified MIME (defends against RCE). ──
+            $ext = $this->validatedExtension((string) $file['name'], $type, $file['tmp_name']);
+            if ($ext === null) {
+                return $this->jsonResponse(['success' => false, 'error' => 'Type de fichier non autorisé.'], 400);
+            }
             if ($type === 'image' && @getimagesize($file['tmp_name']) === false) {
                 return $this->jsonResponse(['success' => false, 'error' => 'Le fichier n’est pas une image valide.'], 400);
             }
@@ -424,7 +430,8 @@ class MelisCmsCategoryReactApiController extends MelisAbstractActionController
             if (!is_dir($dir) && !@mkdir($dir, 0775, true) && !is_dir($dir)) {
                 return $this->jsonResponse(['success' => false, 'error' => 'Dossier média non accessible en écriture.'], 500);
             }
-            $target = $this->uniquePath($dir, $this->sanitizeFilename((string) $file['name']));
+            // Server-generated random name + validated extension (never trust the client basename).
+            $target = $this->uniquePath($dir, bin2hex(random_bytes(16)) . '.' . $ext);
             if (!@move_uploaded_file($file['tmp_name'], $target)) {
                 return $this->jsonResponse(['success' => false, 'error' => 'Échec de l’enregistrement du fichier.'], 500);
             }
@@ -476,14 +483,53 @@ class MelisCmsCategoryReactApiController extends MelisAbstractActionController
         return rtrim((string) ($_SERVER['DOCUMENT_ROOT'] ?? ''), '/\\') . '/media/categories/' . $catId . '/';
     }
 
-    /** Keep only a safe base name + a lowercased extension. */
-    private function sanitizeFilename(string $name): string
+    /**
+     * Resolve a SAFE, allow-listed extension for an upload, or null if disallowed.
+     *
+     * Enforces BOTH an extension allow-list AND the real content type (finfo MIME) — dangerous
+     * extensions (php/phtml/phar/pht/svg/html/…) are never accepted, regardless of the client
+     * name. `image` uploads are restricted to raster image types.
+     */
+    private function validatedExtension(string $clientName, string $type, string $tmpPath): ?string
     {
-        $name = basename($name);
-        $ext  = strtolower(preg_replace('/[^A-Za-z0-9]/', '', pathinfo($name, PATHINFO_EXTENSION)) ?? '');
-        $base = preg_replace('/[^A-Za-z0-9_-]+/', '_', pathinfo($name, PATHINFO_FILENAME)) ?? '';
-        $base = trim($base, '_') ?: 'file';
-        return $ext !== '' ? ($base . '.' . $ext) : $base;
+        $ext = strtolower(preg_replace('/[^A-Za-z0-9]/', '', pathinfo(basename($clientName), PATHINFO_EXTENSION)) ?? '');
+
+        // ext => list of acceptable real MIME types (finfo).
+        $imageAllow = [
+            'jpg'  => ['image/jpeg'],
+            'jpeg' => ['image/jpeg'],
+            'png'  => ['image/png'],
+            'gif'  => ['image/gif'],
+            'webp' => ['image/webp'],
+            'bmp'  => ['image/bmp', 'image/x-ms-bmp'],
+        ];
+        $docAllow = $imageAllow + [
+            'pdf'  => ['application/pdf'],
+            'doc'  => ['application/msword'],
+            'docx' => ['application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/zip'],
+            'xls'  => ['application/vnd.ms-excel'],
+            'xlsx' => ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/zip'],
+            'ppt'  => ['application/vnd.ms-powerpoint'],
+            'pptx' => ['application/vnd.openxmlformats-officedocument.presentationml.presentation', 'application/zip'],
+            'csv'  => ['text/csv', 'text/plain', 'application/csv'],
+            'txt'  => ['text/plain'],
+            'odt'  => ['application/vnd.oasis.opendocument.text', 'application/zip'],
+            'ods'  => ['application/vnd.oasis.opendocument.spreadsheet', 'application/zip'],
+        ];
+
+        $allow = $type === 'image' ? $imageAllow : $docAllow;
+        if ($ext === '' || !isset($allow[$ext])) { return null; }
+
+        // Verify the real content type — never trust the client-provided extension alone.
+        $mime = '';
+        if (\function_exists('finfo_open') && ($fi = @finfo_open(FILEINFO_MIME_TYPE))) {
+            $mime = (string) @finfo_file($fi, $tmpPath);
+            @finfo_close($fi);
+        }
+        // If finfo is unavailable we still have the extension allow-list as a floor.
+        if ($mime !== '' && !\in_array($mime, $allow[$ext], true)) { return null; }
+
+        return $ext;
     }
 
     /** A non-colliding path in $dir for $name (append _1, _2, … if it already exists). */
