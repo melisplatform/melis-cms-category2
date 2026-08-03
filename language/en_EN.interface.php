@@ -4,6 +4,7 @@
  */
 return [
     'tr_melis_cms_category_v2' => 'Categories',
+    'tr_meliscmscategory_ws_desc' => 'CMS categories: category lookup (tree, per site, translations, media).',
     'tr_melis_cms_category_v2_header_title' => 'Categories',
     'tr_melis_cms_category_v2_header_sub_title' => 'Manage here your cms categories . You can define their order by drag and drop',
     'tr_melis_cms_category_v2_header_add_btn' => 'Add category',

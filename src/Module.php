@@ -92,6 +92,8 @@ class Module
             // interface design Melis
             include __DIR__ . '/../config/app.interface.php',
             include __DIR__ . '/../config/app.forms.php',
+            // Web services (microservices) exposed by this module
+            include __DIR__ . '/../config/app.microservice.php',
             //forms
             include __DIR__ . '/../config/plugins/form/plugin.form.php',
             // Tests

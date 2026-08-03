@@ -52,6 +52,9 @@ return array(
             //Service
             'MelisCmsCategory2Service' => MelisCmsCategory2\Service\MelisCmsCategoryService::class,
             'MelisCmsCategory2MediaService' => MelisCmsCategory2\Service\MelisCmsCategoryMediaService::class,
+            // Alias matching the class short name so the microservice (web services) dispatcher
+            // can resolve \MelisCmsCategory2\Service\MelisCmsCategoryService (it requires alias == class name).
+            'MelisCmsCategoryService' => MelisCmsCategory2\Service\MelisCmsCategoryService::class,
         ),
     ),
     'controllers' => array(
