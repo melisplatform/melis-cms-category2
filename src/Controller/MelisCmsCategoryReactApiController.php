@@ -430,8 +430,15 @@ class MelisCmsCategoryReactApiController extends MelisAbstractActionController
             if (!is_dir($dir) && !@mkdir($dir, 0775, true) && !is_dir($dir)) {
                 return $this->jsonResponse(['success' => false, 'error' => 'Dossier média non accessible en écriture.'], 500);
             }
-            // Server-generated random name + validated extension (never trust the client basename).
-            $target = $this->uniquePath($dir, bin2hex(random_bytes(16)) . '.' . $ext);
+            // Keep the ORIGINAL file name, exactly like the legacy tool (ticket 0010862): the stored
+            // name must be the uploaded file's name, not a server-generated one. We still pair it with
+            // the VALIDATED extension and strip any path/traversal or control characters from the base
+            // (basename() drops directory parts). uniquePath() appends _1, _2, … on collision — the same
+            // behaviour as the legacy renameFileRec(). Applies to both files and images.
+            $base = pathinfo(basename((string) $file['name']), PATHINFO_FILENAME);
+            $base = preg_replace('#[\x00-\x1F/\\\\]+#', '', $base);
+            if ($base === null || $base === '') { $base = 'file'; }
+            $target = $this->uniquePath($dir, $base . '.' . $ext);
             if (!@move_uploaded_file($file['tmp_name'], $target)) {
                 return $this->jsonResponse(['success' => false, 'error' => 'Échec de l’enregistrement du fichier.'], 500);
             }
