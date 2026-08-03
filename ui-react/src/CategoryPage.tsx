@@ -8,6 +8,7 @@ import { melisNotify, useConfirm } from './ui'
 import { ViewToggle, type ViewMode } from './ViewToggle'
 import CategoryTree from './CategoryTree'
 import CategoryEditor, { type EditTarget } from './CategoryEditor'
+import { useIsNarrow } from './useIsNarrow'
 
 /* ──────────────────────────────────────────────────────────────────────────
  * Categories tool (MelisCmsCategory2) — full React BRICK.
@@ -31,6 +32,7 @@ function findNode(nodes: TreeNode[], id: number, parentName = ''): { node: TreeN
 
 export default function CategoryPage() {
   const t = useT()
+  const narrow = useIsNarrow()
   const [mode, setMode] = useState<ViewMode>('react')
   const [frameLoaded, setFrameLoaded] = useState(false)
 
@@ -110,7 +112,7 @@ export default function CategoryPage() {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16, padding: 24, height: '100%', boxSizing: 'border-box', overflow: 'hidden' }}>
       {/* header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexShrink: 0 }}>
-        <div>
+        <div style={narrow ? { minWidth: 0, flex: 1 } : undefined}>
           <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0 }}>{t('title')}</h1>
           <p style={{ fontSize: 14, color: 'var(--color-muted-foreground)', margin: '2px 0 0' }}>{t('subtitle')}</p>
         </div>
@@ -126,19 +128,36 @@ export default function CategoryPage() {
         </div>
       )}
 
-      {/* New view: master-detail */}
-      <div style={{ display: mode === 'react' ? 'grid' : 'none', gridTemplateColumns: 'minmax(320px, 420px) minmax(0, 1fr)',
-        gap: 16, flex: 1, minHeight: 0 }}>
-        <CategoryTree
-          nodes={nodes} langs={langs} sites={sites} currentLangId={currentLangId}
-          onLangChange={setCurrentLangId} selectedId={selectedId} onSelect={onSelect}
-          onAddRoot={onAddRoot} onAddChild={onAddChild} onDelete={onDelete}
-          onReorder={onReorder} onRefresh={reloadTree} loading={loading}
-        />
-        <CategoryEditor
-          target={target} langs={langs} sites={sites}
-          onSaved={onSaved} onCancel={() => { setTarget(null); setSelectedId(null) }}
-        />
+      {/* New view: master-detail. On narrow, only one pane is shown at a time (tree, or the
+          editor once a category is selected/created) — both stay mounted (display toggle only)
+          so the tree keeps its search/scroll/collapsed state when the editor closes. */}
+      <div style={{
+        display: mode === 'react' ? (narrow ? 'flex' : 'grid') : 'none',
+        flexDirection: narrow ? 'column' : undefined,
+        gridTemplateColumns: narrow ? undefined : 'minmax(320px, 420px) minmax(0, 1fr)',
+        gap: 16, flex: 1, minHeight: 0,
+      }}>
+        <div style={{
+          display: narrow ? (target ? 'none' : 'flex') : 'block',
+          flexDirection: 'column', minHeight: 0, ...(narrow ? { flex: 1 } : null),
+        }}>
+          <CategoryTree
+            nodes={nodes} langs={langs} sites={sites} currentLangId={currentLangId}
+            onLangChange={setCurrentLangId} selectedId={selectedId} onSelect={onSelect}
+            onAddRoot={onAddRoot} onAddChild={onAddChild} onDelete={onDelete}
+            onReorder={onReorder} onRefresh={reloadTree} loading={loading} narrow={narrow}
+          />
+        </div>
+        <div style={{
+          display: narrow ? (target ? 'flex' : 'none') : 'block',
+          flexDirection: 'column', minHeight: 0, ...(narrow ? { flex: 1 } : null),
+        }}>
+          <CategoryEditor
+            target={target} langs={langs} sites={sites} narrow={narrow}
+            onSaved={onSaved} onCancel={() => { setTarget(null); setSelectedId(null) }}
+            onBack={() => { setTarget(null); setSelectedId(null) }}
+          />
+        </div>
       </div>
       {confirmEl}
     </div>

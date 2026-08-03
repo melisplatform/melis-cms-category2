@@ -76,6 +76,7 @@
 			edit: "Modifier",
 			del: "Supprimer",
 			refresh: "Rafraîchir",
+			back: "Retour à l’arbre",
 			empty_tree: "Aucune catégorie. Créez-en une pour commencer.",
 			drag_hint: "Glisser pour réordonner ou déplacer dans une catégorie",
 			empty_editor: "Sélectionnez une catégorie dans l’arbre, ou créez-en une.",
@@ -134,6 +135,7 @@
 			edit: "Edit",
 			del: "Delete",
 			refresh: "Refresh",
+			back: "Back to tree",
 			empty_tree: "No category yet. Create one to get started.",
 			drag_hint: "Drag to reorder or move into a category",
 			empty_editor: "Select a category in the tree, or create one.",
@@ -354,6 +356,10 @@
 			height: "18",
 			rx: "2"
 		}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", { d: "M16 2v4M8 2v4M3 10h18" })]
+	});
+	var IconArrowLeft = ({ size = 16 }) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(S, {
+		size,
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", { d: "m12 19-7-7 7-7M5 12h14" })
 	});
 	function isoToDisplay(iso, lang) {
 		if (!iso) return "";
@@ -831,12 +837,17 @@
 			s.has(id) ? s.delete(id) : s.add(id);
 			return s;
 		});
-		const dragNode = drag ? findNode$1(p.nodes, drag.id) : null;
-		const isForbiddenTarget = (nodeId) => !dragNode || nodeId === dragNode.id || !!findNode$1(dragNode.children, nodeId);
-		const onDrop = (target) => {
-			if (drag && dropInfo && dropInfo.id === target.id && !isForbiddenTarget(target.id)) if (dropInfo.pos === "inside") {
-				const ids = target.children.map((n) => n.id).filter((id) => id !== drag.id);
-				ids.push(drag.id);
+		const isForbidden = (draggedId, targetId) => {
+			if (targetId === draggedId) return true;
+			const dragged = findNode$1(p.nodes, draggedId);
+			return !!dragged && !!findNode$1(dragged.children, targetId);
+		};
+		const isForbiddenTarget = (nodeId) => !drag || isForbidden(drag.id, nodeId);
+		/** Shared by mouse (native HTML5 DnD) and touch (pointer-event) reordering. */
+		const applyMove = (draggedId, target, pos) => {
+			if (pos === "inside") {
+				const ids = target.children.map((n) => n.id).filter((id) => id !== draggedId);
+				ids.push(draggedId);
 				setCollapsed((prev) => {
 					const s = new Set(prev);
 					s.delete(target.id);
@@ -844,14 +855,65 @@
 				});
 				p.onReorder(target.id, ids);
 			} else {
-				const ids = siblingsOf(p.nodes, target.parentId).map((n) => n.id).filter((id) => id !== drag.id);
+				const ids = siblingsOf(p.nodes, target.parentId).map((n) => n.id).filter((id) => id !== draggedId);
 				let idx = ids.indexOf(target.id);
-				if (dropInfo.pos === "after") idx += 1;
-				ids.splice(idx, 0, drag.id);
+				if (pos === "after") idx += 1;
+				ids.splice(idx, 0, draggedId);
 				p.onReorder(target.parentId, ids);
 			}
+		};
+		const onDrop = (target) => {
+			if (drag && dropInfo && dropInfo.id === target.id && !isForbiddenTarget(target.id)) applyMove(drag.id, target, dropInfo.pos);
 			setDrag(null);
 			setDropInfo(null);
+		};
+		/** Given a pointer's page position, find the tree row under it (if any) and the drop zone
+		* within that row — same 3-zone logic as the mouse dragOver handler, but driven by
+		* `elementFromPoint` since native HTML5 DnD events don't fire reliably on touch devices.
+		* `draggedId` is passed explicitly rather than read off `drag` state — see `isForbidden`. */
+		const zoneAt = (draggedId, clientX, clientY) => {
+			const rowEl = document.elementFromPoint(clientX, clientY)?.closest("[data-node-id]");
+			if (!rowEl) return null;
+			const targetId = Number(rowEl.dataset.nodeId);
+			if (Number.isNaN(targetId) || isForbidden(draggedId, targetId)) return null;
+			const node = findNode$1(p.nodes, targetId);
+			if (!node) return null;
+			const r = rowEl.getBoundingClientRect();
+			const y = clientY - r.top;
+			return {
+				node,
+				pos: y < r.height * .25 ? "before" : y > r.height * .75 ? "after" : "inside"
+			};
+		};
+		/** Touch-friendly reorder: a press-and-drag on the grip handle, driven by Pointer Events
+		* (unlike the HTML5 Drag and Drop API, these fire consistently on mobile browsers). Only
+		* used on narrow layouts — desktop keeps the native mouse DnD above. */
+		const startTouchDrag = (node) => (e) => {
+			if (!dndEnabled) return;
+			e.preventDefault();
+			setDrag({
+				id: node.id,
+				parentId: node.parentId
+			});
+			let zone = null;
+			const move = (ev) => {
+				zone = zoneAt(node.id, ev.clientX, ev.clientY);
+				setDropInfo(zone ? {
+					id: zone.node.id,
+					pos: zone.pos
+				} : null);
+			};
+			const finish = () => {
+				window.removeEventListener("pointermove", move);
+				window.removeEventListener("pointerup", finish);
+				window.removeEventListener("pointercancel", finish);
+				if (zone) applyMove(node.id, zone.node, zone.pos);
+				setDrag(null);
+				setDropInfo(null);
+			};
+			window.addEventListener("pointermove", move);
+			window.addEventListener("pointerup", finish);
+			window.addEventListener("pointercancel", finish);
 		};
 		const renderNode = (node, depth) => {
 			const hasChildren = node.children.length > 0;
@@ -863,7 +925,7 @@
 					display: "flex",
 					alignItems: "center",
 					gap: 6,
-					height: 34,
+					height: p.narrow ? 44 : 34,
 					paddingRight: 8,
 					paddingLeft: 8 + depth * 18,
 					borderRadius: 8,
@@ -874,8 +936,9 @@
 					boxShadow: isDropTarget ? dropInfo.pos === "before" ? "inset 0 2px 0 0 var(--color-primary,#e11d48)" : dropInfo.pos === "after" ? "inset 0 -2px 0 0 var(--color-primary,#e11d48)" : "inset 0 0 0 2px var(--color-primary,#e11d48)" : "none",
 					...isDropTarget && dropInfo.pos === "inside" ? { background: "color-mix(in srgb, var(--color-primary,#e11d48) 8%, transparent)" } : null
 				},
+				"data-node-id": node.id,
 				onDragOver: (e) => {
-					if (!drag || isForbiddenTarget(node.id)) return;
+					if (p.narrow || !drag || isForbiddenTarget(node.id)) return;
 					e.preventDefault();
 					const r = e.currentTarget.getBoundingClientRect();
 					const y = e.clientY - r.top;
@@ -904,11 +967,19 @@
 							color: "var(--color-muted-foreground)",
 							opacity: .5,
 							cursor: "grab",
-							display: "inline-flex"
+							display: "inline-flex",
+							alignItems: "center",
+							justifyContent: "center",
+							flexShrink: 0,
+							...p.narrow ? {
+								width: 32,
+								height: 32,
+								touchAction: "none"
+							} : null
 						},
 						title: t("drag_hint"),
-						draggable: true,
-						onDragStart: (e) => {
+						draggable: !p.narrow,
+						onDragStart: p.narrow ? void 0 : (e) => {
 							e.stopPropagation();
 							setDrag({
 								id: node.id,
@@ -916,12 +987,16 @@
 							});
 							e.dataTransfer.effectAllowed = "move";
 						},
-						onDragEnd: () => {
+						onDragEnd: p.narrow ? void 0 : () => {
 							setDrag(null);
 							setDropInfo(null);
 						},
+						onPointerDown: p.narrow ? (e) => {
+							e.stopPropagation();
+							startTouchDrag(node)(e);
+						} : void 0,
 						onClick: (e) => e.stopPropagation(),
-						children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(IconGrip, { size: 14 })
+						children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(IconGrip, { size: p.narrow ? 18 : 14 })
 					}) : null,
 					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 						style: {
@@ -978,7 +1053,11 @@
 							e.stopPropagation();
 							p.onAddChild(node.id);
 						},
-						style: iconBtn,
+						style: p.narrow ? {
+							...iconBtn,
+							width: 34,
+							height: 34
+						} : iconBtn,
 						children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(IconPlus, { size: 15 })
 					}),
 					can$1("tree.delete") && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
@@ -987,7 +1066,11 @@
 							e.stopPropagation();
 							p.onDelete(node);
 						},
-						style: iconBtn,
+						style: p.narrow ? {
+							...iconBtn,
+							width: 34,
+							height: 34
+						} : iconBtn,
 						children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(IconTrash, { size: 15 })
 					})
 				]
@@ -1123,7 +1206,7 @@
 	//#endregion
 	//#region src/CategoryEditor.tsx
 	var can = makeCan("melis_cms_category_v2_tools_section");
-	function CategoryEditor({ target, langs, sites, onSaved, onCancel }) {
+	function CategoryEditor({ target, langs, sites, onSaved, onCancel, narrow = false, onBack }) {
 		const t = useT();
 		const canProps = can("edition.properties");
 		const canMedia = can("edition.media");
@@ -1250,13 +1333,27 @@
 				/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 					style: {
 						display: "flex",
-						alignItems: "center",
+						flexDirection: narrow ? "column" : "row",
+						alignItems: narrow ? "stretch" : "center",
 						gap: 12,
 						padding: "14px 16px",
 						borderBottom: "1px solid var(--color-border)"
 					},
-					children: [
-						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+						style: {
+							display: "flex",
+							alignItems: "center",
+							gap: 8,
+							minWidth: 0,
+							flex: 1
+						},
+						children: [narrow && onBack ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
+							onClick: onBack,
+							title: t("back"),
+							"aria-label": t("back"),
+							style: backBtn,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(IconArrowLeft, { size: 16 })
+						}) : null, /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 							style: {
 								flex: 1,
 								minWidth: 0
@@ -1277,23 +1374,31 @@
 								},
 								children: context
 							})]
-						}),
-						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
-							style: btnGhost,
+						})]
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+						style: {
+							display: "flex",
+							gap: 8
+						},
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
+							style: {
+								...btnGhost,
+								...narrow ? { flex: 1 } : null
+							},
 							onClick: onCancel,
 							disabled: saving,
 							children: t("cancel")
-						}),
-						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
+						}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 							style: {
 								...btnPrimary,
-								opacity: saving ? .6 : 1
+								opacity: saving ? .6 : 1,
+								...narrow ? { flex: 1 } : null
 							},
 							onClick: doSave,
 							disabled: saving,
 							children: saving ? t("saving") : t("save")
-						})
-					]
+						})]
+					})]
 				}),
 				/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 					style: {
@@ -1341,11 +1446,12 @@
 						children: t("no_edit_access")
 					}) : tab === "media" && canMedia ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(MediaTab, {
 						catId: target.id,
-						t
+						t,
+						narrow
 					}) : canProps ? /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						style: {
 							display: "grid",
-							gridTemplateColumns: "minmax(0,1fr) 300px",
+							gridTemplateColumns: narrow ? "1fr" : "minmax(0,1fr) 300px",
 							gap: 20
 						},
 						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
@@ -1459,6 +1565,7 @@
 								}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 									style: {
 										display: "flex",
+										flexDirection: narrow ? "column" : "row",
 										gap: 8,
 										marginTop: 6
 									},
@@ -1542,7 +1649,20 @@
 		color: "var(--color-foreground)",
 		borderColor: "var(--color-primary,#e11d48)"
 	};
-	function MediaTab({ catId, t }) {
+	var backBtn = {
+		display: "inline-flex",
+		alignItems: "center",
+		justifyContent: "center",
+		width: 36,
+		height: 36,
+		flexShrink: 0,
+		borderRadius: 8,
+		border: "1px solid var(--color-border)",
+		background: "var(--color-card)",
+		color: "var(--color-foreground)",
+		cursor: "pointer"
+	};
+	function MediaTab({ catId, t, narrow }) {
 		const [images, setImages] = (0, react.useState)([]);
 		const [files, setFiles] = (0, react.useState)([]);
 		const [loading, setLoading] = (0, react.useState)(false);
@@ -1605,7 +1725,7 @@
 		return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 			style: {
 				display: "grid",
-				gridTemplateColumns: "repeat(2, minmax(0,1fr))",
+				gridTemplateColumns: narrow ? "1fr" : "repeat(2, minmax(0,1fr))",
 				gap: 20,
 				opacity: busy ? .6 : 1,
 				pointerEvents: busy ? "none" : "auto"
@@ -1813,6 +1933,20 @@
 		});
 	}
 	//#endregion
+	//#region src/useIsNarrow.ts
+	/** Single source of truth for responsive layout decisions — never a CSS media query (see
+	* melis-react-mobile-responsive skill: `sm:`-style breakpoint classes have proven unreliable
+	* in this codebase's bricks). */
+	function useIsNarrow(breakpoint = 640) {
+		const [narrow, setNarrow] = (0, react.useState)(() => window.innerWidth < breakpoint);
+		(0, react.useEffect)(() => {
+			const onResize = () => setNarrow(window.innerWidth < breakpoint);
+			window.addEventListener("resize", onResize);
+			return () => window.removeEventListener("resize", onResize);
+		}, [breakpoint]);
+		return narrow;
+	}
+	//#endregion
 	//#region src/CategoryPage.tsx
 	var MELIS_KEY = "melis_cms_categories_v2";
 	/** Find a node (and its parent's name) anywhere in the tree. */
@@ -1829,6 +1963,7 @@
 	}
 	function CategoryPage() {
 		const t = useT();
+		const narrow = useIsNarrow();
 		const [mode, setMode] = (0, react.useState)("react");
 		const [frameLoaded, setFrameLoaded] = (0, react.useState)(false);
 		const [langs, setLangs] = (0, react.useState)([]);
@@ -1940,21 +2075,27 @@
 						gap: 16,
 						flexShrink: 0
 					},
-					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h1", {
-						style: {
-							fontSize: 20,
-							fontWeight: 700,
-							margin: 0
-						},
-						children: t("title")
-					}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
-						style: {
-							fontSize: 14,
-							color: "var(--color-muted-foreground)",
-							margin: "2px 0 0"
-						},
-						children: t("subtitle")
-					})] }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ViewToggle, {
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+						style: narrow ? {
+							minWidth: 0,
+							flex: 1
+						} : void 0,
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h1", {
+							style: {
+								fontSize: 20,
+								fontWeight: 700,
+								margin: 0
+							},
+							children: t("title")
+						}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
+							style: {
+								fontSize: 14,
+								color: "var(--color-muted-foreground)",
+								margin: "2px 0 0"
+							},
+							children: t("subtitle")
+						})]
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ViewToggle, {
 						mode,
 						onChange: (m) => {
 							setMode(m);
@@ -1983,35 +2124,58 @@
 				}),
 				/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 					style: {
-						display: mode === "react" ? "grid" : "none",
-						gridTemplateColumns: "minmax(320px, 420px) minmax(0, 1fr)",
+						display: mode === "react" ? narrow ? "flex" : "grid" : "none",
+						flexDirection: narrow ? "column" : void 0,
+						gridTemplateColumns: narrow ? void 0 : "minmax(320px, 420px) minmax(0, 1fr)",
 						gap: 16,
 						flex: 1,
 						minHeight: 0
 					},
-					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(CategoryTree, {
-						nodes,
-						langs,
-						sites,
-						currentLangId,
-						onLangChange: setCurrentLangId,
-						selectedId,
-						onSelect,
-						onAddRoot,
-						onAddChild,
-						onDelete,
-						onReorder,
-						onRefresh: reloadTree,
-						loading
-					}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(CategoryEditor, {
-						target,
-						langs,
-						sites,
-						onSaved,
-						onCancel: () => {
-							setTarget(null);
-							setSelectedId(null);
-						}
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+						style: {
+							display: narrow ? target ? "none" : "flex" : "block",
+							flexDirection: "column",
+							minHeight: 0,
+							...narrow ? { flex: 1 } : null
+						},
+						children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(CategoryTree, {
+							nodes,
+							langs,
+							sites,
+							currentLangId,
+							onLangChange: setCurrentLangId,
+							selectedId,
+							onSelect,
+							onAddRoot,
+							onAddChild,
+							onDelete,
+							onReorder,
+							onRefresh: reloadTree,
+							loading,
+							narrow
+						})
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+						style: {
+							display: narrow ? target ? "flex" : "none" : "block",
+							flexDirection: "column",
+							minHeight: 0,
+							...narrow ? { flex: 1 } : null
+						},
+						children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(CategoryEditor, {
+							target,
+							langs,
+							sites,
+							narrow,
+							onSaved,
+							onCancel: () => {
+								setTarget(null);
+								setSelectedId(null);
+							},
+							onBack: () => {
+								setTarget(null);
+								setSelectedId(null);
+							}
+						})
 					})]
 				}),
 				confirmEl

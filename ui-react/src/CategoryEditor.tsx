@@ -4,7 +4,7 @@ import {
   type Lang, type Site, type Translation, type SavePayload, type MediaItem,
 } from './category-api'
 import { useT, currentLang } from './i18n'
-import { card, input, label, btnPrimary, btnGhost, makeCan, Toggle, LangFlag, DateField, melisNotify, useConfirm, IconPlus, IconTrash, IconFolder } from './ui'
+import { card, input, label, btnPrimary, btnGhost, makeCan, Toggle, LangFlag, DateField, melisNotify, useConfirm, IconPlus, IconTrash, IconFolder, IconArrowLeft } from './ui'
 
 // Droits avancés — partie « l'Édition » (cf. config/react.capabilities.php).
 const can = makeCan('melis_cms_category_v2_tools_section')
@@ -17,11 +17,13 @@ interface Props {
   sites: Site[]
   onSaved: (id: number) => void
   onCancel: () => void
+  narrow?: boolean
+  onBack?: () => void
 }
 
 type TransMap = Record<number, Translation>
 
-export default function CategoryEditor({ target, langs, sites, onSaved, onCancel }: Props) {
+export default function CategoryEditor({ target, langs, sites, onSaved, onCancel, narrow = false, onBack }: Props) {
   const t = useT()
   const canProps = can('edition.properties')
   const canMedia = can('edition.media')
@@ -128,15 +130,23 @@ export default function CategoryEditor({ target, langs, sites, onSaved, onCancel
   return (
     <div style={{ ...card, height: '100%', display: 'flex', flexDirection: 'column', minHeight: 0, overflow: 'hidden' }}>
       {/* header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px', borderBottom: '1px solid var(--color-border)' }}>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 16, fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{title}</div>
-          <div style={{ fontSize: 12, color: 'var(--color-muted-foreground)' }}>{context}</div>
+      <div style={{ display: 'flex', flexDirection: narrow ? 'column' : 'row', alignItems: narrow ? 'stretch' : 'center',
+        gap: 12, padding: '14px 16px', borderBottom: '1px solid var(--color-border)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0, flex: 1 }}>
+          {narrow && onBack ? (
+            <button onClick={onBack} title={t('back')} aria-label={t('back')} style={backBtn}><IconArrowLeft size={16} /></button>
+          ) : null}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 16, fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{title}</div>
+            <div style={{ fontSize: 12, color: 'var(--color-muted-foreground)' }}>{context}</div>
+          </div>
         </div>
-        <button style={btnGhost} onClick={onCancel} disabled={saving}>{t('cancel')}</button>
-        <button style={{ ...btnPrimary, opacity: saving ? 0.6 : 1 }} onClick={doSave} disabled={saving}>
-          {saving ? t('saving') : t('save')}
-        </button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button style={{ ...btnGhost, ...(narrow ? { flex: 1 } : null) }} onClick={onCancel} disabled={saving}>{t('cancel')}</button>
+          <button style={{ ...btnPrimary, opacity: saving ? 0.6 : 1, ...(narrow ? { flex: 1 } : null) }} onClick={doSave} disabled={saving}>
+            {saving ? t('saving') : t('save')}
+          </button>
+        </div>
       </div>
 
       {/* tabs — gated by the `edition.properties` / `edition.media` capabilities */}
@@ -156,9 +166,9 @@ export default function CategoryEditor({ target, langs, sites, onSaved, onCancel
         ) : (!canProps && !canMedia) ? (
           <div style={{ color: 'var(--color-muted-foreground)', fontSize: 14 }}>{t('no_edit_access')}</div>
         ) : (tab === 'media' && canMedia) ? (
-          <MediaTab catId={target.id} t={t} />
+          <MediaTab catId={target.id} t={t} narrow={narrow} />
         ) : canProps ? (
-          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 300px', gap: 20 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: narrow ? '1fr' : 'minmax(0,1fr) 300px', gap: 20 }}>
             {/* left: translations */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {/* Two languages per row (dynamic count → grid wraps automatically). */}
@@ -200,7 +210,7 @@ export default function CategoryEditor({ target, langs, sites, onSaved, onCancel
               </div>
               <div>
                 <div style={label}>{t('f_dates')}</div>
-                <div style={{ display: 'flex', gap: 8, marginTop: 6 }}>
+                <div style={{ display: 'flex', flexDirection: narrow ? 'column' : 'row', gap: 8, marginTop: 6 }}>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 11, color: 'var(--color-muted-foreground)', marginBottom: 4 }}>{t('f_date_start')}</div>
                     <DateField value={dateStart} onChange={setDateStart} lang={currentLang()} />
@@ -236,10 +246,15 @@ const langTab: CSSProperties = {
   fontSize: 13, cursor: 'pointer',
 }
 const langTabActive: CSSProperties = { background: 'var(--color-card)', color: 'var(--color-foreground)', borderColor: 'var(--color-primary,#e11d48)' }
+const backBtn: CSSProperties = {
+  display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 36, height: 36, flexShrink: 0,
+  borderRadius: 8, border: '1px solid var(--color-border)', background: 'var(--color-card)',
+  color: 'var(--color-foreground)', cursor: 'pointer',
+}
 
 type T = (k: string, v?: Record<string, string | number>) => string
 
-function MediaTab({ catId, t }: { catId: number | null; t: T }) {
+function MediaTab({ catId, t, narrow }: { catId: number | null; t: T; narrow: boolean }) {
   const [images, setImages] = useState<MediaItem[]>([])
   const [files, setFiles] = useState<MediaItem[]>([])
   const [loading, setLoading] = useState(false)
@@ -280,7 +295,7 @@ function MediaTab({ catId, t }: { catId: number | null; t: T }) {
 
   return (
     <>
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0,1fr))', gap: 20, opacity: busy ? 0.6 : 1, pointerEvents: busy ? 'none' : 'auto' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: narrow ? '1fr' : 'repeat(2, minmax(0,1fr))', gap: 20, opacity: busy ? 0.6 : 1, pointerEvents: busy ? 'none' : 'auto' }}>
       <MediaColumn title={t('media_images')} addLabel={t('media_add_image')} accept="image/*" onPick={f => upload('image', f)}>
         {images.length === 0 ? (
           <div style={emptyStyle}>{t('media_empty_img')}</div>

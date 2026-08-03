@@ -1,4 +1,4 @@
-import { useMemo, useState, type CSSProperties } from 'react'
+import { useMemo, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react'
 import { type TreeNode, type Lang, type Site } from './category-api'
 import { useT } from './i18n'
 import {
@@ -23,6 +23,7 @@ interface Props {
   onReorder: (parentId: number, orderedIds: number[]) => void
   onRefresh: () => void
   loading: boolean
+  narrow?: boolean
 }
 
 /** Does the node or any descendant match the (lowercased) search text? */
@@ -100,30 +101,84 @@ export default function CategoryTree(p: Props) {
   const toggle = (id: number) =>
     setCollapsed(prev => { const s = new Set(prev); s.has(id) ? s.delete(id) : s.add(id); return s })
 
-  // A node can't be dropped onto itself or into its own subtree (would create a cycle).
-  const dragNode = drag ? findNode(p.nodes, drag.id) : null
-  const isForbiddenTarget = (nodeId: number) =>
-    !dragNode || nodeId === dragNode.id || !!findNode(dragNode.children, nodeId)
+  // A node can't be dropped onto itself or into its own subtree (would create a cycle). Takes the
+  // dragged id explicitly (rather than reading it off `drag` state) so it stays correct inside the
+  // touch-drag's pointermove/pointerup listeners, which are set up synchronously in the same event
+  // handler as `setDrag(...)` — i.e. before React has re-rendered with the new `drag` value.
+  const isForbidden = (draggedId: number, targetId: number): boolean => {
+    if (targetId === draggedId) return true
+    const dragged = findNode(p.nodes, draggedId)
+    return !!dragged && !!findNode(dragged.children, targetId)
+  }
+  const isForbiddenTarget = (nodeId: number) => !drag || isForbidden(drag.id, nodeId)
+
+  /** Shared by mouse (native HTML5 DnD) and touch (pointer-event) reordering. */
+  const applyMove = (draggedId: number, target: TreeNode, pos: 'before' | 'inside' | 'after') => {
+    if (pos === 'inside') {
+      // Re-parent: move the dragged node in as the LAST child of target.
+      const ids = target.children.map(n => n.id).filter(id => id !== draggedId)
+      ids.push(draggedId)
+      setCollapsed(prev => { const s = new Set(prev); s.delete(target.id); return s }) // reveal the moved child
+      p.onReorder(target.id, ids)
+    } else {
+      // Reorder as a sibling of target (works within a parent OR across parents — the
+      // backend's /reorder sets each id's father to this parentId).
+      const ids = siblingsOf(p.nodes, target.parentId).map(n => n.id).filter(id => id !== draggedId)
+      let idx = ids.indexOf(target.id)
+      if (pos === 'after') idx += 1
+      ids.splice(idx, 0, draggedId)
+      p.onReorder(target.parentId, ids)
+    }
+  }
 
   const onDrop = (target: TreeNode) => {
     if (drag && dropInfo && dropInfo.id === target.id && !isForbiddenTarget(target.id)) {
-      if (dropInfo.pos === 'inside') {
-        // Re-parent: move the dragged node in as the LAST child of target.
-        const ids = target.children.map(n => n.id).filter(id => id !== drag.id)
-        ids.push(drag.id)
-        setCollapsed(prev => { const s = new Set(prev); s.delete(target.id); return s }) // reveal the moved child
-        p.onReorder(target.id, ids)
-      } else {
-        // Reorder as a sibling of target (works within a parent OR across parents — the
-        // backend's /reorder sets each id's father to this parentId).
-        const ids = siblingsOf(p.nodes, target.parentId).map(n => n.id).filter(id => id !== drag.id)
-        let idx = ids.indexOf(target.id)
-        if (dropInfo.pos === 'after') idx += 1
-        ids.splice(idx, 0, drag.id)
-        p.onReorder(target.parentId, ids)
-      }
+      applyMove(drag.id, target, dropInfo.pos)
     }
     setDrag(null); setDropInfo(null)
+  }
+
+  /** Given a pointer's page position, find the tree row under it (if any) and the drop zone
+   * within that row — same 3-zone logic as the mouse dragOver handler, but driven by
+   * `elementFromPoint` since native HTML5 DnD events don't fire reliably on touch devices.
+   * `draggedId` is passed explicitly rather than read off `drag` state — see `isForbidden`. */
+  const zoneAt = (draggedId: number, clientX: number, clientY: number): { node: TreeNode; pos: 'before' | 'inside' | 'after' } | null => {
+    const el = document.elementFromPoint(clientX, clientY) as HTMLElement | null
+    const rowEl = el?.closest('[data-node-id]') as HTMLElement | null
+    if (!rowEl) return null
+    const targetId = Number(rowEl.dataset.nodeId)
+    if (Number.isNaN(targetId) || isForbidden(draggedId, targetId)) return null
+    const node = findNode(p.nodes, targetId)
+    if (!node) return null
+    const r = rowEl.getBoundingClientRect()
+    const y = clientY - r.top
+    const pos = y < r.height * 0.25 ? 'before' : y > r.height * 0.75 ? 'after' : 'inside'
+    return { node, pos }
+  }
+
+  /** Touch-friendly reorder: a press-and-drag on the grip handle, driven by Pointer Events
+   * (unlike the HTML5 Drag and Drop API, these fire consistently on mobile browsers). Only
+   * used on narrow layouts — desktop keeps the native mouse DnD above. */
+  const startTouchDrag = (node: TreeNode) => (e: ReactPointerEvent) => {
+    if (!dndEnabled) return
+    e.preventDefault()
+    setDrag({ id: node.id, parentId: node.parentId })
+    let zone: { node: TreeNode; pos: 'before' | 'inside' | 'after' } | null = null
+
+    const move = (ev: PointerEvent) => {
+      zone = zoneAt(node.id, ev.clientX, ev.clientY)
+      setDropInfo(zone ? { id: zone.node.id, pos: zone.pos } : null)
+    }
+    const finish = () => {
+      window.removeEventListener('pointermove', move)
+      window.removeEventListener('pointerup', finish)
+      window.removeEventListener('pointercancel', finish)
+      if (zone) applyMove(node.id, zone.node, zone.pos)
+      setDrag(null); setDropInfo(null)
+    }
+    window.addEventListener('pointermove', move)
+    window.addEventListener('pointerup', finish)
+    window.addEventListener('pointercancel', finish)
   }
 
   const renderNode = (node: TreeNode, depth: number) => {
@@ -133,7 +188,7 @@ export default function CategoryTree(p: Props) {
     const selected = p.selectedId === node.id
     const isDropTarget = dropInfo?.id === node.id
     const rowStyle: CSSProperties = {
-      display: 'flex', alignItems: 'center', gap: 6, height: 34, paddingRight: 8,
+      display: 'flex', alignItems: 'center', gap: 6, height: p.narrow ? 44 : 34, paddingRight: 8,
       paddingLeft: 8 + depth * 18, borderRadius: 8, cursor: 'pointer',
       background: selected ? 'color-mix(in srgb, var(--color-primary,#e11d48) 12%, transparent)' : 'transparent',
       color: 'var(--color-foreground)',
@@ -150,11 +205,12 @@ export default function CategoryTree(p: Props) {
     }
     return (
       <div key={node.id}>
-        <div style={rowStyle}
+        <div style={rowStyle} data-node-id={node.id}
           // Only the grip handle is draggable (below) — NOT the whole row — so a real mouse click on
           // the +/trash buttons registers as a click instead of accidentally starting a drag.
+          // (Desktop mouse path only — narrow layouts use the pointer-event drag on the grip instead.)
           onDragOver={e => {
-            if (!drag || isForbiddenTarget(node.id)) return
+            if (p.narrow || !drag || isForbiddenTarget(node.id)) return
             e.preventDefault()
             const r = e.currentTarget.getBoundingClientRect()
             // Three zones: top ¼ = drop before, bottom ¼ = drop after, middle ½ = drop inside (re-parent).
@@ -168,12 +224,20 @@ export default function CategoryTree(p: Props) {
           onMouseLeave={e => { if (!selected) e.currentTarget.style.background = 'transparent' }}
           onClick={() => p.onSelect(node.id)}>
           {dndEnabled ? (
-            <span style={{ color: 'var(--color-muted-foreground)', opacity: 0.5, cursor: 'grab', display: 'inline-flex' }}
-              title={t('drag_hint')} draggable
-              onDragStart={e => { e.stopPropagation(); setDrag({ id: node.id, parentId: node.parentId }); e.dataTransfer.effectAllowed = 'move' }}
-              onDragEnd={() => { setDrag(null); setDropInfo(null) }}
+            <span style={{
+              color: 'var(--color-muted-foreground)', opacity: 0.5, cursor: 'grab', display: 'inline-flex',
+              alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+              ...(p.narrow ? { width: 32, height: 32, touchAction: 'none' } : null),
+            }}
+              title={t('drag_hint')}
+              // Desktop: native HTML5 Drag and Drop (mouse only). Narrow/touch: a Pointer Events-driven
+              // fallback (see startTouchDrag) — the HTML5 DnD API doesn't fire reliably on mobile browsers.
+              draggable={!p.narrow}
+              onDragStart={p.narrow ? undefined : e => { e.stopPropagation(); setDrag({ id: node.id, parentId: node.parentId }); e.dataTransfer.effectAllowed = 'move' }}
+              onDragEnd={p.narrow ? undefined : () => { setDrag(null); setDropInfo(null) }}
+              onPointerDown={p.narrow ? e => { e.stopPropagation(); startTouchDrag(node)(e) } : undefined}
               onClick={e => e.stopPropagation()}>
-              <IconGrip size={14} />
+              <IconGrip size={p.narrow ? 18 : 14} />
             </span>
           ) : null}
           <span style={{ width: 18, display: 'inline-flex', justifyContent: 'center', color: 'var(--color-muted-foreground)' }}
@@ -196,11 +260,11 @@ export default function CategoryTree(p: Props) {
           })()}
           {can('tree.create') && (
             <button title={t('add_child')} onClick={e => { e.stopPropagation(); p.onAddChild(node.id) }}
-              style={iconBtn}><IconPlus size={15} /></button>
+              style={p.narrow ? { ...iconBtn, width: 34, height: 34 } : iconBtn}><IconPlus size={15} /></button>
           )}
           {can('tree.delete') && (
             <button title={t('del')} onClick={e => { e.stopPropagation(); p.onDelete(node) }}
-              style={iconBtn}><IconTrash size={15} /></button>
+              style={p.narrow ? { ...iconBtn, width: 34, height: 34 } : iconBtn}><IconTrash size={15} /></button>
           )}
         </div>
         {hasChildren && open ? node.children.map(c => renderNode(c, depth + 1)) : null}

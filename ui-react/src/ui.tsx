@@ -47,6 +47,7 @@ export const IconGrip = ({ size = 16 }: { size?: number }) => (
   <svg style={{ width: size, height: size, flexShrink: 0 }} viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="9" cy="6" r="1.4" /><circle cx="15" cy="6" r="1.4" /><circle cx="9" cy="12" r="1.4" /><circle cx="15" cy="12" r="1.4" /><circle cx="9" cy="18" r="1.4" /><circle cx="15" cy="18" r="1.4" /></svg>
 )
 export const IconCalendar = ({ size = 16 }: { size?: number }) => <S size={size}><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></S>
+export const IconArrowLeft = ({ size = 16 }: { size?: number }) => <S size={size}><path d="m12 19-7-7 7-7M5 12h14" /></S>
 
 /* ── Localized date field ────────────────────────────────────────────────────
  * `<input type="date">` displays in the BROWSER locale (ignores the `lang` attribute in
