@@ -324,6 +324,9 @@ class MelisCmsCategoryMediaController extends MelisAbstractActionController
         if (empty($categoryId)) {
             $categoryId = "tmp";
         }
+        // Sécurité : cet id construit le chemin du dossier média (mkdir/move_uploaded_file) →
+        // n'autoriser que "tmp" ou un entier positif, sinon traversée de répertoire via catId.
+        $categoryId = ($categoryId === 'tmp') ? 'tmp' : (int) $categoryId;
         if ($fileType == 'image') {
             $title = 'tr_meliscms_categories_media_select_image';
             $logTypeCode = 'CMS_CATEGORY2_IMAGE_ADD';
@@ -333,7 +336,8 @@ class MelisCmsCategoryMediaController extends MelisAbstractActionController
 
             if (! empty($file['tmp_name'])) {
                 // file name
-                $fileName = $file['name'];
+                // Sécurité : nom fourni par le client → basename() (empêche toute traversée via le nom).
+                $fileName = basename((string) $file['name']);
                 if ($fileType == 'image') {
                     // changed title
                     $imageValidator = new IsImage();
@@ -341,13 +345,21 @@ class MelisCmsCategoryMediaController extends MelisAbstractActionController
                          $imageError = true;
                     }
                 }
+                // Sécurité : le type "file" n'avait AUCUN contrôle d'extension → un .php pouvait être
+                // écrit dans le web root (RCE). Allow-list d'extensions non exécutables, tous types.
+                $allowedExt = ['jpg','jpeg','png','gif','webp','svg','bmp','ico','pdf','doc','docx','xls','xlsx','ppt','pptx','odt','ods','odp','txt','csv','rtf','zip'];
+                $uploadExt  = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+                if (!in_array($uploadExt, $allowedExt, true)) {
+                    $imageError = true;
+                    $message = 'tr_meliscms_categories_upload_file_wrong_extension';
+                }
                 $path = $_SERVER['DOCUMENT_ROOT'] . "/media";
                 // check first if media directory is writable
                 if (is_writable($path)) {
                     // create categories folder if not created
                     $path = $path . "/categories/";
                     if (! file_exists($path)) {
-                        mkdir($path, 0777);
+                        mkdir($path, 0755);
                     } else {
                         $message = 'Permission denied';
                     }
@@ -355,7 +367,7 @@ class MelisCmsCategoryMediaController extends MelisAbstractActionController
 
                     // make folder for temporary
                     if (! file_exists($categoryPath)) {
-                        mkdir($categoryPath, 0777);
+                        mkdir($categoryPath, 0755);
                     } else {
                         $message = 'Permission denied';
                     }
@@ -461,7 +473,9 @@ class MelisCmsCategoryMediaController extends MelisAbstractActionController
             $postvalues = $request->getPost()->toArray();
             $imageName  = $postvalues['imageName'] ??  null;
             $fileType   = $postvalues['fileType'] ?? null;
-            $categoryId = $postvalues['categoryId'] ?? null;
+            // Sécurité : $categoryId compose le dossier scanné pour la suppression → n'autoriser
+            // que "tmp" ou un entier positif (sinon suppression de fichiers hors du dossier média).
+            $categoryId = (($postvalues['categoryId'] ?? null) === 'tmp') ? 'tmp' : (int) ($postvalues['categoryId'] ?? 0);
             if ($fileType == 'image') {
                 $title = 'tr_meliscms_categories_media_select_image';
             }
