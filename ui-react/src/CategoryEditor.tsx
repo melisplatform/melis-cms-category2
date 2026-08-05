@@ -4,7 +4,8 @@ import {
   type Lang, type Site, type Translation, type SavePayload, type MediaItem,
 } from './category-api'
 import { useT, currentLang } from './i18n'
-import { card, input, label, btnPrimary, btnGhost, makeCan, Toggle, LangFlag, DateField, melisNotify, useConfirm, IconPlus, IconTrash, IconFolder, IconArrowLeft } from './ui'
+import { card, input, label, btnPrimary, btnGhost, makeCan, Toggle, LangFlag, DateField, useConfirm, IconPlus, IconTrash, IconFolder, IconArrowLeft } from './ui'
+import { FormErrorBanner, koNotify, okNotify, type FormIssue } from './shared/melis-form-errors'
 
 // Droits avancés — partie « l'Édition » (cf. config/react.capabilities.php).
 const can = makeCan('melis_cms_category_v2_tools_section')
@@ -29,7 +30,12 @@ export default function CategoryEditor({ target, langs, sites, onSaved, onCancel
   const canMedia = can('edition.media')
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
-  const [error, setError] = useState('')
+  // Bannière d'erreur unifiée : soit la liste des champs obligatoires manquants (validation client),
+  // soit un message serveur (échec de chargement / d'enregistrement).
+  const [banner, setBanner] = useState<{ title: string; issues?: FormIssue[] } | null>(null)
+  // Même validation, surface inline : le champ fautif est bordé de rouge + son message dessous
+  // (la bannière reste le résumé scannable en haut du panneau).
+  const [fieldErrs, setFieldErrs] = useState<{ name?: string; sites?: string; dates?: string }>({})
   const [tab, setTab] = useState<'props' | 'media'>('props')
   const [activeLang, setActiveLang] = useState<number>(langs[0]?.id ?? 1)
 
@@ -42,7 +48,7 @@ export default function CategoryEditor({ target, langs, sites, onSaved, onCancel
   const key = target ? `${target.id ?? 'new'}:${target.parentId}` : 'none'
 
   useEffect(() => {
-    setError(''); setTab(canProps ? 'props' : 'media'); setActiveLang(langs[0]?.id ?? 1)
+    setBanner(null); setFieldErrs({}); setTab(canProps ? 'props' : 'media'); setActiveLang(langs[0]?.id ?? 1)
     if (!target) return
     if (target.id == null) {
       setTrans({}); setStatus(1); setDateStart(''); setDateEnd(''); setSelectedSites([])
@@ -57,7 +63,7 @@ export default function CategoryEditor({ target, langs, sites, onSaved, onCancel
         setDateEnd(d.dateEnd || '')
         setSelectedSites(d.sites || [])
       })
-      .catch(e => setError(e.message || t('err_generic')))
+      .catch(e => setBanner({ title: e.message || t('err_generic') }))
       .finally(() => setLoading(false))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key])
@@ -82,18 +88,33 @@ export default function CategoryEditor({ target, langs, sites, onSaved, onCancel
     )
   }
 
-  const setTransField = (langId: number, field: keyof Translation, value: string) =>
+  const setTransField = (langId: number, field: keyof Translation, value: string) => {
     setTrans(prev => ({ ...prev, [langId]: { name: '', description: '', ...prev[langId], [field]: value } }))
+    // Le nom est valide dès qu'UNE langue est remplie → l'erreur inline tombe sur toutes les langues.
+    if (field === 'name' && value.trim() !== '') setFieldErrs(f => ({ ...f, name: undefined }))
+  }
 
-  const toggleSite = (id: number) =>
+  const toggleSite = (id: number) => {
     setSelectedSites(prev => prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id])
+    setFieldErrs(f => ({ ...f, sites: undefined }))
+  }
 
   const doSave = async () => {
-    setError('')
+    setBanner(null)
+    // On collecte TOUS les champs en défaut (au lieu de s'arrêter au premier) → la bannière les liste
+    // ET chaque champ concerné se signale inline (`fieldErrs`).
+    const issues: FormIssue[] = []
+    const fe: { name?: string; sites?: string; dates?: string } = {}
     const hasName = Object.values(trans).some(x => (x?.name || '').trim() !== '')
-    if (!hasName) { setError(t('err_name') || 'Name required'); setTab('props'); return }
-    if (selectedSites.length === 0) { setError(t('err_site') || 'Site required'); return }
-    if (dateStart && dateEnd && dateStart > dateEnd) { setError(t('err_dates') || 'Invalid dates'); return }
+    if (!hasName) { fe.name = t('err_name'); issues.push({ label: t('f_name'), message: t('err_name') }) }
+    if (selectedSites.length === 0) { fe.sites = t('err_site'); issues.push({ label: t('f_sites'), message: t('err_site') }) }
+    if (dateStart && dateEnd && dateStart > dateEnd) { fe.dates = t('err_dates'); issues.push({ label: t('f_dates'), message: t('err_dates') }) }
+    setFieldErrs(fe)
+    if (issues.length) {
+      setBanner({ title: t('check_required'), issues })
+      if (canProps) setTab('props')  // les 3 champs validés sont dans l'onglet Propriétés → l'ouvrir
+      return
+    }
 
     const payload: SavePayload = {
       id: target.id ?? undefined,
@@ -108,12 +129,12 @@ export default function CategoryEditor({ target, langs, sites, onSaved, onCancel
     try {
       const wasEdit = target.id != null
       const { id } = await saveCategory(payload)
-      melisNotify('success', wasEdit ? t('notif_saved') : t('notif_created'))
+      okNotify(wasEdit ? t('notif_saved') : t('notif_created'))
       onSaved(id)
     } catch (e: any) {
       const msg = e?.message || t('err_generic')
-      setError(msg)
-      melisNotify('error', t('notif_error'), msg)
+      setBanner({ title: msg })
+      koNotify(t('notif_error'), msg)
     } finally {
       setSaving(false)
     }
@@ -156,9 +177,10 @@ export default function CategoryEditor({ target, langs, sites, onSaved, onCancel
       </div>
 
       <div style={{ flex: 1, overflow: 'auto', padding: 16 }}>
-        {error ? (
-          <div style={{ marginBottom: 14, padding: '10px 12px', borderRadius: 8, fontSize: 13,
-            background: 'color-mix(in srgb, #ef4444 12%, transparent)', color: '#b91c1c' }}>{error}</div>
+        {banner ? (
+          <div style={{ marginBottom: 14 }}>
+            <FormErrorBanner title={banner.title} issues={banner.issues} />
+          </div>
         ) : null}
 
         {loading ? (
@@ -180,16 +202,19 @@ export default function CategoryEditor({ target, langs, sites, onSaved, onCancel
                       style={{ ...langTab, width: '100%', ...(activeLang === l.id ? langTabActive : {}) }}>
                       <LangFlag locale={l.locale} size={15} />
                       <span style={{ flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textAlign: 'left' }}>{l.name}</span>
+                      {/* pastille de remplissage — vire au rouge quand le nom manque PARTOUT (erreur active) */}
                       <span title={filled ? undefined : t('no_name')}
-                        style={{ width: 6, height: 6, borderRadius: 999, flexShrink: 0, background: filled ? '#22c55e' : 'var(--color-border)' }} />
+                        style={{ width: 6, height: 6, borderRadius: 999, flexShrink: 0, background: filled ? '#22c55e' : (fieldErrs.name ? '#ef4444' : 'var(--color-border)') }} />
                     </button>
                   )
                 })}
               </div>
               <div>
-                <div style={label}>{t('f_name')}</div>
-                <input style={{ ...input, marginTop: 6 }} value={trans[activeLang]?.name || ''}
+                <div style={label}>{t('f_name')} *</div>
+                <input style={{ ...input, marginTop: 6, ...(fieldErrs.name ? errBorder : null) }} value={trans[activeLang]?.name || ''}
+                  aria-invalid={!!fieldErrs.name}
                   onChange={e => setTransField(activeLang, 'name', e.target.value)} placeholder={t('f_name_ph')} />
+                {fieldErrs.name ? <p style={fieldErrCss}>{fieldErrs.name}</p> : null}
               </div>
               <div>
                 <div style={label}>{t('f_desc')}</div>
@@ -213,16 +238,18 @@ export default function CategoryEditor({ target, langs, sites, onSaved, onCancel
                 <div style={{ display: 'flex', flexDirection: narrow ? 'column' : 'row', gap: 8, marginTop: 6 }}>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 11, color: 'var(--color-muted-foreground)', marginBottom: 4 }}>{t('f_date_start')}</div>
-                    <DateField value={dateStart} onChange={setDateStart} lang={currentLang()} />
+                    <DateField value={dateStart} onChange={v => { setDateStart(v); setFieldErrs(f => ({ ...f, dates: undefined })) }} lang={currentLang()} />
                   </div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 11, color: 'var(--color-muted-foreground)', marginBottom: 4 }}>{t('f_date_end')}</div>
-                    <DateField value={dateEnd} onChange={setDateEnd} lang={currentLang()} />
+                    <DateField value={dateEnd} onChange={v => { setDateEnd(v); setFieldErrs(f => ({ ...f, dates: undefined })) }} lang={currentLang()} />
                   </div>
                 </div>
+                {fieldErrs.dates ? <p style={fieldErrCss}>{fieldErrs.dates}</p> : null}
               </div>
               <div>
-                <div style={label}>{t('f_sites')}</div>
+                <div style={label}>{t('f_sites')} *</div>
+                {fieldErrs.sites ? <p style={{ ...fieldErrCss, marginTop: 6 }}>{fieldErrs.sites}</p> : null}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8 }}>
                   {sites.map(s => (
                     <label key={s.id} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, cursor: 'pointer' }}>
@@ -239,6 +266,10 @@ export default function CategoryEditor({ target, langs, sites, onSaved, onCancel
     </div>
   )
 }
+
+// Surface d'erreur inline (même rouge que la bannière) : bordure du champ + message dessous.
+const errBorder: CSSProperties = { borderColor: '#ef4444' }
+const fieldErrCss: CSSProperties = { margin: '4px 0 0', fontSize: 12, color: '#ef4444' }
 
 const langTab: CSSProperties = {
   display: 'inline-flex', alignItems: 'center', gap: 6, height: 30, padding: '0 12px', borderRadius: 6,
@@ -277,8 +308,8 @@ function MediaTab({ catId, t, narrow }: { catId: number | null; t: T; narrow: bo
     try {
       const item = await uploadMedia(catId, type, file)
       if (type === 'image') setImages(p => [...p, item]); else setFiles(p => [...p, item])
-      melisNotify('success', t('media_uploaded'))
-    } catch (e: any) { melisNotify('error', t('notif_error'), e?.message) }
+      okNotify(t('media_uploaded'))
+    } catch (e: any) { koNotify(t('notif_error'), e?.message) }
     finally { setBusy(false) }
   }
   const del = async (type: 'image' | 'file', item: MediaItem) => {
@@ -287,8 +318,8 @@ function MediaTab({ catId, t, narrow }: { catId: number | null; t: T; narrow: bo
     try {
       await deleteMedia(item.id)
       if (type === 'image') setImages(p => p.filter(x => x.id !== item.id)); else setFiles(p => p.filter(x => x.id !== item.id))
-      melisNotify('success', t('media_deleted'))
-    } catch (e: any) { melisNotify('error', t('notif_error'), e?.message) }
+      okNotify(t('media_deleted'))
+    } catch (e: any) { koNotify(t('notif_error'), e?.message) }
   }
 
   if (loading) return <div style={{ color: 'var(--color-muted-foreground)', fontSize: 14 }}>{t('loading')}</div>
