@@ -5,12 +5,21 @@
 	"homepage": "https://github.com/melisplatform/melis-cms-category2",
 	"support": {
 		"source": "https://github.com/melisplatform/melis-cms-category2",
-		"issues": "https://github.com/melisplatform/melis-cms-category2/issues"
+		"issues": "https://github.com/melisplatform/melis-cms-category2/issues",
+		"docs": "https://melisplatform.github.io/docs/"
 	},
+	"authors": [
+		{
+			"name": "Melis Technology",
+			"email": "contact@melistechnology.com",
+			"homepage": "https://www.melisplatform.com/",
+			"role": "Developer"
+		}
+	],
 	"keywords": [
 		"cms",
 		"melis",
-		"zf2",
+		"laminas",
 		"module"
 	],
 	"extra": {
@@ -18,7 +27,7 @@
 		"dbdeploy": true
 	},
 	"require": {
-		"php": "^8.1|^8.3",
+		"php": "^8.3|^8.5",
 		"melisplatform/melis-core": "^6.0",
 		"melisplatform/melis-cms": "^6.0"
 	},
