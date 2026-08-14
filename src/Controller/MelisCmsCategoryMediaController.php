@@ -304,6 +304,10 @@ class MelisCmsCategoryMediaController extends MelisAbstractActionController
      */
     public function uploadMediaAction()
     {
+        /** @INFO: Access check (tool right) — CWE-862 */
+        if (! $this->hasAccess('melis_cms_category_v2_tools_section')) {
+            return new JsonModel(['success' => 0, 'textTitle' => '', 'textMessage' => 'tr_meliscore_microservice_api_key_no_access', 'errors' => [], 'datas' => []]);
+        }
         $request = $this->getRequest();
         $postData = $request->getPost();
         $categoryId = $postData['catId'];
@@ -457,6 +461,10 @@ class MelisCmsCategoryMediaController extends MelisAbstractActionController
     }
     public function deleteFileAction()
     {
+        /** @INFO: Access check (tool right) — CWE-862 */
+        if (! $this->hasAccess('melis_cms_category_v2_tools_section')) {
+            return new JsonModel(['success' => 0, 'textTitle' => '', 'textMessage' => 'tr_meliscore_microservice_api_key_no_access', 'errors' => [], 'datas' => []]);
+        }
         $request = $this->getRequest();
         $toolSvc = $this->getServiceManager()->get('MelisCoreTool');
         $success = false;
@@ -513,6 +521,12 @@ class MelisCmsCategoryMediaController extends MelisAbstractActionController
 
         return new JsonModel($response);
     }
+    /** @INFO: Tool access check (CWE-862). */
+    private function hasAccess($key)
+    {
+        return $this->getServiceManager()->get('MelisCoreRights')->canAccess($key);
+    }
+
     private function returnMBLabel($val)
     {
         $val  = trim($val);

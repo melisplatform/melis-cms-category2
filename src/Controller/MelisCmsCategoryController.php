@@ -446,6 +446,10 @@ class MelisCmsCategoryController extends MelisAbstractActionController
      */
     public function saveCategoryAction()
     {
+        /** @INFO: Access check (tool right) — CWE-862 */
+        if (! $this->hasAccess('melis_cms_category_v2_tools_section')) {
+            return new JsonModel(['success' => 0, 'textTitle' => '', 'textMessage' => 'tr_meliscore_microservice_api_key_no_access', 'errors' => [], 'datas' => []]);
+        }
         $translator = $this->getServiceManager()->get('translator');
         $request = $this->getRequest();
         $success = 0;
@@ -672,6 +676,10 @@ class MelisCmsCategoryController extends MelisAbstractActionController
      */
     public function getCategoryAction(){
 
+        /** @INFO: Access check (tool right) — CWE-862 */
+        if (! $this->hasAccess('melis_cms_category_v2_tools_section')) {
+            return new JsonModel(['success' => 0, 'textTitle' => '', 'textMessage' => 'tr_meliscore_microservice_api_key_no_access', 'errors' => [], 'datas' => []]);
+        }
         $translator = $this->getServiceManager()->get('translator');
 
         $success = 0;
@@ -844,6 +852,10 @@ class MelisCmsCategoryController extends MelisAbstractActionController
      */
     public function deleteCategoryAction()
     {
+        /** @INFO: Access check (tool right) — CWE-862 */
+        if (! $this->hasAccess('melis_cms_category_v2_tools_section')) {
+            return new JsonModel(['success' => 0, 'textTitle' => '', 'textMessage' => 'tr_meliscore_microservice_api_key_no_access', 'errors' => [], 'datas' => []]);
+        }
         $translator = $this->getServiceManager()->get('translator');
         $request = $this->getRequest();
         // Default Values
@@ -920,6 +932,12 @@ class MelisCmsCategoryController extends MelisAbstractActionController
     {
         $tool =  $this->getServiceManager()->get('MelisCoreTool');
         return $tool;
+    }
+
+    /** @INFO: Tool access check (CWE-862). */
+    private function hasAccess($key)
+    {
+        return $this->getServiceManager()->get('MelisCoreRights')->canAccess($key);
     }
     /**
      * Album/src/Album/Controller/AlbumToolController.php

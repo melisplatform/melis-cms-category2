@@ -211,6 +211,10 @@ class MelisCmsCategoryListController extends MelisAbstractActionController
      */
     public function getCategoryTreeViewAction()
     {
+        /** @INFO: Access check (tool right) — CWE-862 */
+        if (! $this->hasAccess('melis_cms_category_v2_tools_section')) {
+            return new JsonModel(['success' => 0, 'textTitle' => '', 'textMessage' => 'tr_meliscore_microservice_api_key_no_access', 'errors' => [], 'datas' => []]);
+        }
         $langLocale = $this->params()->fromQuery('langlocale');
         $selected = $this->params()->fromQuery('selected');
         $openStateParent = $this->params()->fromQuery('openStateParent');
@@ -384,8 +388,12 @@ class MelisCmsCategoryListController extends MelisAbstractActionController
      */
     public function saveCategoryTreeViewAction()
     {
+        /** @INFO: Access check (tool right) — CWE-862 */
+        if (! $this->hasAccess('melis_cms_category_v2_tools_section')) {
+            return new JsonModel(['success' => 0, 'textTitle' => '', 'textMessage' => 'tr_meliscore_microservice_api_key_no_access', 'errors' => [], 'datas' => []]);
+        }
         $translator = $this->getServiceManager()->get('translator');
-        
+
         // Initialize Response Variable into Default Values
         $status  = 0;
         $textMessage = '';
@@ -466,6 +474,12 @@ class MelisCmsCategoryListController extends MelisAbstractActionController
                 $cmsCategory->save($catDatas[$key],$catDatas[$key]['cat2_id']);
             }
         }
+    }
+
+    /** @INFO: Tool access check (CWE-862). */
+    private function hasAccess($key)
+    {
+        return $this->getServiceManager()->get('MelisCoreRights')->canAccess($key);
     }
 
     private function getCategoryAvailableText($categoryId)
