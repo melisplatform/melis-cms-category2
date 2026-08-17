@@ -648,7 +648,7 @@
 		height: 15,
 		flexShrink: 0
 	};
-	var SparkIcon = () => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
+	var CodeIcon = () => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("svg", {
 		style: sIcon,
 		viewBox: "0 0 24 24",
 		fill: "none",
@@ -656,7 +656,12 @@
 		strokeWidth: "2",
 		strokeLinecap: "round",
 		strokeLinejoin: "round",
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", { d: "m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z" })
+		"aria-hidden": "true",
+		children: [
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", { d: "m18 16 4-4-4-4" }),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", { d: "m6 8-4 4 4 4" }),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", { d: "m14.5 4-5 16" })
+		]
 	});
 	var LayoutIcon = () => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("svg", {
 		style: sIcon,
@@ -702,7 +707,7 @@
 			children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 				style: tab(mode === "react"),
 				onClick: () => onChange("react"),
-				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(SparkIcon, {}), "New"]
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(CodeIcon, {}), "New"]
 			}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 				style: tab(mode === "iframe"),
 				onClick: () => onChange("iframe"),
