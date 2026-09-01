@@ -8,21 +8,32 @@
 //    while the module is active), so the field is empty/degrades gracefully if category2 is disabled.
 import {
   registerPluginTab, type PluginTabContext,
-  TemplateField, TextField, RemoteSelectField,
+  TemplateField, RemoteSelectField, Field, usePrefill,
 } from '../../../melis-cms/ui-react/src/PluginFormKit'
+import { CategoryPicker } from './CategoryPicker'
 
 const COG = 'fa fa-cog', TAG = 'fa fa-tags'
 
-// NOTE: `category_start`/`categoryIdNews` are `MelisCmsCategorySelect` fields — legacy renders a text
-// input backed by a category-TREE modal (dependent on the selected site). Here they are simple ID text
-// fields for now: byte-compatible (the legacy input holds the same category id) and self-prefilling.
-// A richer CategoryPicker (fetching category2's `/react-api/tree`) would be a follow-up.
+/** A category selector bound to ctx[name] (the numeric category id) — a TREE picker like the page
+ *  selector, reusing category2's own category-api tree. `MelisCmsCategorySelect` = a text input holding
+ *  the category id in legacy, so writing the id here stays byte-compatible. */
+function CategoryField({ ctx, name, label, hint }: { ctx: PluginTabContext; name: string; label: string; hint?: string }) {
+  usePrefill(ctx, name)
+  const id = parseInt(ctx.value(name), 10)
+  return (
+    <Field label={label} error={ctx.error(name)} hint={hint}>
+      <div data-testid={`field-${name}`}>
+        <CategoryPicker value={Number.isFinite(id) ? id : 0} onChange={(cid) => ctx.setValue(name, cid ? String(cid) : '')} placeholder="Choisir une catégorie…" />
+      </div>
+    </Field>
+  )
+}
 
 /* ── Display categories ── template + start category + site ──────────────── */
 function DisplayCategoriesProperties({ ctx }: { ctx: PluginTabContext }) {
   return (<div>
     <TemplateField ctx={ctx} hint="Gabarit de rendu des catégories." />
-    <TextField ctx={ctx} name="category_start" label="Catégorie de départ (ID)" type="number" hint="ID de la catégorie racine à partir de laquelle afficher l'arbre." />
+    <CategoryField ctx={ctx} name="category_start" label="Catégorie de départ" hint="La catégorie racine à partir de laquelle afficher l'arbre." />
     <RemoteSelectField ctx={ctx} name="site_id" label="Site" hint="Le site dont on affiche les catégories." />
   </div>)
 }
@@ -30,7 +41,7 @@ function DisplayCategoriesProperties({ ctx }: { ctx: PluginTabContext }) {
 /* ── Cross-module: category filter contributed to the news list plugins ───── */
 function NewsCategoryFilter({ ctx }: { ctx: PluginTabContext }) {
   return (<div>
-    <TextField ctx={ctx} name="categoryIdNews" label="Catégorie (ID)" type="number" hint="ID de catégorie : ne montrer que les actualités de cette catégorie (fourni par le module Categories)." />
+    <CategoryField ctx={ctx} name="categoryIdNews" label="Catégorie" hint="Ne montrer que les actualités de cette catégorie (fourni par le module Categories)." />
   </div>)
 }
 
