@@ -60,7 +60,7 @@ class MelisCmsCategory2TransTable extends MelisGenericTable
         }
 
         if (!empty($orderBy)) {
-            $select->order($orderBy . ' ' . $orderDirection);
+            \MelisCore\Model\Tables\MelisGenericTable::addSafeOrder($select, $orderBy, $orderDirection);
         }
         $getCount = $this->tableGateway->selectWith($select);
         // set current data count for pagination

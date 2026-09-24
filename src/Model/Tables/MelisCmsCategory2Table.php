@@ -126,7 +126,7 @@ class MelisCmsCategory2Table extends MelisGenericTable
         $select = $this->tableGateway->getSql()->select();
 
         if (!is_null($langId)) {
-            $join = new Expression('melis_cms_category2_trans.catt2_category_id = melis_cms_category2.' . $this->idField . ' AND catt2_lang_id=' . $langId);
+            $join = new Expression('melis_cms_category2_trans.catt2_category_id = melis_cms_category2.' . $this->idField . ' AND catt2_lang_id=' . (int) $langId);
             $select->join('melis_cms_category2_trans', $join, array('*'), $select::JOIN_LEFT);
         }
 
@@ -285,7 +285,7 @@ class MelisCmsCategory2Table extends MelisGenericTable
         $select = $this->tableGateway->getSql()->select();
 
         if (!is_null($langId)) {
-            $join = new Expression('melis_cms_category2_trans.catt2_category_id = melis_cms_category2.' . $this->idField . ' AND catt2_lang_id =' . $langId);
+            $join = new Expression('melis_cms_category2_trans.catt2_category_id = melis_cms_category2.' . $this->idField . ' AND catt2_lang_id =' . (int) $langId);
             $select->join(
                 'melis_cms_category2_trans',
                 $join,
@@ -327,7 +327,7 @@ class MelisCmsCategory2Table extends MelisGenericTable
         $select = $this->tableGateway->getSql()->select();
 
         if (!is_null($langId)) {
-            $join = new Expression('melis_cms_category2_trans.catt2_category_id = melis_cms_category2.' . $this->idField . ' AND catt2_lang_id =' . $langId);
+            $join = new Expression('melis_cms_category2_trans.catt2_category_id = melis_cms_category2.' . $this->idField . ' AND catt2_lang_id =' . (int) $langId);
         } else {
             $join = new Expression('melis_cms_category2_trans.catt2_category_id = melis_cms_category2.' . $this->idField . ' AND catt2_name IS NOT NULL');
         }
@@ -352,7 +352,7 @@ class MelisCmsCategory2Table extends MelisGenericTable
                 ->or->literal('cat2_date_valid_end IS NULL');
         }
 
-        $select->order($column . ' ' . $order);
+        \MelisCore\Model\Tables\MelisGenericTable::addSafeOrder($select, $column, $order);
 
         $select->group($this->idField);
 
@@ -366,7 +366,7 @@ class MelisCmsCategory2Table extends MelisGenericTable
         $select = $this->tableGateway->getSql()->select();
 
         if (!is_null($langId)) {
-            $join = new Expression('melis_cms_category2_trans.catt2_category_id = melis_cms_category2.' . $this->idField . ' AND catt2_lang_id =' . $langId);
+            $join = new Expression('melis_cms_category2_trans.catt2_category_id = melis_cms_category2.' . $this->idField . ' AND catt2_lang_id =' . (int) $langId);
         } else {
             $join = new Expression('melis_cms_category2_trans.catt2_category_id = melis_cms_category2.' . $this->idField . ' AND catt2_name IS NOT NULL');
         }
@@ -393,7 +393,7 @@ class MelisCmsCategory2Table extends MelisGenericTable
         $select = $this->tableGateway->getSql()->select();
 
         if (!is_null($langId)) {
-            $join = new Expression('melis_cms_category2_trans.catt2_category_id = melis_cms_category2.' . $this->idField . ' AND catt2_lang_id =' . $langId);
+            $join = new Expression('melis_cms_category2_trans.catt2_category_id = melis_cms_category2.' . $this->idField . ' AND catt2_lang_id =' . (int) $langId);
         } else {
             $join = new Expression('melis_cms_category2_trans.catt2_category_id = melis_cms_category2.' . $this->idField . ' AND catt2_name IS NOT NULL');
         }
@@ -422,7 +422,7 @@ class MelisCmsCategory2Table extends MelisGenericTable
     {
         $select = $this->tableGateway->getSql()->select();
         $select->columns(['maxOrder' => new Sql\Expression('MAX(cat2_order)')]);
-        $select->where('cat2_father_cat_id = ' . $categoryIdParentId);
+        $select->where->equalTo('cat2_father_cat_id', (int) $categoryIdParentId);
         $resultSet = $this->tableGateway->selectWith($select);
 
         return $resultSet;
@@ -516,7 +516,7 @@ class MelisCmsCategory2Table extends MelisGenericTable
         $select->columns(['*']);
 
         $select->where->equalTo('cat2_father_cat_id', $parentId);
-        $select->where("cat2_order > $currentOrder");
+        $select->where->greaterThan('cat2_order', (int) $currentOrder);
 
         $resultSet = $this->tableGateway->selectWith($select);
 
@@ -570,23 +570,23 @@ class MelisCmsCategory2Table extends MelisGenericTable
 
 
         if (!is_null($langId)) {
-            $select->where('melis_cms_news_texts.cnews_lang_id =' . $langId);
+            $select->where->equalTo('melis_cms_news_texts.cnews_lang_id', (int) $langId);
         }
 
         if (!is_null($dateMin)) {
-            $select->where('cnews_creation_date >= "' . $dateMin . '"');
+            $select->where->greaterThanOrEqualTo('cnews_creation_date', (string) $dateMin);
         }
 
         if (!is_null($dateMax)) {
-            $select->where('cnews_creation_date <= "' . $dateMax . '"');
+            $select->where->lessThanOrEqualTo('cnews_creation_date', (string) $dateMax);
         }
 
         if (!is_null($publishDateMin)) {
-            $select->where('DATE(cnews_publish_date)>= "' . $publishDateMin . '"');
+            $select->where->greaterThanOrEqualTo(new Expression('DATE(cnews_publish_date)'), (string) $publishDateMin);
         }
 
         if (!is_null($publishDateMax)) {
-            $select->where('DATE(cnews_publish_date) <= "' . $publishDateMax . '"');
+            $select->where->lessThanOrEqualTo(new Expression('DATE(cnews_publish_date)'), (string) $publishDateMax);
         }
 
         if (!is_null($limit)) {
@@ -621,11 +621,11 @@ class MelisCmsCategory2Table extends MelisGenericTable
 
         if (!is_null($orderColumn) && !is_null($order)) {
             if ($orderColumn == 'site_label') {
-                $select->order('melis_cms_site.' . $orderColumn . ' ' . $order);
+                \MelisCore\Model\Tables\MelisGenericTable::addSafeOrder($select, 'melis_cms_site.' . $orderColumn, $order);
             } elseif (in_array($orderColumn, $cnews_text_cols)) {
-                $select->order('melis_cms_news_texts.' . $orderColumn . ' ' . $order);
+                \MelisCore\Model\Tables\MelisGenericTable::addSafeOrder($select, 'melis_cms_news_texts.' . $orderColumn, $order);
             } else {
-                $select->order('melis_cms_news.' . $orderColumn . ' ' . $order);
+                \MelisCore\Model\Tables\MelisGenericTable::addSafeOrder($select, 'melis_cms_news.' . $orderColumn, $order);
             }
         }
 
