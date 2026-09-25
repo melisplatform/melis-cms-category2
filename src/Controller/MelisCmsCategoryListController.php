@@ -17,6 +17,13 @@ use MelisCore\Controller\MelisAbstractActionController;
 
 class MelisCmsCategoryListController extends MelisAbstractActionController
 {
+    /**
+     * Outil auquel ce contrôleur appartient (audit DEKRA 7.0) : MelisCoreAuthorizationListener
+     * vérifie canAccess() sur cette clé AVANT le dispatch. La clé de TOOL_KEY n'est pas cochable
+     * dans Utilisateurs → Droits (TOOL_KEY reste la clé de configuration de l'outil).
+     */
+    const MELIS_KEY = 'melis_cms_category_v2_tools_section';
+
     const TOOL_INDEX = 'melis_cms_category_v2_config';
     const TOOL_KEY = 'melis_cms_categories_v2_list';
     /**
