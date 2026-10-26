@@ -349,11 +349,15 @@ class MelisCmsCategoryMediaController extends MelisAbstractActionController
                          $imageError = true;
                     }
                 }
-                // Sécurité : le type "file" n'avait AUCUN contrôle d'extension → un .php pouvait être
-                // écrit dans le web root (RCE). Allow-list d'extensions non exécutables, tous types.
-                $allowedExt = ['jpg','jpeg','png','gif','webp','svg','bmp','ico','pdf','doc','docx','xls','xlsx','ppt','pptx','odt','ods','odp','txt','csv','rtf','zip'];
-                $uploadExt  = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-                if (!in_array($uploadExt, $allowedExt, true)) {
+                /**
+                 * SECURITY (audit CAT-H1) : l'ancienne allow-list locale autorisait `svg`
+                 * (XSS stocké — un SVG actif servi inline s'exécute sur l'origine Melis) et ne
+                 * vérifiait jamais le CONTENU réel du fichier. On passe par la garde partagée
+                 * du service — la même que la brick React : allow-list sans type actif
+                 * (svg/html/php/…) ET type MIME réel (finfo) croisé avec l'extension.
+                 */
+                $uploadExt = $categoryMediaSvc->validatedExtension($fileName, $fileType == 'image' ? 'image' : 'file', $file['tmp_name']);
+                if ($uploadExt === null) {
                     $imageError = true;
                     $message = 'tr_meliscms_categories_upload_file_wrong_extension';
                 }
