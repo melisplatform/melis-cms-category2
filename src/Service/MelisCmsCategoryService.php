@@ -611,6 +611,46 @@ class MelisCmsCategoryService  extends MelisGeneralService
 
         return $arrayParameters['results'];
     }
+    /**
+     * SECURITY (audit CAT-M1) : vrai si rattacher les catégories $categoryIds au parent
+     * $parentId créerait un CYCLE (le parent est l'une des catégories déplacées ou un de
+     * leurs descendants) — ou si le parent n'existe pas (fail-closed). Un cycle rend le
+     * sous-arbre orphelin et boucle les parcours récursifs (treeview service + React).
+     *
+     * @param int|int[] $categoryIds catégories déplacées
+     * @param int $parentId nouveau parent (-1 = racine, toujours valide)
+     * @return bool true = REFUSER le déplacement
+     */
+    public function parentCreatesCycle($categoryIds, $parentId)
+    {
+        $categoryIds = array_map('intval', (array) $categoryIds);
+        $parentId    = (int) $parentId;
+        if ($parentId === -1) {
+            return false;
+        }
+
+        try {
+            $table = $this->getServiceManager()->get('MelisCmsCategory2Table');
+            $cursor = $parentId;
+            $guard  = 0;
+            // remonte la chaîne des parents jusqu'à la racine
+            while ($cursor !== -1 && $guard++ < 200) {
+                if (in_array($cursor, $categoryIds, true)) {
+                    return true;
+                }
+                $row = $table->getEntryById($cursor)->current();
+                if (empty($row)) {
+                    return true; // parent (ou ancêtre) inexistant → refuse
+                }
+                $cursor = (int) $row->cat2_father_cat_id;
+            }
+
+            return $guard >= 200; // profondeur anormale (cycle préexistant ?) → refuse
+        } catch (\Throwable $e) {
+            return true; // fail-closed
+        }
+    }
+
     public function getSiteCategoryById($categoryId)
     {
         $categorySiteTbl = $this->getServiceManager()->get('MelisCmsCategory2SitesTable');

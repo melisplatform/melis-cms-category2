@@ -412,22 +412,41 @@ class MelisCmsCategoryListController extends MelisAbstractActionController
         if($request->isPost()) {
              
             $datas = $request->getPost()->toArray();
-             
+
             if (!empty($datas)){
-                
-                $fatherId = $datas['cat2_father_cat_id'];
-                $old_fatherId = $datas['old_parent'];
-                unset($datas['old_parent']);
-                
-                // Updating the current Parent Category with new Children
-                $this->udpateCategoryTreeViewAction($datas, $fatherId, true);
-                
-                if ($old_fatherId!=$fatherId){
-                    // updating Old Parent Category
-                    $this->udpateCategoryTreeViewAction($datas, $old_fatherId, false);
+
+                $fatherId = (int) ($datas['cat2_father_cat_id'] ?? -1);
+                $old_fatherId = (int) ($datas['old_parent'] ?? -1);
+
+                /**
+                 * SECURITY (audit CAT-M1) : le POST brut partait tel quel dans save()
+                 * (mass-assignment : n'importe quelle colonne cat2_* était inscriptible), sans
+                 * vérifier ni l'existence de la catégorie ni l'absence de CYCLE (une catégorie
+                 * devenant sa propre ancêtre casse tous les parcours récursifs). Allow-list de
+                 * colonnes + gardes existence/cycle (parentCreatesCycle, fail-closed).
+                 */
+                $datas = [
+                    'cat2_id'            => (int) ($datas['cat2_id'] ?? 0),
+                    'cat2_order'         => (int) ($datas['cat2_order'] ?? 0),
+                    'cat2_father_cat_id' => $fatherId,
+                ];
+
+                $categoryTable = $this->getServiceManager()->get('MelisCmsCategory2Table');
+                $categorySvc   = $this->getServiceManager()->get('MelisCmsCategory2Service');
+                $exists = $datas['cat2_id'] > 0
+                    && !empty($categoryTable->getEntryById($datas['cat2_id'])->current());
+
+                if ($exists && ! $categorySvc->parentCreatesCycle($datas['cat2_id'], $fatherId)) {
+                    // Updating the current Parent Category with new Children
+                    $this->udpateCategoryTreeViewAction($datas, $fatherId, true);
+
+                    if ($old_fatherId!=$fatherId){
+                        // updating Old Parent Category
+                        $this->udpateCategoryTreeViewAction($datas, $old_fatherId, false);
+                    }
+
+                    $status = 1;
                 }
-                
-                $status = 1;
             }
         }
          

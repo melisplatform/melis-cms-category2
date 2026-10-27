@@ -247,6 +247,12 @@ class MelisCmsCategoryReactApiController extends MelisAbstractActionController
             $startSql = $dateStart !== '' ? date('Y-m-d H:i:s', strtotime($dateStart)) : null;
             $endSql   = $dateEnd !== ''   ? date('Y-m-d H:i:s', strtotime($dateEnd))   : null;
 
+            /** SECURITY (audit CAT-M1) : le parent d'une création doit exister (-1 = racine). */
+            if (!$id && $parentId !== self::ROOT
+                && !iterator_to_array($db->query('SELECT cat2_id FROM melis_cms_category2 WHERE cat2_id = ?', [$parentId]))) {
+                return $this->jsonResponse(['success' => false, 'error' => 'Parent inexistant.'], 400);
+            }
+
             if ($id) {
                 if (!iterator_to_array($db->query('SELECT cat2_id FROM melis_cms_category2 WHERE cat2_id = ?', [$id]))) {
                     return $this->jsonResponse(['success' => false, 'error' => 'Not found'], 404);
@@ -355,6 +361,24 @@ class MelisCmsCategoryReactApiController extends MelisAbstractActionController
             $ids      = array_map('intval', (array) ($body['orderedIds'] ?? []));
 
             $db = $this->db();
+
+            /**
+             * SECURITY (audit CAT-M1) : avant, des UPDATE father/order partaient sur des ids
+             * arbitraires — ids inexistants, parent inexistant, ou CYCLE (une catégorie devenant
+             * sa propre ancêtre → sous-arbre orphelin + boucle des parcours récursifs).
+             * Gardes : chaque id doit exister, et le parent ne doit être ni l'un des ids
+             * déplacés ni un de leurs descendants (parentCreatesCycle, fail-closed — couvre
+             * aussi l'existence du parent).
+             */
+            foreach ($ids as $cid) {
+                if ($cid <= 0 || !iterator_to_array($db->query('SELECT cat2_id FROM melis_cms_category2 WHERE cat2_id = ?', [$cid]))) {
+                    return $this->jsonResponse(['success' => false, 'error' => 'Catégorie inconnue.'], 400);
+                }
+            }
+            if ($this->getServiceManager()->get('MelisCmsCategory2Service')->parentCreatesCycle($ids, $parentId)) {
+                return $this->jsonResponse(['success' => false, 'error' => 'Déplacement invalide (parent inexistant ou cycle).'], 400);
+            }
+
             $order = 1;
             foreach ($ids as $cid) {
                 $db->query(
@@ -499,44 +523,10 @@ class MelisCmsCategoryReactApiController extends MelisAbstractActionController
      */
     private function validatedExtension(string $clientName, string $type, string $tmpPath): ?string
     {
-        $ext = strtolower(preg_replace('/[^A-Za-z0-9]/', '', pathinfo(basename($clientName), PATHINFO_EXTENSION)) ?? '');
-
-        // ext => list of acceptable real MIME types (finfo).
-        $imageAllow = [
-            'jpg'  => ['image/jpeg'],
-            'jpeg' => ['image/jpeg'],
-            'png'  => ['image/png'],
-            'gif'  => ['image/gif'],
-            'webp' => ['image/webp'],
-            'bmp'  => ['image/bmp', 'image/x-ms-bmp'],
-        ];
-        $docAllow = $imageAllow + [
-            'pdf'  => ['application/pdf'],
-            'doc'  => ['application/msword'],
-            'docx' => ['application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/zip'],
-            'xls'  => ['application/vnd.ms-excel'],
-            'xlsx' => ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/zip'],
-            'ppt'  => ['application/vnd.ms-powerpoint'],
-            'pptx' => ['application/vnd.openxmlformats-officedocument.presentationml.presentation', 'application/zip'],
-            'csv'  => ['text/csv', 'text/plain', 'application/csv'],
-            'txt'  => ['text/plain'],
-            'odt'  => ['application/vnd.oasis.opendocument.text', 'application/zip'],
-            'ods'  => ['application/vnd.oasis.opendocument.spreadsheet', 'application/zip'],
-        ];
-
-        $allow = $type === 'image' ? $imageAllow : $docAllow;
-        if ($ext === '' || !isset($allow[$ext])) { return null; }
-
-        // Verify the real content type — never trust the client-provided extension alone.
-        $mime = '';
-        if (\function_exists('finfo_open') && ($fi = @finfo_open(FILEINFO_MIME_TYPE))) {
-            $mime = (string) @finfo_file($fi, $tmpPath);
-            @finfo_close($fi);
-        }
-        // If finfo is unavailable we still have the extension allow-list as a floor.
-        if ($mime !== '' && !\in_array($mime, $allow[$ext], true)) { return null; }
-
-        return $ext;
+        // SECURITY (audit CAT-H1) : garde factorisée dans le service média — partagée avec
+        // l'upload legacy (même allow-list + même contrôle MIME finfo, une seule source de vérité).
+        return $this->getServiceManager()->get('MelisCmsCategory2MediaService')
+            ->validatedExtension($clientName, $type, $tmpPath);
     }
 
     /** A non-colliding path in $dir for $name (append _1, _2, … if it already exists). */
@@ -609,10 +599,13 @@ class MelisCmsCategoryReactApiController extends MelisAbstractActionController
 
     private function errorResponse(\Throwable $e, int $status = 500): HttpResponse
     {
+        // SECURITY (audit CAT-M2) : ne jamais renvoyer le message/fichier/ligne de l'exception
+        // (chemins, SQL, structure) au client — détail au log serveur, message générique.
+        error_log('MelisCmsCategoryReactApi: ' . $e->getMessage() . ' @ ' . $e->getFile() . ':' . $e->getLine());
+
         return $this->jsonResponse([
             'success' => false,
-            'error'   => $e->getMessage(),
-            'file'    => basename($e->getFile()) . ':' . $e->getLine(),
+            'error'   => 'Internal error',
         ], $status);
     }
 }
