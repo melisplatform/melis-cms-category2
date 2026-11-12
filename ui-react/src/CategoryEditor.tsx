@@ -88,15 +88,25 @@ export default function CategoryEditor({ target, langs, sites, onSaved, onCancel
     )
   }
 
+  // A field fixed by the user also leaves the banner (it was only rebuilt on the next "Save", so
+  // "Name — required" stayed after typing the name — Mantis #11494). Server-error banners (no
+  // issue list) are left alone.
+  const dropIssue = (fieldLabel: string) => setBanner(b => {
+    if (!b?.issues) return b
+    const issues = b.issues.filter(i => i.label !== fieldLabel)
+    return issues.length ? { ...b, issues } : null
+  })
+
   const setTransField = (langId: number, field: keyof Translation, value: string) => {
     setTrans(prev => ({ ...prev, [langId]: { name: '', description: '', ...prev[langId], [field]: value } }))
     // Le nom est valide dès qu'UNE langue est remplie → l'erreur inline tombe sur toutes les langues.
-    if (field === 'name' && value.trim() !== '') setFieldErrs(f => ({ ...f, name: undefined }))
+    if (field === 'name' && value.trim() !== '') { setFieldErrs(f => ({ ...f, name: undefined })); dropIssue(t('f_name')) }
   }
 
   const toggleSite = (id: number) => {
     setSelectedSites(prev => prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id])
     setFieldErrs(f => ({ ...f, sites: undefined }))
+    dropIssue(t('f_sites'))
   }
 
   const doSave = async () => {
@@ -245,11 +255,11 @@ export default function CategoryEditor({ target, langs, sites, onSaved, onCancel
                 <div style={{ display: 'flex', flexDirection: narrow ? 'column' : 'row', gap: 8, marginTop: 6 }}>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 11, color: 'var(--color-muted-foreground)', marginBottom: 4 }}>{t('f_date_start')}</div>
-                    <DateField value={dateStart} onChange={v => { setDateStart(v); setFieldErrs(f => ({ ...f, dates: undefined })) }} lang={currentLang()} />
+                    <DateField value={dateStart} onChange={v => { setDateStart(v); setFieldErrs(f => ({ ...f, dates: undefined })); dropIssue(t('f_dates')) }} lang={currentLang()} />
                   </div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 11, color: 'var(--color-muted-foreground)', marginBottom: 4 }}>{t('f_date_end')}</div>
-                    <DateField value={dateEnd} onChange={v => { setDateEnd(v); setFieldErrs(f => ({ ...f, dates: undefined })) }} lang={currentLang()} />
+                    <DateField value={dateEnd} onChange={v => { setDateEnd(v); setFieldErrs(f => ({ ...f, dates: undefined })); dropIssue(t('f_dates')) }} lang={currentLang()} />
                   </div>
                 </div>
                 {fieldErrs.dates ? <p style={fieldErrCss}>{fieldErrs.dates}</p> : null}

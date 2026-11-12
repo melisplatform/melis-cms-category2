@@ -107,6 +107,7 @@
 			err_generic: "Une erreur est survenue.",
 			check_required: "Veuillez vérifier les champs obligatoires.",
 			err_name: "Au moins un nom (dans une langue) est obligatoire.",
+			err_name_long: "Le nom ne doit pas dépasser {max} caractères.",
 			err_site: "Au moins un site doit être sélectionné.",
 			err_dates: "La date de début doit précéder la date de fin.",
 			notif_created: "Catégorie créée",
@@ -167,6 +168,7 @@
 			err_generic: "Something went wrong.",
 			check_required: "Please check the required fields.",
 			err_name: "At least one name (in one language) is required.",
+			err_name_long: "The name must not exceed {max} characters.",
 			err_site: "At least one site must be selected.",
 			err_dates: "The start date must precede the end date.",
 			notif_created: "Category created",
@@ -499,7 +501,7 @@
 		try {
 			window.postMessage({
 				__melisNotif: true,
-				kind,
+				kind: kind === "error" ? "ko" : "ok",
 				title,
 				message
 			}, "*");
@@ -617,15 +619,16 @@
 		};
 	}
 	/**
-	* Language flag — reuses MelisCore's flag PNGs (served at /MelisCore/assets/images/lang/<short>.png,
-	* short = language code, e.g. en_EN → "en"). Emoji flags don't render on Windows, hence images.
-	* Missing flag → the <img> hides itself, leaving just the surrounding label.
+	* Language flag for a CMS language — MelisCms's flag PNGs, keyed by full locale
+	* (/MelisCms/images/lang-flags/<locale>.png, e.g. es_ES), the set the Sites tool uses. MelisCore's
+	* /assets/images/lang/<short>.png has no es/de/… (Spanish flag 404, Mantis #11494).
+	* Emoji flags don't render on Windows, hence images. Missing flag → the <img> hides itself.
 	*/
 	function LangFlag({ locale, size = 16 }) {
-		const short = (locale || "").split("_")[0].toLowerCase();
-		if (!short) return null;
+		const loc = (locale || "").replace(/[^A-Za-z_]/g, "");
+		if (!loc) return null;
 		return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("img", {
-			src: `/MelisCore/assets/images/lang/${short}.png`,
+			src: `/MelisCms/images/lang-flags/${loc}.png`,
 			alt: "",
 			width: size,
 			height: Math.round(size * 2 / 3),
@@ -1424,6 +1427,14 @@
 			},
 			children: t("no_edit_access")
 		});
+		const dropIssue = (fieldLabel) => setBanner((b) => {
+			if (!b?.issues) return b;
+			const issues = b.issues.filter((i) => i.label !== fieldLabel);
+			return issues.length ? {
+				...b,
+				issues
+			} : null;
+		});
 		const setTransField = (langId, field, value) => {
 			setTrans((prev) => ({
 				...prev,
@@ -1434,10 +1445,13 @@
 					[field]: value
 				}
 			}));
-			if (field === "name" && value.trim() !== "") setFieldErrs((f) => ({
-				...f,
-				name: void 0
-			}));
+			if (field === "name" && value.trim() !== "") {
+				setFieldErrs((f) => ({
+					...f,
+					name: void 0
+				}));
+				dropIssue(t("f_name"));
+			}
 		};
 		const toggleSite = (id) => {
 			setSelectedSites((prev) => prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]);
@@ -1445,6 +1459,7 @@
 				...f,
 				sites: void 0
 			}));
+			dropIssue(t("f_sites"));
 		};
 		const doSave = async () => {
 			setBanner(null);
@@ -1456,6 +1471,16 @@
 					label: t("f_name"),
 					message: t("err_name")
 				});
+			}
+			const tooLong = langs.find((l) => [...(trans[l.id]?.name || "").trim()].length > NAME_MAX_LENGTH);
+			if (tooLong) {
+				const msg = t("err_name_long", { max: String(NAME_MAX_LENGTH) }) + " (" + tooLong.name + ")";
+				fe.name = msg;
+				issues.push({
+					label: t("f_name"),
+					message: msg
+				});
+				setActiveLang(tooLong.id);
 			}
 			if (selectedSites.length === 0) {
 				fe.sites = t("err_site");
@@ -1700,6 +1725,7 @@
 										},
 										value: trans[activeLang]?.name || "",
 										"aria-invalid": !!fieldErrs.name,
+										maxLength: NAME_MAX_LENGTH,
 										onChange: (e) => setTransField(activeLang, "name", e.target.value),
 										placeholder: t("f_name_ph")
 									}),
@@ -1778,6 +1804,7 @@
 														...f,
 														dates: void 0
 													}));
+													dropIssue(t("f_dates"));
 												},
 												lang: currentLang()
 											})]
@@ -1798,6 +1825,7 @@
 														...f,
 														dates: void 0
 													}));
+													dropIssue(t("f_dates"));
 												},
 												lang: currentLang()
 											})]
@@ -1850,6 +1878,8 @@
 			]
 		});
 	}
+	/** melis_cms_category2_trans.catt2_name is VARCHAR(100) (characters). */
+	var NAME_MAX_LENGTH = 100;
 	var errBorder = { borderColor: "#ef4444" };
 	var fieldErrCss = {
 		margin: "4px 0 0",

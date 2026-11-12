@@ -249,11 +249,25 @@ class MelisCmsCategoryReactApiController extends MelisAbstractActionController
             if (!$sites) {
                 return $this->jsonResponse(['success' => false, 'error' => 'Au moins un site doit être sélectionné.'], 400);
             }
+            // Dates: the form sends YYYY-MM-DD; anything else was silently saved as "no date" (Mantis #11494).
+            foreach ([$dateStart, $dateEnd] as $d) {
+                if ($d !== '' && !$this->isIsoDate($d)) {
+                    return $this->jsonResponse(['success' => false, 'error' => 'Date invalide (format attendu : AAAA-MM-JJ).'], 400);
+                }
+            }
             if ($dateStart !== '' && $dateEnd !== '' && strtotime($dateStart) > strtotime($dateEnd)) {
                 return $this->jsonResponse(['success' => false, 'error' => 'La date de début doit précéder la date de fin.'], 400);
             }
 
             $db     = $this->db();
+
+            // Sites: every id must exist — an unknown id was saved as is (Mantis #11494).
+            $placeholders = implode(',', array_fill(0, count($sites), '?'));
+            $known = iterator_to_array($db->query("SELECT COUNT(*) AS n FROM melis_cms_site WHERE site_id IN ($placeholders)", $sites));
+            if ((int) ($known[0]['n'] ?? 0) !== count($sites)) {
+                return $this->jsonResponse(['success' => false, 'error' => 'Site inconnu.'], 400);
+            }
+
             $userId = $this->currentUserId();
             $startSql = $dateStart !== '' ? date('Y-m-d H:i:s', strtotime($dateStart)) : null;
             $endSql   = $dateEnd !== ''   ? date('Y-m-d H:i:s', strtotime($dateEnd))   : null;
@@ -585,6 +599,13 @@ class MelisCmsCategoryReactApiController extends MelisAbstractActionController
     private function db()
     {
         return $this->getServiceManager()->get('Laminas\Db\Adapter\AdapterInterface');
+    }
+
+    /** True for a real calendar date written YYYY-MM-DD (rejects "abc", "2026-02-30", …). */
+    private function isIsoDate(string $value): bool
+    {
+        $d = \DateTime::createFromFormat('!Y-m-d', $value);
+        return $d !== false && $d->format('Y-m-d') === $value;
     }
 
     /** datetime|date DB value → 'Y-m-d' (for <input type=date>), or null. */
