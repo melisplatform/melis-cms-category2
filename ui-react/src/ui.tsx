@@ -127,7 +127,9 @@ export function Chip({ children }: { children: ReactNode }) {
  * iframes) — success toasts auto-dismiss, errors stay. Keeps notifications consistent BO-wide.
  */
 export function melisNotify(kind: 'success' | 'error', title: string, message = '') {
-  try { window.postMessage({ __melisNotif: true, kind, title, message }, '*') } catch { /* noop */ }
+  // The host's <Notifications> only knows 'ok' | 'ko' — anything else is shown as a success, so
+  // errors (e.g. "category has sub-categories") appeared in a GREEN toast (Mantis #11494).
+  try { window.postMessage({ __melisNotif: true, kind: kind === 'error' ? 'ko' : 'ok', title, message }, '*') } catch { /* noop */ }
 }
 
 const btnDanger: CSSProperties = {
@@ -179,15 +181,16 @@ export function useConfirm() {
 }
 
 /**
- * Language flag — reuses MelisCore's flag PNGs (served at /MelisCore/assets/images/lang/<short>.png,
- * short = language code, e.g. en_EN → "en"). Emoji flags don't render on Windows, hence images.
- * Missing flag → the <img> hides itself, leaving just the surrounding label.
+ * Language flag for a CMS language — MelisCms's flag PNGs, keyed by full locale
+ * (/MelisCms/images/lang-flags/<locale>.png, e.g. es_ES), the set the Sites tool uses. MelisCore's
+ * /assets/images/lang/<short>.png has no es/de/… (Spanish flag 404, Mantis #11494).
+ * Emoji flags don't render on Windows, hence images. Missing flag → the <img> hides itself.
  */
 export function LangFlag({ locale, size = 16 }: { locale: string; size?: number }) {
-  const short = (locale || '').split('_')[0].toLowerCase()
-  if (!short) return null
+  const loc = (locale || '').replace(/[^A-Za-z_]/g, '')
+  if (!loc) return null
   return (
-    <img src={`/MelisCore/assets/images/lang/${short}.png`} alt="" width={size} height={Math.round(size * 2 / 3)}
+    <img src={`/MelisCms/images/lang-flags/${loc}.png`} alt="" width={size} height={Math.round(size * 2 / 3)}
       style={{ display: 'inline-block', borderRadius: 2, objectFit: 'cover', boxShadow: '0 0 0 1px rgba(0,0,0,.10)', flexShrink: 0 }}
       onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none' }} />
   )

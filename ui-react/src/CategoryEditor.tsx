@@ -88,15 +88,25 @@ export default function CategoryEditor({ target, langs, sites, onSaved, onCancel
     )
   }
 
+  // A field fixed by the user also leaves the banner (it was only rebuilt on the next "Save", so
+  // "Name — required" stayed after typing the name — Mantis #11494). Server-error banners (no
+  // issue list) are left alone.
+  const dropIssue = (fieldLabel: string) => setBanner(b => {
+    if (!b?.issues) return b
+    const issues = b.issues.filter(i => i.label !== fieldLabel)
+    return issues.length ? { ...b, issues } : null
+  })
+
   const setTransField = (langId: number, field: keyof Translation, value: string) => {
     setTrans(prev => ({ ...prev, [langId]: { name: '', description: '', ...prev[langId], [field]: value } }))
     // Le nom est valide dès qu'UNE langue est remplie → l'erreur inline tombe sur toutes les langues.
-    if (field === 'name' && value.trim() !== '') setFieldErrs(f => ({ ...f, name: undefined }))
+    if (field === 'name' && value.trim() !== '') { setFieldErrs(f => ({ ...f, name: undefined })); dropIssue(t('f_name')) }
   }
 
   const toggleSite = (id: number) => {
     setSelectedSites(prev => prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id])
     setFieldErrs(f => ({ ...f, sites: undefined }))
+    dropIssue(t('f_sites'))
   }
 
   const doSave = async () => {
@@ -107,6 +117,13 @@ export default function CategoryEditor({ target, langs, sites, onSaved, onCancel
     const fe: { name?: string; sites?: string; dates?: string } = {}
     const hasName = Object.values(trans).some(x => (x?.name || '').trim() !== '')
     if (!hasName) { fe.name = t('err_name'); issues.push({ label: t('f_name'), message: t('err_name') }) }
+    // VARCHAR(100) server-side (Mantis #11490): name the language whose name is too long.
+    const tooLong = langs.find(l => [...(trans[l.id]?.name || '').trim()].length > NAME_MAX_LENGTH)
+    if (tooLong) {
+      const msg = t('err_name_long', { max: String(NAME_MAX_LENGTH) }) + ' (' + tooLong.name + ')'
+      fe.name = msg; issues.push({ label: t('f_name'), message: msg })
+      setActiveLang(tooLong.id)
+    }
     if (selectedSites.length === 0) { fe.sites = t('err_site'); issues.push({ label: t('f_sites'), message: t('err_site') }) }
     if (dateStart && dateEnd && dateStart > dateEnd) { fe.dates = t('err_dates'); issues.push({ label: t('f_dates'), message: t('err_dates') }) }
     setFieldErrs(fe)
@@ -212,7 +229,7 @@ export default function CategoryEditor({ target, langs, sites, onSaved, onCancel
               <div>
                 <div style={label}>{t('f_name')} *</div>
                 <input style={{ ...input, marginTop: 6, ...(fieldErrs.name ? errBorder : null) }} value={trans[activeLang]?.name || ''}
-                  aria-invalid={!!fieldErrs.name}
+                  aria-invalid={!!fieldErrs.name} maxLength={NAME_MAX_LENGTH}
                   onChange={e => setTransField(activeLang, 'name', e.target.value)} placeholder={t('f_name_ph')} />
                 {fieldErrs.name ? <p style={fieldErrCss}>{fieldErrs.name}</p> : null}
               </div>
@@ -238,11 +255,11 @@ export default function CategoryEditor({ target, langs, sites, onSaved, onCancel
                 <div style={{ display: 'flex', flexDirection: narrow ? 'column' : 'row', gap: 8, marginTop: 6 }}>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 11, color: 'var(--color-muted-foreground)', marginBottom: 4 }}>{t('f_date_start')}</div>
-                    <DateField value={dateStart} onChange={v => { setDateStart(v); setFieldErrs(f => ({ ...f, dates: undefined })) }} lang={currentLang()} />
+                    <DateField value={dateStart} onChange={v => { setDateStart(v); setFieldErrs(f => ({ ...f, dates: undefined })); dropIssue(t('f_dates')) }} lang={currentLang()} />
                   </div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 11, color: 'var(--color-muted-foreground)', marginBottom: 4 }}>{t('f_date_end')}</div>
-                    <DateField value={dateEnd} onChange={v => { setDateEnd(v); setFieldErrs(f => ({ ...f, dates: undefined })) }} lang={currentLang()} />
+                    <DateField value={dateEnd} onChange={v => { setDateEnd(v); setFieldErrs(f => ({ ...f, dates: undefined })); dropIssue(t('f_dates')) }} lang={currentLang()} />
                   </div>
                 </div>
                 {fieldErrs.dates ? <p style={fieldErrCss}>{fieldErrs.dates}</p> : null}
@@ -266,6 +283,9 @@ export default function CategoryEditor({ target, langs, sites, onSaved, onCancel
     </div>
   )
 }
+
+/** melis_cms_category2_trans.catt2_name is VARCHAR(100) (characters). */
+const NAME_MAX_LENGTH = 100
 
 // Surface d'erreur inline (même rouge que la bannière) : bordure du champ + message dessous.
 const errBorder: CSSProperties = { borderColor: '#ef4444' }

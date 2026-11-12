@@ -130,6 +130,9 @@ return [
     'tr_meliscms_categories_media_add_file' => 'Ajouter',
     'tr_meliscms_categories_media_select_image_button' => 'Sélectionner une image',
     'tr_meliscms_categories_media_select_file_button' => 'Sélectionner un fichier',
+    // form validation
+    'tr_meliscategory_categories_input_empty' => 'Ce champ est obligatoire et ne peut pas être vide',
+    'tr_meliscategory_categories_input_too_long' => 'Le nom ne doit pas dépasser 100 caractères',
     //tree
     'tr_meliscms_categories_delete_category_msg' => 'Etes-vous sûr de vouloir supprimer cette catégorie ?',
     'tr_meliscms_categories_site_filter_all' => 'Tous les sites',

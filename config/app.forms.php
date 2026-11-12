@@ -58,6 +58,7 @@ return array(
                                         'id' => 'catt_name',
                                         'class' => 'form-control',
                                         'required' => true,
+                                        'maxlength' => 100, // melis_cms_category2_trans.catt2_name VARCHAR(100)
                                     )
                                 )
                             ),

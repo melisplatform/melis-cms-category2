@@ -720,7 +720,11 @@ window.initCmsCategoryTreeView = function() {
 							fatherIcon 	= father.data('fathericon'),
 							temp 		= father.find('i');
 
-							father.html(temp.get(0).outerHTML + fatherIcon +' ' + father.text() );
+							// The name is appended as a TEXT node: .text() decodes the escaped name, and
+							// passing it back through .html() rendered markup typed in a category name
+							// (<b>, <img onerror>…) — Mantis #11495.
+							var label = father.text();
+							father.html(temp.get(0).outerHTML + fatherIcon +' ').append(document.createTextNode(label));
 					});
 			})
 			.on('#cmsCategoryTreeView refresh.jstree', function (e, data) {
@@ -731,7 +735,9 @@ window.initCmsCategoryTreeView = function() {
 							fatherIcon 	= father.data('fathericon'),
 							temp 		= father.find('i');
 
-							father.html(temp.get(0).outerHTML  + fatherIcon +' ' + father.text() );
+							// Same as loaded.jstree: the name stays text (Mantis #11495).
+							var label = father.text();
+							father.html(temp.get(0).outerHTML  + fatherIcon +' ').append(document.createTextNode(label));
 					});
 					
 					$("#categorySiteFilter").prop('disabled', false);

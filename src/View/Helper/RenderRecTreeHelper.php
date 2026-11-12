@@ -42,7 +42,11 @@ class RenderRecTreeHelper extends AbstractHelper
                 $categoryText = $category['text'] ?? null;
                 // check if the category is linked to a site
                 echo "<li>";
-                echo '<span>' . (int) $category['cat2_id'] . ' - ' . htmlspecialchars((string) $categoryText, ENT_QUOTES) . '</span>';
+                // `text` comes from MelisCmsCategory2Service::getCategoryTreeview(), which already
+                // HTML-escapes it: escaping it again showed "l&#039;été" on the front (Mantis #11491).
+                // Decode first, then escape exactly once — safe whatever the input.
+                $plain = html_entity_decode((string) $categoryText, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                echo '<span>' . (int) $category['cat2_id'] . ' - ' . htmlspecialchars($plain, ENT_QUOTES, 'UTF-8') . '</span>';
                 if (! empty($category['children'])){
                     echo "<ul>";
                     echo $this->constructTree($category['children'],$ctr);

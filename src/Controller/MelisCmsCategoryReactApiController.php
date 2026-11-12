@@ -37,6 +37,9 @@ class MelisCmsCategoryReactApiController extends MelisAbstractActionController
 
     private const ROOT = -1;
 
+    /** Length of melis_cms_category2_trans.catt2_name (VARCHAR(100)). */
+    private const NAME_MAX_LENGTH = 100;
+
     // ─── GET /tree ────────────────────────────────────────────────────────────────
 
     public function treeAction(): HttpResponse
@@ -235,14 +238,36 @@ class MelisCmsCategoryReactApiController extends MelisAbstractActionController
             if (!$hasName) {
                 return $this->jsonResponse(['success' => false, 'error' => 'Au moins un nom de catégorie (dans une langue) est obligatoire.'], 400);
             }
+            // catt2_name is VARCHAR(NAME_MAX_LENGTH): refuse up front (Mantis #11490) instead of letting the
+            // INSERT fail half-way. mb_strlen = characters, like the MySQL column length.
+            foreach ($trans as $t) {
+                if (mb_strlen(trim((string) ($t['name'] ?? ''))) > self::NAME_MAX_LENGTH) {
+                    return $this->jsonResponse(['success' => false,
+                        'error' => 'Le nom ne doit pas dépasser ' . self::NAME_MAX_LENGTH . ' caractères.'], 400);
+                }
+            }
             if (!$sites) {
                 return $this->jsonResponse(['success' => false, 'error' => 'Au moins un site doit être sélectionné.'], 400);
+            }
+            // Dates: the form sends YYYY-MM-DD; anything else was silently saved as "no date" (Mantis #11494).
+            foreach ([$dateStart, $dateEnd] as $d) {
+                if ($d !== '' && !$this->isIsoDate($d)) {
+                    return $this->jsonResponse(['success' => false, 'error' => 'Date invalide (format attendu : AAAA-MM-JJ).'], 400);
+                }
             }
             if ($dateStart !== '' && $dateEnd !== '' && strtotime($dateStart) > strtotime($dateEnd)) {
                 return $this->jsonResponse(['success' => false, 'error' => 'La date de début doit précéder la date de fin.'], 400);
             }
 
             $db     = $this->db();
+
+            // Sites: every id must exist — an unknown id was saved as is (Mantis #11494).
+            $placeholders = implode(',', array_fill(0, count($sites), '?'));
+            $known = iterator_to_array($db->query("SELECT COUNT(*) AS n FROM melis_cms_site WHERE site_id IN ($placeholders)", $sites));
+            if ((int) ($known[0]['n'] ?? 0) !== count($sites)) {
+                return $this->jsonResponse(['success' => false, 'error' => 'Site inconnu.'], 400);
+            }
+
             $userId = $this->currentUserId();
             $startSql = $dateStart !== '' ? date('Y-m-d H:i:s', strtotime($dateStart)) : null;
             $endSql   = $dateEnd !== ''   ? date('Y-m-d H:i:s', strtotime($dateEnd))   : null;
@@ -253,47 +278,59 @@ class MelisCmsCategoryReactApiController extends MelisAbstractActionController
                 return $this->jsonResponse(['success' => false, 'error' => 'Parent inexistant.'], 400);
             }
 
-            if ($id) {
-                if (!iterator_to_array($db->query('SELECT cat2_id FROM melis_cms_category2 WHERE cat2_id = ?', [$id]))) {
-                    return $this->jsonResponse(['success' => false, 'error' => 'Not found'], 404);
+            if ($id && !iterator_to_array($db->query('SELECT cat2_id FROM melis_cms_category2 WHERE cat2_id = ?', [$id]))) {
+                return $this->jsonResponse(['success' => false, 'error' => 'Not found'], 404);
+            }
+
+            // All writes in ONE transaction (Mantis #11490): the translations are resynced by
+            // delete-all + insert, so a failing insert used to leave a category without any name
+            // (update) or a nameless orphan row (create). Now it is all or nothing.
+            $conn = $db->getDriver()->getConnection();
+            $conn->beginTransaction();
+            try {
+                if ($id) {
+                    $db->query(
+                        'UPDATE melis_cms_category2 SET cat2_status = ?, cat2_date_valid_start = ?, cat2_date_valid_end = ?,
+                         cat2_date_edit = ?, cat2_user_id_edit = ? WHERE cat2_id = ?',
+                        [$status, $startSql, $endSql, date('Y-m-d H:i:s'), $userId, $id]
+                    );
+                } else {
+                    $maxRow = iterator_to_array($db->query(
+                        'SELECT COALESCE(MAX(cat2_order), 0) AS m FROM melis_cms_category2 WHERE cat2_father_cat_id = ?',
+                        [$parentId]
+                    ));
+                    $order = (int) ($maxRow[0]['m'] ?? 0) + 1;
+                    $db->query(
+                        'INSERT INTO melis_cms_category2
+                         (cat2_father_cat_id, cat2_status, cat2_order, cat2_date_valid_start, cat2_date_valid_end,
+                          cat2_date_creation, cat2_user_id_creation)
+                         VALUES (?, ?, ?, ?, ?, ?, ?)',
+                        [$parentId, $status, $order, $startSql, $endSql, date('Y-m-d H:i:s'), $userId]
+                    );
+                    $id = (int) iterator_to_array($db->query('SELECT LAST_INSERT_ID() AS id', []))[0]['id'];
                 }
-                $db->query(
-                    'UPDATE melis_cms_category2 SET cat2_status = ?, cat2_date_valid_start = ?, cat2_date_valid_end = ?,
-                     cat2_date_edit = ?, cat2_user_id_edit = ? WHERE cat2_id = ?',
-                    [$status, $startSql, $endSql, date('Y-m-d H:i:s'), $userId, $id]
-                );
-            } else {
-                $maxRow = iterator_to_array($db->query(
-                    'SELECT COALESCE(MAX(cat2_order), 0) AS m FROM melis_cms_category2 WHERE cat2_father_cat_id = ?',
-                    [$parentId]
-                ));
-                $order = (int) ($maxRow[0]['m'] ?? 0) + 1;
-                $db->query(
-                    'INSERT INTO melis_cms_category2
-                     (cat2_father_cat_id, cat2_status, cat2_order, cat2_date_valid_start, cat2_date_valid_end,
-                      cat2_date_creation, cat2_user_id_creation)
-                     VALUES (?, ?, ?, ?, ?, ?, ?)',
-                    [$parentId, $status, $order, $startSql, $endSql, date('Y-m-d H:i:s'), $userId]
-                );
-                $id = (int) iterator_to_array($db->query('SELECT LAST_INSERT_ID() AS id', []))[0]['id'];
-            }
 
-            // ── Resync translations (delete-all + insert non-empty) ──
-            $db->query('DELETE FROM melis_cms_category2_trans WHERE catt2_category_id = ?', [$id]);
-            foreach ($trans as $langId => $t) {
-                $name = trim((string) ($t['name'] ?? ''));
-                if ($name === '') { continue; }
-                $db->query(
-                    'INSERT INTO melis_cms_category2_trans (catt2_category_id, catt2_lang_id, catt2_name, catt2_description)
-                     VALUES (?, ?, ?, ?)',
-                    [$id, (int) $langId, $name, (string) ($t['description'] ?? '')]
-                );
-            }
+                // ── Resync translations (delete-all + insert non-empty) ──
+                $db->query('DELETE FROM melis_cms_category2_trans WHERE catt2_category_id = ?', [$id]);
+                foreach ($trans as $langId => $t) {
+                    $name = trim((string) ($t['name'] ?? ''));
+                    if ($name === '') { continue; }
+                    $db->query(
+                        'INSERT INTO melis_cms_category2_trans (catt2_category_id, catt2_lang_id, catt2_name, catt2_description)
+                         VALUES (?, ?, ?, ?)',
+                        [$id, (int) $langId, $name, (string) ($t['description'] ?? '')]
+                    );
+                }
 
-            // ── Resync sites (delete-all + insert selected) ──
-            $db->query('DELETE FROM melis_cms_category2_sites WHERE cats2_cat2_id = ?', [$id]);
-            foreach ($sites as $siteId) {
-                $db->query('INSERT INTO melis_cms_category2_sites (cats2_cat2_id, cats2_site_id) VALUES (?, ?)', [$id, $siteId]);
+                // ── Resync sites (delete-all + insert selected) ──
+                $db->query('DELETE FROM melis_cms_category2_sites WHERE cats2_cat2_id = ?', [$id]);
+                foreach ($sites as $siteId) {
+                    $db->query('INSERT INTO melis_cms_category2_sites (cats2_cat2_id, cats2_site_id) VALUES (?, ?)', [$id, $siteId]);
+                }
+                $conn->commit();
+            } catch (\Throwable $e) {
+                $conn->rollback();
+                throw $e;
             }
 
             return $this->jsonResponse(['success' => true, 'data' => ['id' => $id]], $body['id'] ?? null ? 200 : 201);
@@ -337,6 +374,14 @@ class MelisCmsCategoryReactApiController extends MelisAbstractActionController
                 'UPDATE melis_cms_category2 SET cat2_order = cat2_order - 1 WHERE cat2_father_cat_id = ? AND cat2_order > ?',
                 [$father, $order]
             );
+
+            // Same cleanup as the legacy delete, which this endpoint was missing:
+            // - the news links, so news do not keep the deleted category id (Mantis #11493);
+            // - the media FILES — only their rows were deleted, the files stayed online and could
+            //   no longer be removed from the back office (Mantis #11496).
+            $sm = $this->getServiceManager();
+            $sm->get('MelisCmsCategory2Service')->deleteCategoryNewsLinks($id);
+            $sm->get('MelisCmsCategory2MediaService')->removeCategoryDir($id);
 
             return $this->jsonResponse(['success' => true, 'data' => null]);
         } catch (\Throwable $e) {
@@ -544,6 +589,13 @@ class MelisCmsCategoryReactApiController extends MelisAbstractActionController
     private function db()
     {
         return $this->getServiceManager()->get('Laminas\Db\Adapter\AdapterInterface');
+    }
+
+    /** True for a real calendar date written YYYY-MM-DD (rejects "abc", "2026-02-30", …). */
+    private function isIsoDate(string $value): bool
+    {
+        $d = \DateTime::createFromFormat('!Y-m-d', $value);
+        return $d !== false && $d->format('Y-m-d') === $value;
     }
 
     /** datetime|date DB value → 'Y-m-d' (for <input type=date>), or null. */

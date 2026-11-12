@@ -504,6 +504,14 @@ class MelisCmsCategoryController extends MelisAbstractActionController
                 } else {
                     $errors[] = $this->formatErrorMessage($appConfigForm,$propertyForm->getMessages());
                 }
+                // catt2_name is VARCHAR(100). Checked on the RAW value, which is what gets saved
+                // (the form only validates its filtered copy): a longer name was a SQL error → 500 (Mantis #11490).
+                if (mb_strlen(trim((string) ($val['catt2_name'] ?? ''))) > 100) {
+                    $errors[] = [
+                        'catt2_name' => $translator->translate('tr_meliscategory_categories_input_too_long'),
+                        'label'      => $translator->translate('tr_meliscategory_categories_category_information_form_cat_name'),
+                    ];
+                }
             }
 
             // this means property form name field is filled
@@ -889,11 +897,19 @@ class MelisCmsCategoryController extends MelisAbstractActionController
                 if (empty($getChildren)) {
                     // execute delete
                     $categoryTable->deleteById($catId);
+                    // deleteById() only removes the category row: also remove its translations, sites
+                    // and media rows (orphans otherwise) — same as the React delete.
+                    $db = $this->getServiceManager()->get('Laminas\Db\Adapter\AdapterInterface');
+                    $db->query('DELETE FROM melis_cms_category2_trans WHERE catt2_category_id = ?', [$catId]);
+                    $db->query('DELETE FROM melis_cms_category2_sites WHERE cats2_cat2_id = ?', [$catId]);
+                    $db->query('DELETE FROM melis_cms_category2_media WHERE catm2_cat_id = ?', [$catId]);
                     // re order or update categories after deleting the previous category
                     $categorySvc->reOrderCategories($parentId, $currentOrder);
                     $textMessage = $translator->translate('tr_meliscms_categories_category_delete_success');
                     // remove files in media directory
                     $categoryMediaSvc->removeCategoryDir($catId);
+                    // remove its news links: news kept the deleted category id (Mantis #11493)
+                    $categorySvc->deleteCategoryNewsLinks($catId);
                     $success = 1;
                 } else {
                     $textMessage = $translator->translate('tr_meliscms_categories_err_category_unable_delete');

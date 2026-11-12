@@ -176,6 +176,12 @@ class MelisCmsCategory2Table extends MelisGenericTable
 
         if (is_bool($onlyValid) && $onlyValid) {
             $select->where('cat2_status = 1');
+            // "Valid" also means inside the validity period, like every other $onlyValid query of this
+            // table: the front display plugin listed expired and not-yet-valid categories (Mantis #11492).
+            $select->where->NEST->literal('cat2_date_valid_start <= "' . date('Y-m-d') . '"')
+                ->or->literal('cat2_date_valid_start IS NULL');
+            $select->where->NEST->literal('cat2_date_valid_end >= "' . date('Y-m-d') . '"')
+                ->or->literal('cat2_date_valid_end IS NULL');
         }
         $select->order('cat2_order ASC');
 

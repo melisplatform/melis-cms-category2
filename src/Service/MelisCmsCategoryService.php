@@ -509,7 +509,9 @@ class MelisCmsCategoryService  extends MelisGeneralService
                 }
             }
 
-            $catData[$key]['text'] = $escaper->escapeHtml($catName); //$tool->escapeHtml($catName);
+            // (string): a category without any translation has a NULL name (LEFT JOIN) — escapeHtml(null)
+            // threw a TypeError that broke the whole legacy tree for every user (Mantis #11490).
+            $catData[$key]['text'] = $escaper->escapeHtml((string) $catName); //$tool->escapeHtml($catName);
             $catData[$key]['textLang'] = (!empty($catNameLangName)) ?? null;
             $catData[$key]['sites'] = $this->getSiteCategoryById($cat2Id);
 
@@ -581,6 +583,40 @@ class MelisCmsCategoryService  extends MelisGeneralService
 
         return $arrayParameters['results'];
     }
+
+    /**
+     * Removes the links between a deleted category and the news (melis_cms_news_category), so the
+     * news no longer carry the id of a category that does not exist (Mantis #11493). Called by both
+     * the legacy and the React delete. MelisCmsNews is optional for this module: if its table does
+     * not exist, there is nothing to clean.
+     *
+     * @param int $categoryId
+     * @return int number of links removed
+     */
+    public function deleteCategoryNewsLinks($categoryId)
+    {
+        $arrayParameters = $this->makeArrayFromParameters(__METHOD__, func_get_args());
+        $arrayParameters = $this->sendEvent('meliscms_category2_delete_news_links_start', $arrayParameters);
+        $results = 0;
+
+        $db = $this->getServiceManager()->get('Laminas\Db\Adapter\AdapterInterface');
+        $tableExists = iterator_to_array($db->query(
+            'SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?',
+            ['melis_cms_news_category']
+        ));
+        if ($tableExists) {
+            $results = $db->query(
+                'DELETE FROM melis_cms_news_category WHERE cnc_cat2_id = ?',
+                [(int) $arrayParameters['categoryId']]
+            )->getAffectedRows();
+        }
+
+        $arrayParameters['results'] = $results;
+        $arrayParameters = $this->sendEvent('meliscms_category2_delete_news_links_end', $arrayParameters);
+
+        return $arrayParameters['results'];
+    }
+
     public function reOrderCategories($parentId, $currentOrder)
     {
         $arrayParameters = $this->makeArrayFromParameters(__METHOD__, func_get_args());
@@ -752,7 +788,9 @@ class MelisCmsCategoryService  extends MelisGeneralService
                     $categoryTranslationsData = $cmsCategory->getCategoryTranslationsByCatId($categoryId)->toArray();
                     foreach ($categoryTranslationsData as $key => $value) {
                         if (! empty($value['catt2_name'])) {
-                            $categoryData[$idx]['text'] = $value['catt2_name'] . " ( " . $value['lang_cms_name'] . ")";
+                            // `text` is HTML-escaped everywhere else (getCategoryTreeview) and rendered as
+                            // HTML by the trees — this fallback wrote the raw name (Mantis #11495).
+                            $categoryData[$idx]['text'] = htmlspecialchars($value['catt2_name'] . " ( " . $value['lang_cms_name'] . ")", ENT_QUOTES, 'UTF-8');
                         }
                     }
                 }
