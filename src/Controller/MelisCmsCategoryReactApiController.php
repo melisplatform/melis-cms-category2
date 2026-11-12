@@ -355,6 +355,14 @@ class MelisCmsCategoryReactApiController extends MelisAbstractActionController
                 [$father, $order]
             );
 
+            // Same cleanup as the legacy delete, which this endpoint was missing:
+            // - the news links, so news do not keep the deleted category id (Mantis #11493);
+            // - the media FILES — only their rows were deleted, the files stayed online and could
+            //   no longer be removed from the back office (Mantis #11496).
+            $sm = $this->getServiceManager();
+            $sm->get('MelisCmsCategory2Service')->deleteCategoryNewsLinks($id);
+            $sm->get('MelisCmsCategory2MediaService')->removeCategoryDir($id);
+
             return $this->jsonResponse(['success' => true, 'data' => null]);
         } catch (\Throwable $e) {
             return $this->errorResponse($e);
