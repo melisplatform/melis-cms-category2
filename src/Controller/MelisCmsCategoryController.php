@@ -504,6 +504,14 @@ class MelisCmsCategoryController extends MelisAbstractActionController
                 } else {
                     $errors[] = $this->formatErrorMessage($appConfigForm,$propertyForm->getMessages());
                 }
+                // catt2_name is VARCHAR(100). Checked on the RAW value, which is what gets saved
+                // (the form only validates its filtered copy): a longer name was a SQL error → 500 (Mantis #11490).
+                if (mb_strlen(trim((string) ($val['catt2_name'] ?? ''))) > 100) {
+                    $errors[] = [
+                        'catt2_name' => $translator->translate('tr_meliscategory_categories_input_too_long'),
+                        'label'      => $translator->translate('tr_meliscategory_categories_category_information_form_cat_name'),
+                    ];
+                }
             }
 
             // this means property form name field is filled

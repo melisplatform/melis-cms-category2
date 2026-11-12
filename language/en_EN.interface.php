@@ -122,6 +122,9 @@ return [
     'tr_meliscms_categories_media_select_image_button' => 'Select image',
     'tr_meliscms_categories_media_select_file_button' => 'Select file',
 
+    // form validation
+    'tr_meliscategory_categories_input_empty' => 'The input is required and cannot be empty',
+    'tr_meliscategory_categories_input_too_long' => 'The name must not exceed 100 characters',
     //tree
     'tr_meliscms_categories_delete_category_msg' => 'Are you sure you want to delete this category?',
     'tr_meliscms_categories_site_filter_all' => 'All sites',

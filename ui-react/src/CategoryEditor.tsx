@@ -107,6 +107,13 @@ export default function CategoryEditor({ target, langs, sites, onSaved, onCancel
     const fe: { name?: string; sites?: string; dates?: string } = {}
     const hasName = Object.values(trans).some(x => (x?.name || '').trim() !== '')
     if (!hasName) { fe.name = t('err_name'); issues.push({ label: t('f_name'), message: t('err_name') }) }
+    // VARCHAR(100) server-side (Mantis #11490): name the language whose name is too long.
+    const tooLong = langs.find(l => [...(trans[l.id]?.name || '').trim()].length > NAME_MAX_LENGTH)
+    if (tooLong) {
+      const msg = t('err_name_long', { max: String(NAME_MAX_LENGTH) }) + ' (' + tooLong.name + ')'
+      fe.name = msg; issues.push({ label: t('f_name'), message: msg })
+      setActiveLang(tooLong.id)
+    }
     if (selectedSites.length === 0) { fe.sites = t('err_site'); issues.push({ label: t('f_sites'), message: t('err_site') }) }
     if (dateStart && dateEnd && dateStart > dateEnd) { fe.dates = t('err_dates'); issues.push({ label: t('f_dates'), message: t('err_dates') }) }
     setFieldErrs(fe)
@@ -212,7 +219,7 @@ export default function CategoryEditor({ target, langs, sites, onSaved, onCancel
               <div>
                 <div style={label}>{t('f_name')} *</div>
                 <input style={{ ...input, marginTop: 6, ...(fieldErrs.name ? errBorder : null) }} value={trans[activeLang]?.name || ''}
-                  aria-invalid={!!fieldErrs.name}
+                  aria-invalid={!!fieldErrs.name} maxLength={NAME_MAX_LENGTH}
                   onChange={e => setTransField(activeLang, 'name', e.target.value)} placeholder={t('f_name_ph')} />
                 {fieldErrs.name ? <p style={fieldErrCss}>{fieldErrs.name}</p> : null}
               </div>
@@ -266,6 +273,9 @@ export default function CategoryEditor({ target, langs, sites, onSaved, onCancel
     </div>
   )
 }
+
+/** melis_cms_category2_trans.catt2_name is VARCHAR(100) (characters). */
+const NAME_MAX_LENGTH = 100
 
 // Surface d'erreur inline (même rouge que la bannière) : bordure du champ + message dessous.
 const errBorder: CSSProperties = { borderColor: '#ef4444' }

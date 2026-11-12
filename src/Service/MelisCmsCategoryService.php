@@ -509,7 +509,9 @@ class MelisCmsCategoryService  extends MelisGeneralService
                 }
             }
 
-            $catData[$key]['text'] = $escaper->escapeHtml($catName); //$tool->escapeHtml($catName);
+            // (string): a category without any translation has a NULL name (LEFT JOIN) — escapeHtml(null)
+            // threw a TypeError that broke the whole legacy tree for every user (Mantis #11490).
+            $catData[$key]['text'] = $escaper->escapeHtml((string) $catName); //$tool->escapeHtml($catName);
             $catData[$key]['textLang'] = (!empty($catNameLangName)) ?? null;
             $catData[$key]['sites'] = $this->getSiteCategoryById($cat2Id);
 
