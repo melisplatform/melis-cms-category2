@@ -714,7 +714,9 @@ class MelisCmsCategoryService  extends MelisGeneralService
                     $categoryTranslationsData = $cmsCategory->getCategoryTranslationsByCatId($categoryId)->toArray();
                     foreach ($categoryTranslationsData as $key => $value) {
                         if (! empty($value['catt2_name'])) {
-                            $categoryData[$idx]['text'] = $value['catt2_name'] . " ( " . $value['lang_cms_name'] . ")";
+                            // `text` is HTML-escaped everywhere else (getCategoryTreeview) and rendered as
+                            // HTML by the trees — this fallback wrote the raw name (Mantis #11495).
+                            $categoryData[$idx]['text'] = htmlspecialchars($value['catt2_name'] . " ( " . $value['lang_cms_name'] . ")", ENT_QUOTES, 'UTF-8');
                         }
                     }
                 }
