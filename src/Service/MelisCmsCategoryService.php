@@ -612,10 +612,9 @@ class MelisCmsCategoryService  extends MelisGeneralService
         return $arrayParameters['results'];
     }
     /**
-     * SECURITY (audit CAT-M1) : vrai si rattacher les catégories $categoryIds au parent
-     * $parentId créerait un CYCLE (le parent est l'une des catégories déplacées ou un de
-     * leurs descendants) — ou si le parent n'existe pas (fail-closed). Un cycle rend le
-     * sous-arbre orphelin et boucle les parcours récursifs (treeview service + React).
+     * Vrai si rattacher les catégories $categoryIds au parent $parentId créerait un CYCLE
+     * (le parent est l'une des catégories déplacées ou un de leurs descendants) — ou si le
+     * parent n'existe pas.
      *
      * @param int|int[] $categoryIds catégories déplacées
      * @param int $parentId nouveau parent (-1 = racine, toujours valide)
@@ -647,7 +646,7 @@ class MelisCmsCategoryService  extends MelisGeneralService
 
             return $guard >= 200; // profondeur anormale (cycle préexistant ?) → refuse
         } catch (\Throwable $e) {
-            return true; // fail-closed
+            return true;
         }
     }
 

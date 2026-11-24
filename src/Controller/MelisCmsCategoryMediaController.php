@@ -350,11 +350,8 @@ class MelisCmsCategoryMediaController extends MelisAbstractActionController
                     }
                 }
                 /**
-                 * SECURITY (audit CAT-H1) : l'ancienne allow-list locale autorisait `svg`
-                 * (XSS stocké — un SVG actif servi inline s'exécute sur l'origine Melis) et ne
-                 * vérifiait jamais le CONTENU réel du fichier. On passe par la garde partagée
-                 * du service — la même que la brick React : allow-list sans type actif
-                 * (svg/html/php/…) ET type MIME réel (finfo) croisé avec l'extension.
+                 * Garde partagée du service — la même que la brick React : allow-list
+                 * d'extensions ET type MIME réel (finfo) croisé avec l'extension.
                  */
                 $uploadExt = $categoryMediaSvc->validatedExtension($fileName, $fileType == 'image' ? 'image' : 'file', $file['tmp_name']);
                 if ($uploadExt === null) {

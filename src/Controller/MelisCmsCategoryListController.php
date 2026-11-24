@@ -419,11 +419,8 @@ class MelisCmsCategoryListController extends MelisAbstractActionController
                 $old_fatherId = (int) ($datas['old_parent'] ?? -1);
 
                 /**
-                 * SECURITY (audit CAT-M1) : le POST brut partait tel quel dans save()
-                 * (mass-assignment : n'importe quelle colonne cat2_* était inscriptible), sans
-                 * vérifier ni l'existence de la catégorie ni l'absence de CYCLE (une catégorie
-                 * devenant sa propre ancêtre casse tous les parcours récursifs). Allow-list de
-                 * colonnes + gardes existence/cycle (parentCreatesCycle, fail-closed).
+                 * Allow-list des colonnes sauvegardées + contrôles d'existence de la catégorie
+                 * et d'absence de cycle (parentCreatesCycle).
                  */
                 $datas = [
                     'cat2_id'            => (int) ($datas['cat2_id'] ?? 0),

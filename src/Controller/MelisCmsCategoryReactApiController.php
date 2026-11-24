@@ -247,7 +247,7 @@ class MelisCmsCategoryReactApiController extends MelisAbstractActionController
             $startSql = $dateStart !== '' ? date('Y-m-d H:i:s', strtotime($dateStart)) : null;
             $endSql   = $dateEnd !== ''   ? date('Y-m-d H:i:s', strtotime($dateEnd))   : null;
 
-            /** SECURITY (audit CAT-M1) : le parent d'une création doit exister (-1 = racine). */
+            /** Le parent d'une création doit exister (-1 = racine). */
             if (!$id && $parentId !== self::ROOT
                 && !iterator_to_array($db->query('SELECT cat2_id FROM melis_cms_category2 WHERE cat2_id = ?', [$parentId]))) {
                 return $this->jsonResponse(['success' => false, 'error' => 'Parent inexistant.'], 400);
@@ -363,12 +363,9 @@ class MelisCmsCategoryReactApiController extends MelisAbstractActionController
             $db = $this->db();
 
             /**
-             * SECURITY (audit CAT-M1) : avant, des UPDATE father/order partaient sur des ids
-             * arbitraires — ids inexistants, parent inexistant, ou CYCLE (une catégorie devenant
-             * sa propre ancêtre → sous-arbre orphelin + boucle des parcours récursifs).
-             * Gardes : chaque id doit exister, et le parent ne doit être ni l'un des ids
-             * déplacés ni un de leurs descendants (parentCreatesCycle, fail-closed — couvre
-             * aussi l'existence du parent).
+             * Chaque id doit exister, et le parent ne doit être ni l'un des ids déplacés ni
+             * un de leurs descendants (parentCreatesCycle, qui vérifie aussi l'existence du
+             * parent).
              */
             foreach ($ids as $cid) {
                 if ($cid <= 0 || !iterator_to_array($db->query('SELECT cat2_id FROM melis_cms_category2 WHERE cat2_id = ?', [$cid]))) {
@@ -523,7 +520,7 @@ class MelisCmsCategoryReactApiController extends MelisAbstractActionController
      */
     private function validatedExtension(string $clientName, string $type, string $tmpPath): ?string
     {
-        // SECURITY (audit CAT-H1) : garde factorisée dans le service média — partagée avec
+        // Garde factorisée dans le service média — partagée avec
         // l'upload legacy (même allow-list + même contrôle MIME finfo, une seule source de vérité).
         return $this->getServiceManager()->get('MelisCmsCategory2MediaService')
             ->validatedExtension($clientName, $type, $tmpPath);
@@ -599,8 +596,7 @@ class MelisCmsCategoryReactApiController extends MelisAbstractActionController
 
     private function errorResponse(\Throwable $e, int $status = 500): HttpResponse
     {
-        // SECURITY (audit CAT-M2) : ne jamais renvoyer le message/fichier/ligne de l'exception
-        // (chemins, SQL, structure) au client — détail au log serveur, message générique.
+        // Détail de l'exception au log serveur, message générique au client.
         error_log('MelisCmsCategoryReactApi: ' . $e->getMessage() . ' @ ' . $e->getFile() . ':' . $e->getLine());
 
         return $this->jsonResponse([

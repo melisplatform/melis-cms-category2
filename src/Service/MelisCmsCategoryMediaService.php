@@ -212,12 +212,9 @@ class MelisCmsCategoryMediaService  extends MelisGeneralService
     }
 
     /**
-     * SECURITY (audit CAT-H1) : garde d'upload PARTAGÉE legacy/React — résout une extension
-     * sûre et allow-listée pour un upload, ou null si refusé. Impose À LA FOIS l'allow-list
-     * d'extensions ET le type réel du contenu (MIME finfo) : les extensions dangereuses
-     * (php/phtml/phar/pht/svg/svgz/html/xhtml/xml/…) ne sont jamais acceptées, quel que soit
-     * le nom fourni par le client. `image` est restreint aux types raster.
-     * (Logique identique à celle introduite côté brick React — désormais factorisée ici.)
+     * Garde d'upload partagée legacy/React — résout une extension allow-listée pour un
+     * upload, ou null si refusé. Impose à la fois l'allow-list d'extensions et le type réel
+     * du contenu (MIME finfo). `image` est restreint aux types raster.
      *
      * @param string $clientName nom de fichier fourni par le client
      * @param string $type 'image' ou 'file'
@@ -265,7 +262,7 @@ class MelisCmsCategoryMediaService  extends MelisGeneralService
             $mime = (string) @finfo_file($fi, (string) $tmpPath);
             @finfo_close($fi);
         }
-        // finfo indisponible → l'allow-list d'extensions reste le plancher.
+        // Type MIME détecté → il doit correspondre à l'extension.
         if ($mime !== '' && !\in_array($mime, $allow[$ext], true)) {
             return null;
         }
