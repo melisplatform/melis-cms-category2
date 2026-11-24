@@ -304,7 +304,7 @@ class MelisCmsCategoryMediaController extends MelisAbstractActionController
      */
     public function uploadMediaAction()
     {
-        /** @INFO: Access check (tool right) — CWE-862 */
+        /** @INFO: Access check (tool right) */
         if (! $this->hasAccess('melis_cms_category_v2_tools_section')) {
             return new JsonModel(['success' => 0, 'textTitle' => '', 'textMessage' => 'tr_meliscore_microservice_api_key_no_access', 'errors' => [], 'datas' => []]);
         }
@@ -328,8 +328,8 @@ class MelisCmsCategoryMediaController extends MelisAbstractActionController
         if (empty($categoryId)) {
             $categoryId = "tmp";
         }
-        // Sécurité : cet id construit le chemin du dossier média (mkdir/move_uploaded_file) →
-        // n'autoriser que "tmp" ou un entier positif, sinon traversée de répertoire via catId.
+        // Cet id construit le chemin du dossier média (mkdir/move_uploaded_file) :
+        // seuls "tmp" ou un entier positif sont acceptés.
         $categoryId = ($categoryId === 'tmp') ? 'tmp' : (int) $categoryId;
         if ($fileType == 'image') {
             $title = 'tr_meliscms_categories_media_select_image';
@@ -340,7 +340,7 @@ class MelisCmsCategoryMediaController extends MelisAbstractActionController
 
             if (! empty($file['tmp_name'])) {
                 // file name
-                // Sécurité : nom fourni par le client → basename() (empêche toute traversée via le nom).
+                // Nom fourni par le client → basename().
                 $fileName = basename((string) $file['name']);
                 if ($fileType == 'image') {
                     // changed title
@@ -465,7 +465,7 @@ class MelisCmsCategoryMediaController extends MelisAbstractActionController
     }
     public function deleteFileAction()
     {
-        /** @INFO: Access check (tool right) — CWE-862 */
+        /** @INFO: Access check (tool right) */
         if (! $this->hasAccess('melis_cms_category_v2_tools_section')) {
             return new JsonModel(['success' => 0, 'textTitle' => '', 'textMessage' => 'tr_meliscore_microservice_api_key_no_access', 'errors' => [], 'datas' => []]);
         }
@@ -485,8 +485,8 @@ class MelisCmsCategoryMediaController extends MelisAbstractActionController
             $postvalues = $request->getPost()->toArray();
             $imageName  = $postvalues['imageName'] ??  null;
             $fileType   = $postvalues['fileType'] ?? null;
-            // Sécurité : $categoryId compose le dossier scanné pour la suppression → n'autoriser
-            // que "tmp" ou un entier positif (sinon suppression de fichiers hors du dossier média).
+            // $categoryId compose le dossier scanné pour la suppression : seuls "tmp" ou un
+            // entier positif sont acceptés.
             $categoryId = (($postvalues['categoryId'] ?? null) === 'tmp') ? 'tmp' : (int) ($postvalues['categoryId'] ?? 0);
             if ($fileType == 'image') {
                 $title = 'tr_meliscms_categories_media_select_image';
@@ -525,7 +525,7 @@ class MelisCmsCategoryMediaController extends MelisAbstractActionController
 
         return new JsonModel($response);
     }
-    /** @INFO: Tool access check (CWE-862). */
+    /** @INFO: Tool access check. */
     private function hasAccess($key)
     {
         return $this->getServiceManager()->get('MelisCoreRights')->canAccess($key);

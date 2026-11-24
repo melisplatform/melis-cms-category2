@@ -436,7 +436,7 @@ class MelisCmsCategoryReactApiController extends MelisAbstractActionController
                 return $this->jsonResponse(['success' => false, 'error' => 'Aucun fichier reçu.'], 400);
             }
 
-            // ── Upload hardening: allow-list extension + verified MIME (defends against RCE). ──
+            // ── Upload: allow-list extension + verified MIME. ──
             $ext = $this->validatedExtension((string) $file['name'], $type, $file['tmp_name']);
             if ($ext === null) {
                 return $this->jsonResponse(['success' => false, 'error' => 'Type de fichier non autorisé.'], 400);
