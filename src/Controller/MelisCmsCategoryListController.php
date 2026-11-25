@@ -18,7 +18,7 @@ use MelisCore\Controller\MelisAbstractActionController;
 class MelisCmsCategoryListController extends MelisAbstractActionController
 {
     /**
-     * Outil auquel ce contrôleur appartient (audit DEKRA 7.0) : MelisCoreAuthorizationListener
+     * Outil auquel ce contrôleur appartient : MelisCoreAuthorizationListener
      * vérifie canAccess() sur cette clé AVANT le dispatch. La clé de TOOL_KEY n'est pas cochable
      * dans Utilisateurs → Droits (TOOL_KEY reste la clé de configuration de l'outil).
      */
@@ -218,7 +218,7 @@ class MelisCmsCategoryListController extends MelisAbstractActionController
      */
     public function getCategoryTreeViewAction()
     {
-        /** @INFO: Access check (tool right) — CWE-862 */
+        /** @INFO: Access check (tool right) */
         if (! $this->hasAccess('melis_cms_category_v2_tools_section')) {
             return new JsonModel(['success' => 0, 'textTitle' => '', 'textMessage' => 'tr_meliscore_microservice_api_key_no_access', 'errors' => [], 'datas' => []]);
         }
@@ -395,7 +395,7 @@ class MelisCmsCategoryListController extends MelisAbstractActionController
      */
     public function saveCategoryTreeViewAction()
     {
-        /** @INFO: Access check (tool right) — CWE-862 */
+        /** @INFO: Access check (tool right) */
         if (! $this->hasAccess('melis_cms_category_v2_tools_section')) {
             return new JsonModel(['success' => 0, 'textTitle' => '', 'textMessage' => 'tr_meliscore_microservice_api_key_no_access', 'errors' => [], 'datas' => []]);
         }
@@ -483,7 +483,7 @@ class MelisCmsCategoryListController extends MelisAbstractActionController
         }
     }
 
-    /** @INFO: Tool access check (CWE-862). */
+    /** @INFO: Tool access check. */
     private function hasAccess($key)
     {
         return $this->getServiceManager()->get('MelisCoreRights')->canAccess($key);
